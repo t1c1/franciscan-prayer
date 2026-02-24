@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { LogIn, LogOut, User, Cloud, X } from "lucide-react";
+import { LogIn, LogOut, User, Cloud, X, BarChart3 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export function AuthButton() {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading, isAdmin, signOut } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -37,6 +38,15 @@ export function AuthButton() {
               <p className="text-xs text-green-600 dark:text-green-400 mb-3">
                 Prayer data synced to cloud
               </p>
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setShowMenu(false)}
+                  className="flex items-center gap-2 text-sm text-foreground hover:opacity-80 transition-opacity w-full mb-3"
+                >
+                  <BarChart3 className="w-3 h-3" /> Admin Dashboard
+                </Link>
+              )}
               <button
                 onClick={() => {
                   signOut();

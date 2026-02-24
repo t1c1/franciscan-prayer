@@ -15,6 +15,7 @@ interface AuthState {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  isAdmin: boolean;
   signInWithEmail: (email: string, password: string) => Promise<string | null>;
   signUpWithEmail: (email: string, password: string) => Promise<string | null>;
   signInWithGoogle: () => Promise<void>;
@@ -28,11 +29,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const checkAdmin = useCallback(async (userId: string) => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", userId)
+      .single();
+    setIsAdmin(data?.role === "admin");
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) checkAdmin(session.user.id);
       setLoading(false);
     });
 
@@ -41,10 +53,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdmin(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [checkAdmin]);
 
   const signInWithEmail = useCallback(
     async (email: string, password: string): Promise<string | null> => {
@@ -114,6 +131,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .from("prayer_completions")
         .upsert(entries, { onConflict: "user_id,date,hour_id" });
     }
+
+    // Ensure profile row exists and update last_active_at
+    await supabase.from("profiles").upsert(
+      {
+        id: user.id,
+        email: user.email,
+        last_active_at: new Date().toISOString(),
+      },
+      { onConflict: "id" }
+    );
   }, [user]);
 
   // Auto-sync on sign in
@@ -129,6 +156,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         session,
         loading,
+        isAdmin,
         signInWithEmail,
         signUpWithEmail,
         signInWithGoogle,

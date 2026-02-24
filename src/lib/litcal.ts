@@ -9,9 +9,8 @@ export interface LitCalEvent {
   color: string[];
   grade: number;
   grade_lcl: string;
-  date: string;
+  date: string; // ISO 8601 string e.g. "2026-02-24T00:00:00+00:00"
   liturgical_season?: string;
-  liturgical_season_lcl?: string;
   readings?: {
     first_reading?: string;
     responsorial_psalm?: string;
@@ -49,6 +48,19 @@ function mapColor(colors: string[]): string {
   return "green";
 }
 
+function formatSeason(raw: string): string {
+  // "ADVENT" → "Advent", "ORDINARY_TIME" → "Ordinary Time"
+  return raw.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function parseEventDate(date: string | number): string {
+  if (typeof date === "number") {
+    return new Date(date * 1000).toISOString().split("T")[0];
+  }
+  // ISO string — extract date portion
+  return date.split("T")[0];
+}
+
 export async function fetchTodayLiturgical(): Promise<LitCalDay | null> {
   // Check cache first
   if (typeof window !== "undefined") {
@@ -74,31 +86,20 @@ export async function fetchTodayLiturgical(): Promise<LitCalDay | null> {
     if (!res.ok) return null;
 
     const json = await res.json();
-    const events: Record<string, LitCalEvent> = json.litcal || json.LitCal || {};
 
-    // Find today's event
+    // v5 API returns litcal as an array of events
+    const raw = json.litcal || json.LitCal || [];
+    const events: LitCalEvent[] = Array.isArray(raw) ? raw : Object.values(raw);
+
+    // Find today's highest-grade event
     const today = new Date().toISOString().split("T")[0];
     let bestEvent: LitCalEvent | null = null;
     let bestGrade = -1;
 
-    for (const event of Object.values(events)) {
-      // The API returns dates as Unix timestamps
-      const eventDate = typeof event.date === "number"
-        ? new Date(event.date * 1000).toISOString().split("T")[0]
-        : event.date;
-
-      if (eventDate === today && event.grade > bestGrade) {
+    for (const event of events) {
+      if (parseEventDate(event.date) === today && event.grade > bestGrade) {
         bestEvent = event;
         bestGrade = event.grade;
-      }
-
-      // Also check timestamp format
-      if (typeof event.date === "number") {
-        const eventDay = new Date(event.date * 1000).toISOString().split("T")[0];
-        if (eventDay === today && event.grade > bestGrade) {
-          bestEvent = event;
-          bestGrade = event.grade;
-        }
       }
     }
 
@@ -107,7 +108,7 @@ export async function fetchTodayLiturgical(): Promise<LitCalDay | null> {
     const result: LitCalDay = {
       name: bestEvent.name,
       color: mapColor(bestEvent.color),
-      season: bestEvent.liturgical_season_lcl || bestEvent.liturgical_season || "",
+      season: formatSeason(bestEvent.liturgical_season || ""),
       grade: bestEvent.grade_lcl || "",
       readings: bestEvent.readings
         ? {
