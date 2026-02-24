@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { BookOpen, ExternalLink } from "lucide-react";
 import { fetchTodayLiturgical, type LitCalDay } from "@/lib/litcal";
 import { getTodayUSCCBUrl } from "@/lib/readings";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 const COLOR_STYLES: Record<string, string> = {
@@ -25,6 +26,7 @@ const COLOR_DOT: Record<string, string> = {
 };
 
 export function LiturgicalBanner() {
+  const { t } = useI18n();
   const [day, setDay] = useState<LitCalDay | null>(null);
 
   useEffect(() => {
@@ -32,6 +34,8 @@ export function LiturgicalBanner() {
   }, []);
 
   if (!day) return null;
+
+  const psalmPrefix = t("banner.psalm");
 
   return (
     <div className={cn("rounded-xl border p-4 space-y-2", COLOR_STYLES[day.color] || COLOR_STYLES.green)}>
@@ -42,7 +46,7 @@ export function LiturgicalBanner() {
           <p className="text-xs text-muted-foreground mt-0.5">
             {day.season && <>{day.season} &middot; </>}
             {day.grade}
-            {day.isHolyDay && <span className="ml-1 font-medium text-red-600 dark:text-red-400">&middot; Holy Day of Obligation</span>}
+            {day.isHolyDay && <span className="ml-1 font-medium text-red-600 dark:text-red-400">&middot; {t("banner.holy_day")}</span>}
           </p>
         </div>
       </div>
@@ -52,7 +56,7 @@ export function LiturgicalBanner() {
           {day.readings.first_reading && (
             <span><BookOpen className="w-3 h-3 inline mr-0.5" />{day.readings.first_reading}</span>
           )}
-          {day.readings.psalm && <span>Ps {day.readings.psalm}</span>}
+          {day.readings.psalm && <span>{psalmPrefix}{day.readings.psalm}</span>}
           {day.readings.second_reading && <span>{day.readings.second_reading}</span>}
           {day.readings.gospel && <span className="font-medium">{day.readings.gospel}</span>}
         </div>
@@ -64,7 +68,7 @@ export function LiturgicalBanner() {
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1 text-xs text-franciscan hover:underline"
       >
-        <ExternalLink className="w-3 h-3" /> Read today&apos;s readings on USCCB
+        <ExternalLink className="w-3 h-3" /> {t("banner.read_usccb")}
       </a>
     </div>
   );

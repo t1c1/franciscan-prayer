@@ -4,14 +4,23 @@ import { useState } from "react";
 import { ExternalLink } from "lucide-react";
 import {
   FRANCISCAN_FAMILIES,
-  ORDER_TYPE_LABELS,
+  COMMUNITIES_I18N,
   type FranciscanCommunity,
 } from "@/lib/franciscan-communities";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type FilterType = "all" | "male" | "female" | "secular";
 
+const FILTER_KEYS: Record<FilterType, string> = {
+  all: "community.all",
+  male: "community.filter_male",
+  female: "community.filter_female",
+  secular: "community.filter_secular",
+};
+
 export function CommunityFinder() {
+  const { locale, t } = useI18n();
   const [filter, setFilter] = useState<FilterType>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -41,7 +50,7 @@ export function CommunityFinder() {
                 : "bg-muted text-muted-foreground hover:bg-accent"
             )}
           >
-            {f === "all" ? "All Families" : ORDER_TYPE_LABELS[f]}
+            {t(FILTER_KEYS[f])}
           </button>
         ))}
       </div>
@@ -54,12 +63,14 @@ export function CommunityFinder() {
         return (
           <div key={type} className="space-y-2">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-              {ORDER_TYPE_LABELS[type]}
+              {t(FILTER_KEYS[type])}
             </h3>
             {communities.map((community) => (
               <CommunityCard
                 key={community.abbreviation}
                 community={community}
+                locale={locale}
+                visitLabel={t("community.visit_website")}
                 expanded={expandedId === community.abbreviation}
                 onToggle={() =>
                   setExpandedId(
@@ -79,13 +90,22 @@ export function CommunityFinder() {
 
 function CommunityCard({
   community,
+  locale,
+  visitLabel,
   expanded,
   onToggle,
 }: {
   community: FranciscanCommunity;
+  locale: string;
+  visitLabel: string;
   expanded: boolean;
   onToggle: () => void;
 }) {
+  const i18nData =
+    locale !== "en" ? COMMUNITIES_I18N[locale]?.[community.abbreviation] : null;
+  const name = i18nData?.name || community.name;
+  const description = i18nData?.description || community.description;
+
   return (
     <button
       onClick={onToggle}
@@ -93,9 +113,7 @@ function CommunityCard({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1">
-          <p className="font-semibold text-foreground text-sm">
-            {community.name}
-          </p>
+          <p className="font-semibold text-foreground text-sm">{name}</p>
           <p className="text-xs text-franciscan font-medium">
             {community.abbreviation}
             {community.foundedYear && (
@@ -109,7 +127,7 @@ function CommunityCard({
       {expanded && (
         <div className="mt-3 space-y-2">
           <p className="text-sm text-foreground/80 leading-relaxed">
-            {community.description}
+            {description}
           </p>
           {community.website && (
             <a
@@ -120,7 +138,7 @@ function CommunityCard({
               className="inline-flex items-center gap-1 text-xs text-franciscan hover:underline"
             >
               <ExternalLink className="w-3 h-3" />
-              Visit Website
+              {visitLabel}
             </a>
           )}
         </div>

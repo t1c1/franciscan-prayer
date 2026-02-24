@@ -2,11 +2,17 @@
 
 import { useState } from "react";
 import { ChevronRight, ChevronLeft, Check, Heart } from "lucide-react";
-import { getTonightExamination } from "@/lib/examination";
+import { getTonightExamination, EXAMINATION_I18N } from "@/lib/examination";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
-  const questions = getTonightExamination();
+  const { locale, t } = useI18n();
+  const enQuestions = getTonightExamination();
+  const i18nData = EXAMINATION_I18N[locale];
+  const questions = i18nData
+    ? getTonightExaminationI18n(i18nData, enQuestions)
+    : enQuestions;
   const [step, setStep] = useState(-1); // -1 = intro
   const [reflections, setReflections] = useState<Record<number, boolean>>({});
 
@@ -17,12 +23,10 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
       <div className="bg-card rounded-xl border border-border p-6 space-y-4 text-center">
         <Heart className="w-10 h-10 text-franciscan mx-auto" />
         <h3 className="text-lg font-semibold text-foreground">
-          Examination of Conscience
+          {t("exam.title")}
         </h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          In the tradition of St. Francis, take a few moments to review your day
-          with honesty and gentleness. God is merciful — this is not about guilt
-          but about growing closer to Him.
+          {t("exam.intro")}
         </p>
         <p className="text-xs text-muted-foreground italic">
           &ldquo;Let us begin again, for up to now we have done nothing.&rdquo;
@@ -32,13 +36,13 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
           onClick={() => setStep(0)}
           className="w-full bg-franciscan text-franciscan-foreground rounded-lg py-3 text-sm font-medium hover:opacity-90 transition-opacity"
         >
-          Begin Examination
+          {t("exam.begin")}
         </button>
         <button
           onClick={onClose}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          Skip for now
+          {t("exam.skip")}
         </button>
       </div>
     );
@@ -49,22 +53,19 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
       <div className="bg-card rounded-xl border border-border p-6 space-y-4 text-center">
         <Check className="w-10 h-10 text-franciscan mx-auto" />
         <h3 className="text-lg font-semibold text-foreground">
-          Examination Complete
+          {t("exam.complete_title")}
         </h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Thank God for His mercy. Entrust your failings to His grace and rest
-          in His peace. Tomorrow is a new day to begin again.
+          {t("exam.complete_text")}
         </p>
         <p className="text-sm text-foreground/80 italic mt-2">
-          Lord, into Your hands I commend my spirit.<br />
-          Watch over me as I sleep, and raise me up<br />
-          to serve You with renewed love tomorrow.
+          {t("exam.complete_prayer")}
         </p>
         <button
           onClick={onClose}
           className="w-full bg-franciscan text-franciscan-foreground rounded-lg py-3 text-sm font-medium hover:opacity-90 transition-opacity"
         >
-          Amen — Continue to Compline
+          {t("exam.amen")}
         </button>
       </div>
     );
@@ -77,7 +78,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
       {/* Progress */}
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
-          {step + 1} of {totalSteps}
+          {step + 1} {t("counter.of")} {totalSteps}
         </span>
         <span className="text-xs font-medium text-franciscan">
           {question.category}
@@ -106,7 +107,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
               : "bg-muted text-muted-foreground hover:text-foreground"
           )}
         >
-          Yes, I did well
+          {t("exam.yes")}
         </button>
         <button
           onClick={() => setReflections({ ...reflections, [step]: false })}
@@ -117,7 +118,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
               : "bg-muted text-muted-foreground hover:text-foreground"
           )}
         >
-          I can grow here
+          {t("exam.grow")}
         </button>
       </div>
 
@@ -127,15 +128,37 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
           onClick={() => setStep(step - 1)}
           className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ChevronLeft className="w-4 h-4" /> Back
+          <ChevronLeft className="w-4 h-4" /> {t("exam.back")}
         </button>
         <button
           onClick={() => setStep(step + 1)}
           className="flex items-center gap-1 text-sm text-franciscan font-medium hover:opacity-80 transition-opacity"
         >
-          {step === totalSteps - 1 ? "Finish" : "Next"} <ChevronRight className="w-4 h-4" />
+          {step === totalSteps - 1 ? t("exam.finish") : t("exam.next")} <ChevronRight className="w-4 h-4" />
         </button>
       </div>
     </div>
   );
+}
+
+/** Pick the same question indices from the i18n questions set */
+function getTonightExaminationI18n(
+  i18nData: { categories: string[]; questions: { category: string; question: string }[] },
+  enQuestions: { category: string; question: string }[]
+) {
+  const dayOfYear = Math.floor(
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  const result: { category: string; question: string }[] = [];
+  for (let i = 0; i < i18nData.categories.length; i++) {
+    const cat = i18nData.categories[i];
+    const catQuestions = i18nData.questions.filter((q) => q.category === cat);
+    if (catQuestions.length === 0) {
+      result.push(enQuestions[i] || { category: cat, question: "" });
+      continue;
+    }
+    const idx = (dayOfYear + i) % catQuestions.length;
+    result.push(catQuestions[idx]);
+  }
+  return result;
 }

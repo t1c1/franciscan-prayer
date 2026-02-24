@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import { Cloud, CloudOff, RefreshCw, Calendar, Flame, Clock } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/lib/i18n";
 import { HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
+import { getEarnedAchievements, getNextAchievement } from "@/lib/achievements";
 
 interface DayStats {
   date: string;
@@ -44,6 +46,7 @@ function getStreak(stats: DayStats[]): number {
 
 export function SyncDashboard() {
   const { user, syncToCloud } = useAuth();
+  const { locale, t } = useI18n();
   const [stats, setStats] = useState<DayStats[]>([]);
   const [syncing, setSyncing] = useState(false);
 
@@ -75,7 +78,7 @@ export function SyncDashboard() {
               <CloudOff className="w-4 h-4 text-muted-foreground" />
             )}
             <span className="text-sm font-medium text-foreground">
-              {user ? "Cloud Sync Active" : "Local Only"}
+              {user ? t("dashboard.cloud_active") : t("dashboard.local_only")}
             </span>
           </div>
           {user && (
@@ -85,18 +88,18 @@ export function SyncDashboard() {
               className="flex items-center gap-1 text-xs text-franciscan hover:opacity-80 transition-opacity disabled:opacity-40"
             >
               <RefreshCw className={`w-3 h-3 ${syncing ? "animate-spin" : ""}`} />
-              {syncing ? "Syncing..." : "Sync Now"}
+              {syncing ? t("dashboard.syncing") : t("dashboard.sync_now")}
             </button>
           )}
         </div>
         {user && (
           <p className="text-xs text-muted-foreground mt-1">
-            Signed in as {user.email}
+            {t("dashboard.signed_in")} {user.email}
           </p>
         )}
         {!user && (
           <p className="text-xs text-muted-foreground mt-1">
-            Sign in to sync your prayer data across devices
+            {t("dashboard.sign_in_prompt")}
           </p>
         )}
       </div>
@@ -105,23 +108,23 @@ export function SyncDashboard() {
       <div className="grid grid-cols-2 gap-3">
         <StatCard
           icon={<Flame className="w-4 h-4 text-franciscan" />}
-          label="Current Streak"
-          value={`${streak} day${streak !== 1 ? "s" : ""}`}
+          label={t("dashboard.streak")}
+          value={`${streak.toLocaleString(locale)} ${t("dashboard.days")}`}
         />
         <StatCard
           icon={<Calendar className="w-4 h-4 text-franciscan" />}
-          label="Active Days (30d)"
-          value={`${activeDays} of 30`}
+          label={t("dashboard.active_days")}
+          value={`${activeDays.toLocaleString(locale)} ${t("dashboard.of_30")}`}
         />
         <StatCard
           icon={<Clock className="w-4 h-4 text-franciscan" />}
-          label="Hours Prayed (30d)"
-          value={String(totalHours)}
+          label={t("dashboard.hours_prayed")}
+          value={totalHours.toLocaleString(locale)}
         />
         <StatCard
           icon={<span className="text-franciscan text-xs font-bold">76</span>}
-          label="Total Paters (30d)"
-          value={totalPaters.toLocaleString()}
+          label={t("dashboard.total_paters")}
+          value={totalPaters.toLocaleString(locale)}
         />
       </div>
 
@@ -129,17 +132,52 @@ export function SyncDashboard() {
       {perfectDays > 0 && (
         <div className="bg-franciscan-light rounded-xl p-4 text-center">
           <p className="text-sm font-medium text-franciscan">
-            {perfectDays} perfect day{perfectDays !== 1 ? "s" : ""} in the last 30 days
+            {perfectDays.toLocaleString(locale)} {t("dashboard.perfect_days")}
           </p>
           <p className="text-xs text-franciscan/70 mt-1">
-            All 76 Paters completed — Deo Gratias!
+            {t("dashboard.perfect_note")}
           </p>
         </div>
       )}
 
+      {/* Achievements */}
+      {(() => {
+        const earned = getEarnedAchievements(streak, perfectDays);
+        const next = getNextAchievement(streak, perfectDays);
+        if (earned.length === 0 && !next) return null;
+        return (
+          <div className="bg-card rounded-xl border border-border p-4 space-y-3">
+            <h4 className="text-sm font-medium text-foreground">
+              {locale === "zh" ? "成就" : locale === "es" ? "Logros" : locale === "it" ? "Traguardi" : locale === "fr" ? "Réalisations" : "Achievements"}
+            </h4>
+            {earned.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {earned.map((a) => {
+                  const l = a.labels[locale] || a.labels.en;
+                  return (
+                    <div key={a.id} className="flex items-center gap-1.5 bg-franciscan-light rounded-full px-3 py-1.5" title={l.description}>
+                      <span className="text-base">{a.icon}</span>
+                      <span className="text-xs font-medium text-franciscan">{l.name}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {next && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="text-base opacity-40">{next.icon}</span>
+                <span>
+                  {(next.labels[locale] || next.labels.en).name} — {next.type === "streak" ? `${next.threshold - streak} ${t("dashboard.days")}` : `${next.threshold - perfectDays}`} {locale === "zh" ? "天后解锁" : locale === "es" ? "más" : locale === "it" ? "ancora" : locale === "fr" ? "de plus" : "to go"}
+                </span>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* 30-day heatmap */}
       <div className="bg-card rounded-xl border border-border p-4 space-y-2">
-        <h4 className="text-sm font-medium text-foreground">Last 30 Days</h4>
+        <h4 className="text-sm font-medium text-foreground">{t("dashboard.last_30")}</h4>
         <div className="grid grid-cols-10 gap-1">
           {stats.slice().reverse().map((day) => {
             const intensity = day.patersTotal / TOTAL_DAILY_PATERS;
@@ -159,7 +197,7 @@ export function SyncDashboard() {
           })}
         </div>
         <div className="flex items-center justify-end gap-1 mt-1">
-          <span className="text-xs text-muted-foreground">Less</span>
+          <span className="text-xs text-muted-foreground">{t("dashboard.less")}</span>
           {[0, 0.25, 0.5, 0.75, 1].map((i) => (
             <div
               key={i}
@@ -172,7 +210,7 @@ export function SyncDashboard() {
               }}
             />
           ))}
-          <span className="text-xs text-muted-foreground">More</span>
+          <span className="text-xs text-muted-foreground">{t("dashboard.more")}</span>
         </div>
       </div>
     </div>

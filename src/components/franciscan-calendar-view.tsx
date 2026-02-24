@@ -8,6 +8,7 @@ import {
   getUpcomingFeasts,
   type FranciscanFeast,
 } from "@/lib/franciscan-calendar";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 const RANK_STYLES = {
@@ -24,18 +25,40 @@ const RANK_ICONS = {
   optional: <Calendar className="w-3.5 h-3.5 text-muted-foreground" />,
 };
 
-const MONTH_NAMES = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
+const RANK_LABELS: Record<string, Record<string, string>> = {
+  en: { solemnity: "Solemnity", feast: "Feast", memorial: "Memorial", optional: "Optional Memorial" },
+  es: { solemnity: "Solemnidad", feast: "Fiesta", memorial: "Memorial", optional: "Memorial Opcional" },
+  it: { solemnity: "Solennità", feast: "Festa", memorial: "Memoria", optional: "Memoria Facoltativa" },
+  fr: { solemnity: "Solennité", feast: "Fête", memorial: "Mémoire", optional: "Mémoire Facultative" },
+  zh: { solemnity: "庆日", feast: "庆节", memorial: "纪念日", optional: "自由纪念日" },
+};
+
+const UI: Record<string, Record<string, string>> = {
+  en: { todayFeast: "Today\u2019s Franciscan Feast", upcoming: "Upcoming", fullCalendar: "Full Calendar", feasts: "feasts in the Franciscan Proper Calendar" },
+  es: { todayFeast: "Fiesta Franciscana de Hoy", upcoming: "Próximas", fullCalendar: "Calendario Completo", feasts: "fiestas en el Calendario Propio Franciscano" },
+  it: { todayFeast: "Festa Francescana di Oggi", upcoming: "Prossime", fullCalendar: "Calendario Completo", feasts: "feste nel Calendario Proprio Francescano" },
+  fr: { todayFeast: "Fête Franciscaine du Jour", upcoming: "À venir", fullCalendar: "Calendrier Complet", feasts: "fêtes dans le Calendrier Propre Franciscain" },
+  zh: { todayFeast: "今日方济各庆节", upcoming: "即将到来", fullCalendar: "完整日历", feasts: "方济各专属日历中的庆节" },
+};
+
+function getMonthName(locale: string, month: number): string {
+  return new Date(2024, month - 1, 1).toLocaleDateString(locale, { month: "long" });
+}
+
+function getMonthAbbr(locale: string, month: number): string {
+  return new Date(2024, month - 1, 1).toLocaleDateString(locale, { month: "short" });
+}
 
 type CalendarView = "upcoming" | "full";
 
 export function FranciscanCalendarView() {
+  const { locale } = useI18n();
   const [view, setView] = useState<CalendarView>("upcoming");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const todayFeast = getTodayFeast();
   const upcoming = getUpcomingFeasts(8);
+  const u = UI[locale] || UI.en;
+  const ranks = RANK_LABELS[locale] || RANK_LABELS.en;
 
   const feastKey = (f: FranciscanFeast) => `${f.month}-${f.day}`;
 
@@ -45,7 +68,7 @@ export function FranciscanCalendarView() {
       {todayFeast && (
         <div className="bg-franciscan text-franciscan-foreground rounded-xl p-4">
           <p className="text-xs opacity-80 uppercase tracking-wide">
-            Today&apos;s Franciscan Feast
+            {u.todayFeast}
           </p>
           <p className="text-lg font-bold mt-1">{todayFeast.name}</p>
           <p className="text-sm opacity-80 mt-1">{todayFeast.description}</p>
@@ -63,7 +86,7 @@ export function FranciscanCalendarView() {
               : "bg-muted text-muted-foreground hover:bg-accent"
           )}
         >
-          Upcoming
+          {u.upcoming}
         </button>
         <button
           onClick={() => setView("full")}
@@ -74,7 +97,7 @@ export function FranciscanCalendarView() {
               : "bg-muted text-muted-foreground hover:bg-accent"
           )}
         >
-          Full Calendar
+          {u.fullCalendar}
         </button>
       </div>
 
@@ -85,6 +108,8 @@ export function FranciscanCalendarView() {
             <FeastCard
               key={feastKey(f)}
               feast={f}
+              locale={locale}
+              ranks={ranks}
               expanded={expandedId === feastKey(f)}
               onToggle={() =>
                 setExpandedId(expandedId === feastKey(f) ? null : feastKey(f))
@@ -102,12 +127,14 @@ export function FranciscanCalendarView() {
           return (
             <div key={month} className="space-y-2">
               <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                {MONTH_NAMES[month - 1]}
+                {getMonthName(locale, month)}
               </h3>
               {feasts.map((f) => (
                 <FeastCard
                   key={feastKey(f)}
                   feast={f}
+                  locale={locale}
+                  ranks={ranks}
                   expanded={expandedId === feastKey(f)}
                   onToggle={() =>
                     setExpandedId(
@@ -121,7 +148,7 @@ export function FranciscanCalendarView() {
         })}
 
       <p className="text-xs text-muted-foreground text-center">
-        {FRANCISCAN_FEASTS.length} feasts in the Franciscan Proper Calendar
+        {FRANCISCAN_FEASTS.length} {u.feasts}
       </p>
     </div>
   );
@@ -129,10 +156,14 @@ export function FranciscanCalendarView() {
 
 function FeastCard({
   feast,
+  locale,
+  ranks,
   expanded,
   onToggle,
 }: {
   feast: FranciscanFeast;
+  locale: string;
+  ranks: Record<string, string>;
   expanded: boolean;
   onToggle: () => void;
 }) {
@@ -150,10 +181,10 @@ function FeastCard({
           <div className="flex items-baseline justify-between gap-2">
             <p className="font-medium text-sm text-foreground">{feast.name}</p>
             <p className="text-xs text-muted-foreground whitespace-nowrap">
-              {MONTH_NAMES[feast.month - 1].slice(0, 3)} {feast.day}
+              {getMonthAbbr(locale, feast.month)} {feast.day}
             </p>
           </div>
-          <p className="text-xs text-muted-foreground capitalize">{feast.rank}</p>
+          <p className="text-xs text-muted-foreground capitalize">{ranks[feast.rank] || feast.rank}</p>
           {expanded && (
             <p className="mt-2 text-sm text-foreground/80 leading-relaxed">
               {feast.description}

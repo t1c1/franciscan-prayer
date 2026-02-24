@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import { Plus, X, Heart } from "lucide-react";
 import { getIntentions, addIntention, removeIntention, type Intention } from "@/lib/intentions";
+import { useT } from "@/lib/i18n";
 
 export function IntentionsJournal() {
+  const t = useT();
   const [intentions, setIntentions] = useState<Intention[]>([]);
   const [newText, setNewText] = useState("");
   const [showAdd, setShowAdd] = useState(false);
@@ -29,8 +31,7 @@ export function IntentionsJournal() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Offer your prayers for these intentions. Your intentions are private
-        and stored only on your device.
+        {t("intentions.desc")}
       </p>
 
       {/* Add button */}
@@ -39,14 +40,14 @@ export function IntentionsJournal() {
           onClick={() => setShowAdd(true)}
           className="w-full flex items-center justify-center gap-2 bg-franciscan-light text-franciscan rounded-lg p-3 text-sm font-medium hover:opacity-80 transition-opacity"
         >
-          <Plus className="w-4 h-4" /> Add an Intention
+          <Plus className="w-4 h-4" /> {t("intentions.add")}
         </button>
       ) : (
         <div className="bg-card rounded-lg border border-border p-4 space-y-3">
           <textarea
             value={newText}
             onChange={(e) => setNewText(e.target.value)}
-            placeholder="For whom or what would you like to pray?"
+            placeholder={t("intentions.placeholder")}
             className="w-full bg-background border border-input rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
             rows={3}
             autoFocus
@@ -57,13 +58,13 @@ export function IntentionsJournal() {
               disabled={!newText.trim()}
               className="flex-1 bg-franciscan text-franciscan-foreground rounded-lg py-2 text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
             >
-              Add Intention
+              {t("intentions.add_btn")}
             </button>
             <button
               onClick={() => { setShowAdd(false); setNewText(""); }}
               className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Cancel
+              {t("intentions.cancel")}
             </button>
           </div>
         </div>
@@ -73,9 +74,9 @@ export function IntentionsJournal() {
       {intentions.length === 0 ? (
         <div className="text-center py-8">
           <Heart className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">No intentions yet</p>
+          <p className="text-sm text-muted-foreground">{t("intentions.empty")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Add your prayer intentions above
+            {t("intentions.empty_sub")}
           </p>
         </div>
       ) : (

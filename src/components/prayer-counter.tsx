@@ -4,7 +4,8 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { Check, RotateCcw, Timer, Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { playTap, playBell, playCompletionChime } from "@/lib/audio";
-import type { Hour } from "@/lib/prayers";
+import { useI18n } from "@/lib/i18n";
+import { HOURS_I18N, type Hour } from "@/lib/prayers";
 
 interface PrayerCounterProps {
   hour: Hour;
@@ -24,6 +25,7 @@ function getStorageKey(hourId: string): string {
 }
 
 export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) {
+  const { locale, t } = useI18n();
   const [count, setCount] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -181,6 +183,10 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   }, [hour.id]);
 
   const progress = Math.min((count / hour.paterCount) * 100, 100);
+  const hourI18n = HOURS_I18N[locale]?.[hour.id] || HOURS_I18N.en[hour.id];
+  const hourName = hourI18n?.name || hour.name;
+  const hourDesc = hourI18n?.description || hour.description;
+  const hourTime = hourI18n?.typicalTime || hour.typicalTime;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] gap-6 px-4">
@@ -189,7 +195,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
           onClick={onBack}
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          &larr; Back
+          &larr; {t("home.back")}
         </button>
         <button
           onClick={toggleSound}
@@ -200,18 +206,18 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
               : "bg-muted text-muted-foreground"
           )}
         >
-          {soundEnabled ? "Sound On" : "Sound Off"}
+          {soundEnabled ? t("app.sound_on") : t("app.sound_off")}
         </button>
       </div>
 
       <div className="text-center">
-        <h2 className="text-2xl font-semibold text-foreground">{hour.name}</h2>
+        <h2 className="text-2xl font-semibold text-foreground">{hourName}</h2>
         <p className="text-sm text-muted-foreground italic">{hour.latinName}</p>
-        <p className="text-xs text-muted-foreground mt-1">{hour.typicalTime}</p>
+        <p className="text-xs text-muted-foreground mt-1">{hourTime}</p>
       </div>
 
       <p className="text-sm text-muted-foreground text-center max-w-xs">
-        {hour.description}
+        {hourDesc}
       </p>
 
       {/* The big tap target */}
@@ -233,7 +239,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
           <>
             <span className="text-5xl font-bold tabular-nums">{count}</span>
             <span className="text-sm text-muted-foreground mt-1">
-              of {hour.paterCount}
+              {t("counter.of")} {hour.paterCount}
             </span>
             {pacingActive && !pacingPaused && (
               <span className="text-xs text-franciscan mt-2 tabular-nums">
@@ -242,7 +248,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
             )}
             {pacingActive && pacingPaused && (
               <span className="text-xs text-muted-foreground mt-2">
-                paused
+                {t("counter.pause").toLowerCase()}
               </span>
             )}
           </>
@@ -259,10 +265,10 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
 
       <p className="text-xs text-muted-foreground">
         {completed
-          ? "Completed — Deo Gratias!"
+          ? t("counter.completed")
           : pacingActive
-            ? "Meditative pacing — bell sounds each interval"
-            : "Tap to count each Pater Noster"}
+            ? t("counter.pacing")
+            : t("counter.tap")}
       </p>
 
       {/* Pacing controls */}
@@ -278,7 +284,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
             )}
           >
             <Timer className="w-3.5 h-3.5" />
-            {pacingActive ? "Stop Timer" : "Pacing Timer"}
+            {pacingActive ? t("counter.stop_timer") : t("counter.timer")}
           </button>
 
           {pacingActive && (
@@ -287,9 +293,9 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
               className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-full bg-muted text-muted-foreground hover:text-foreground transition-colors"
             >
               {pacingPaused ? (
-                <><Play className="w-3 h-3" /> Resume</>
+                <><Play className="w-3 h-3" /> {t("counter.resume")}</>
               ) : (
-                <><Pause className="w-3 h-3" /> Pause</>
+                <><Pause className="w-3 h-3" /> {t("counter.pause")}</>
               )}
             </button>
           )}
@@ -320,7 +326,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
           onClick={handleReset}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          <RotateCcw className="w-3 h-3" /> Reset
+          <RotateCcw className="w-3 h-3" /> {t("counter.reset")}
         </button>
       )}
     </div>

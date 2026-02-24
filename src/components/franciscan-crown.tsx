@@ -2,12 +2,93 @@
 
 import { useState, useCallback } from "react";
 import { Check, ChevronRight, RotateCcw } from "lucide-react";
-import { CROWN_MYSTERIES, CROWN_INSTRUCTIONS } from "@/lib/franciscan-crown";
+import { CROWN_MYSTERIES, CROWN_INSTRUCTIONS, CROWN_I18N } from "@/lib/franciscan-crown";
+import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type CrownView = "intro" | "praying";
 
+const UI: Record<string, Record<string, string>> = {
+  en: {
+    begin: "Begin the Crown",
+    complete: "Crown Complete!",
+    decades: "7 decades",
+    hailMarys: "72 Hail Marys",
+    closingInstruction: "Now pray 1 Our Father, 1 Hail Mary, and 1 Glory Be for the Holy Father.",
+    startOver: "Start Over",
+    joy: "Joy",
+    decade: "Decade",
+    of: "of",
+    fruit: "Fruit",
+    tapOurFather: "Tap for\nOur Father",
+    ofHailMarys: "of 10 Hail Marys",
+  },
+  es: {
+    begin: "Comenzar la Corona",
+    complete: "\u00a1Corona Completada!",
+    decades: "7 decenas",
+    hailMarys: "72 Avemarías",
+    closingInstruction: "Ahora reza 1 Padrenuestro, 1 Avemaría y 1 Gloria al Padre por el Santo Padre.",
+    startOver: "Comenzar de nuevo",
+    joy: "Gozo",
+    decade: "Decena",
+    of: "de",
+    fruit: "Fruto",
+    tapOurFather: "Toca para\nPadrenuestro",
+    ofHailMarys: "de 10 Avemarías",
+  },
+  it: {
+    begin: "Inizia la Corona",
+    complete: "Corona Completata!",
+    decades: "7 decine",
+    hailMarys: "72 Ave Maria",
+    closingInstruction: "Ora prega 1 Padre Nostro, 1 Ave Maria e 1 Gloria al Padre per il Santo Padre.",
+    startOver: "Ricomincia",
+    joy: "Gioia",
+    decade: "Decina",
+    of: "di",
+    fruit: "Frutto",
+    tapOurFather: "Tocca per\nPadre Nostro",
+    ofHailMarys: "di 10 Ave Maria",
+  },
+  fr: {
+    begin: "Commencer la Couronne",
+    complete: "Couronne Terminée !",
+    decades: "7 dizaines",
+    hailMarys: "72 Je vous salue Marie",
+    closingInstruction: "Priez maintenant 1 Notre Père, 1 Je vous salue Marie et 1 Gloire au Père pour le Saint-Père.",
+    startOver: "Recommencer",
+    joy: "Joie",
+    decade: "Dizaine",
+    of: "de",
+    fruit: "Fruit",
+    tapOurFather: "Appuyez pour\nNotre Père",
+    ofHailMarys: "de 10 Je vous salue",
+  },
+  zh: {
+    begin: "开始诵念圣冠",
+    complete: "圣冠玫瑰经完成！",
+    decades: "七端",
+    hailMarys: "72遍圣母经",
+    closingInstruction: "现在诵念天主经一遍、圣母经一遍、圣三光荣颂一遍，为教宗的意向祈祷。",
+    startOver: "重新开始",
+    joy: "喜乐",
+    decade: "第",
+    of: "/",
+    fruit: "神果",
+    tapOurFather: "点击诵念\n天主经",
+    ofHailMarys: "/ 10遍圣母经",
+  },
+};
+
+function joyLabel(locale: string, num: number, current: number) {
+  const u = UI[locale] || UI.en;
+  if (locale === "zh") return `第${num}端喜乐 · 第${current + 1}端 / 7端`;
+  return `${num}${locale === "fr" ? "e" : "th"} ${u.joy} \u00b7 ${u.decade} ${current + 1} ${u.of} 7`;
+}
+
 export function FranciscanCrown() {
+  const { locale } = useI18n();
   const [view, setView] = useState<CrownView>("intro");
   const [currentMystery, setCurrentMystery] = useState(0);
   const [aveCount, setAveCount] = useState(0);
@@ -16,6 +97,9 @@ export function FranciscanCrown() {
 
   const mystery = CROWN_MYSTERIES[currentMystery];
   const isFinished = completedMysteries.length === 7;
+  const u = UI[locale] || UI.en;
+  const i18nMysteries = locale !== "en" && CROWN_I18N[locale] ? CROWN_I18N[locale] : null;
+  const instructions = CROWN_INSTRUCTIONS[locale as keyof typeof CROWN_INSTRUCTIONS] || CROWN_INSTRUCTIONS.en;
 
   const handleTap = useCallback(() => {
     if (!paterDone) {
@@ -54,30 +138,33 @@ export function FranciscanCrown() {
     return (
       <div className="space-y-4">
         <p className="text-sm text-foreground/80 whitespace-pre-line leading-relaxed">
-          {CROWN_INSTRUCTIONS.en}
+          {instructions}
         </p>
 
         <div className="space-y-2">
-          {CROWN_MYSTERIES.map((m, i) => (
-            <div
-              key={i}
-              className="bg-card rounded-lg border border-border p-3"
-            >
-              <p className="text-xs text-franciscan font-medium">
-                {m.number}. {m.title}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Fruit: {m.fruit}
-              </p>
-            </div>
-          ))}
+          {CROWN_MYSTERIES.map((m, i) => {
+            const locM = i18nMysteries ? i18nMysteries[i] : null;
+            return (
+              <div
+                key={i}
+                className="bg-card rounded-lg border border-border p-3"
+              >
+                <p className="text-xs text-franciscan font-medium">
+                  {m.number}. {locM ? locM.title : m.title}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {u.fruit}: {locM ? locM.fruit : m.fruit}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         <button
           onClick={() => setView("praying")}
           className="w-full bg-franciscan text-franciscan-foreground rounded-xl p-4 font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
         >
-          Begin the Crown <ChevronRight className="w-4 h-4" />
+          {u.begin} <ChevronRight className="w-4 h-4" />
         </button>
       </div>
     );
@@ -92,40 +179,42 @@ export function FranciscanCrown() {
         </div>
         <div className="text-center">
           <h3 className="text-xl font-bold text-foreground">
-            Crown Complete!
+            {u.complete}
           </h3>
           <p className="text-sm text-muted-foreground mt-2">
-            7 decades &middot; 72 Hail Marys
+            {u.decades} &middot; {u.hailMarys}
           </p>
           <p className="text-xs text-muted-foreground mt-1 italic">
-            Now pray 1 Our Father, 1 Hail Mary, and 1 Glory Be for the Holy Father.
+            {u.closingInstruction}
           </p>
         </div>
         <button
           onClick={handleReset}
           className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          <RotateCcw className="w-3 h-3" /> Start Over
+          <RotateCcw className="w-3 h-3" /> {u.startOver}
         </button>
       </div>
     );
   }
+
+  const locMystery = i18nMysteries ? i18nMysteries[currentMystery] : null;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 px-4">
       {/* Mystery info */}
       <div className="text-center max-w-sm">
         <p className="text-xs text-franciscan font-medium uppercase tracking-wide">
-          {mystery.number}th Joy &middot; Decade {currentMystery + 1} of 7
+          {joyLabel(locale, mystery.number, currentMystery)}
         </p>
         <h3 className="text-lg font-bold text-foreground mt-1">
-          {mystery.title}
+          {locMystery ? locMystery.title : mystery.title}
         </h3>
         <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-          {mystery.scripture}
+          {locMystery ? locMystery.scripture : mystery.scripture}
         </p>
         <p className="text-xs text-franciscan mt-1 italic">
-          Fruit: {mystery.fruit}
+          {u.fruit}: {locMystery ? locMystery.fruit : mystery.fruit}
         </p>
       </div>
 
@@ -138,14 +227,14 @@ export function FranciscanCrown() {
         )}
       >
         {!paterDone ? (
-          <span className="text-sm font-medium text-center px-4">
-            Tap for<br />Our Father
+          <span className="text-sm font-medium text-center px-4 whitespace-pre-line">
+            {u.tapOurFather}
           </span>
         ) : (
           <>
             <span className="text-4xl font-bold tabular-nums">{aveCount}</span>
             <span className="text-xs text-muted-foreground mt-1">
-              of 10 Hail Marys
+              {u.ofHailMarys}
             </span>
           </>
         )}
@@ -172,7 +261,7 @@ export function FranciscanCrown() {
         onClick={handleReset}
         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
       >
-        <RotateCcw className="w-3 h-3" /> Start Over
+        <RotateCcw className="w-3 h-3" /> {u.startOver}
       </button>
     </div>
   );

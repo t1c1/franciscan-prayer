@@ -30,6 +30,7 @@ import { AuthButton } from "@/components/auth-button";
 import { SyncDashboard } from "@/components/sync-dashboard";
 import { ExaminationOfConscience } from "@/components/examination-of-conscience";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { Onboarding, useOnboarding } from "@/components/onboarding";
 import { getTodayFeast } from "@/lib/franciscan-calendar";
 import { cn } from "@/lib/utils";
 
@@ -63,6 +64,8 @@ export default function Home() {
   const [completedHours, setCompletedHours] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
   const [showExamination, setShowExamination] = useState(false);
+  const { showOnboarding, dismiss: dismissOnboarding } = useOnboarding();
+  const [onboardingDone, setOnboardingDone] = useState(!showOnboarding);
   const liturgy = getLiturgicalInfo();
   const todayFeast = getTodayFeast();
   const { theme, setTheme } = useTheme();
@@ -103,6 +106,11 @@ export default function Home() {
 
   const getHourName = (id: string) => hourI18n[id]?.name || HOURS.find(h => h.id === id)?.name || id;
   const getHourTime = (id: string) => hourI18n[id]?.typicalTime || "";
+
+  // First-time onboarding
+  if (!onboardingDone) {
+    return <Onboarding onComplete={() => { dismissOnboarding(); setOnboardingDone(true); }} />;
+  }
 
   if (showExamination) {
     return (

@@ -86,6 +86,16 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     // Community
     "community.title": "The Franciscan Family",
     "community.desc": "The Franciscan movement spans 800+ years and includes friars, sisters, contemplatives, and lay people across the world.",
+    "community.all": "All Families",
+    "community.visit_website": "Visit Website",
+    "community.filter_male": "First Order & Male Religious",
+    "community.filter_female": "Second Order & Female Religious",
+    "community.filter_secular": "Third Order & Secular",
+
+    // Liturgical Banner
+    "banner.holy_day": "Holy Day of Obligation",
+    "banner.psalm": "Ps ",
+    "banner.read_usccb": "Read today\u2019s readings on USCCB",
 
     // Intentions
     "intentions.title": "Prayer Intentions",
@@ -217,6 +227,15 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "calendar.desc": "Fiestas, memoriales y solemnidades propias de la familia franciscana.",
     "community.title": "La Familia Franciscana",
     "community.desc": "El movimiento franciscano abarca más de 800 años e incluye frailes, hermanas, contemplativos y laicos en todo el mundo.",
+    "community.all": "Todas las Familias",
+    "community.visit_website": "Visitar Sitio Web",
+    "community.filter_male": "Primera Orden y Religiosos",
+    "community.filter_female": "Segunda Orden y Religiosas",
+    "community.filter_secular": "Tercera Orden y Seglares",
+
+    "banner.holy_day": "Día de Precepto",
+    "banner.psalm": "Sal ",
+    "banner.read_usccb": "Leer las lecturas de hoy en USCCB",
 
     "intentions.title": "Intenciones de Oración",
     "intentions.desc": "Ofrece tus oraciones por estas intenciones. Tus intenciones son privadas y se almacenan solo en tu dispositivo.",
@@ -341,6 +360,15 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "calendar.desc": "Feste, memorie e solennità proprie della famiglia francescana.",
     "community.title": "La Famiglia Francescana",
     "community.desc": "Il movimento francescano abbraccia più di 800 anni e comprende frati, suore, contemplativi e laici in tutto il mondo.",
+    "community.all": "Tutte le Famiglie",
+    "community.visit_website": "Visita il Sito",
+    "community.filter_male": "Primo Ordine e Religiosi",
+    "community.filter_female": "Secondo Ordine e Religiose",
+    "community.filter_secular": "Terz'Ordine e Secolari",
+
+    "banner.holy_day": "Giorno di Precetto",
+    "banner.psalm": "Sal ",
+    "banner.read_usccb": "Leggi le letture di oggi su USCCB",
 
     "intentions.title": "Intenzioni di Preghiera",
     "intentions.desc": "Offri le tue preghiere per queste intenzioni. Le tue intenzioni sono private e conservate solo sul tuo dispositivo.",
@@ -465,6 +493,15 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "calendar.desc": "Fêtes, mémoires et solennités propres à la famille franciscaine.",
     "community.title": "La Famille Franciscaine",
     "community.desc": "Le mouvement franciscain s'étend sur plus de 800 ans et comprend des frères, sœurs, contemplatifs et laïcs à travers le monde.",
+    "community.all": "Toutes les Familles",
+    "community.visit_website": "Visiter le Site",
+    "community.filter_male": "Premier Ordre et Religieux",
+    "community.filter_female": "Deuxième Ordre et Religieuses",
+    "community.filter_secular": "Tiers-Ordre et Séculiers",
+
+    "banner.holy_day": "Jour d'Obligation",
+    "banner.psalm": "Ps ",
+    "banner.read_usccb": "Lire les lectures du jour sur USCCB",
 
     "intentions.title": "Intentions de Prière",
     "intentions.desc": "Offrez vos prières pour ces intentions. Vos intentions sont privées et stockées uniquement sur votre appareil.",
@@ -589,6 +626,15 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "calendar.desc": "方济各大家庭特有的庆节、纪念日和庆日。",
     "community.title": "方济各大家庭",
     "community.desc": "方济各运动跨越800多年，包括世界各地的修士、修女、隐修者和平信徒。",
+    "community.all": "所有修会",
+    "community.visit_website": "访问网站",
+    "community.filter_male": "第一会及男修会",
+    "community.filter_female": "第二会及女修会",
+    "community.filter_secular": "第三会及在俗修会",
+
+    "banner.holy_day": "当守瞻礼日",
+    "banner.psalm": "圣咏 ",
+    "banner.read_usccb": "在USCCB阅读今日读经",
 
     "intentions.title": "祈祷意向",
     "intentions.desc": "为这些意向奉献你的祈祷。你的意向是私密的，仅存储在你的设备上。",
