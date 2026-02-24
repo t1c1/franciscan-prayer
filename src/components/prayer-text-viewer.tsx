@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PRAYERS, LANGUAGE_LABELS, type Language } from "@/lib/prayers";
+import { MORE_PRAYERS } from "@/lib/more-prayers";
 import { cn } from "@/lib/utils";
 
 export function PrayerTextViewer() {
@@ -29,7 +30,7 @@ export function PrayerTextViewer() {
       </div>
 
       {/* Prayer cards */}
-      {PRAYERS.map((prayer) => {
+      {[...PRAYERS, ...MORE_PRAYERS].map((prayer) => {
         const text = prayer[lang];
         if (!text) return null;
         const isExpanded = expandedId === prayer.id;

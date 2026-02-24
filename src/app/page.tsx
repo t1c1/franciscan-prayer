@@ -14,7 +14,11 @@ import {
   Scroll,
   Flower2,
   ExternalLink,
+  Cross,
+  Calendar,
+  SunMoon,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
 import { getTodayUSCCBUrl, getLiturgicalInfo } from "@/lib/readings";
 import { PrayerCounter } from "@/components/prayer-counter";
@@ -23,7 +27,10 @@ import { CommunityFinder } from "@/components/community-finder";
 import { DailyRule } from "@/components/daily-rule";
 import { FranciscanCrown } from "@/components/franciscan-crown";
 import { DivineOfficeLinks } from "@/components/divine-office-links";
+import { StationsOfTheCross } from "@/components/stations-of-the-cross";
+import { FranciscanCalendarView } from "@/components/franciscan-calendar-view";
 import { AuthButton } from "@/components/auth-button";
+import { getTodayFeast } from "@/lib/franciscan-calendar";
 import { cn } from "@/lib/utils";
 
 type View =
@@ -33,7 +40,9 @@ type View =
   | "crown"
   | "office"
   | "rule"
-  | "community";
+  | "community"
+  | "stations"
+  | "calendar";
 
 function getCompletedHours(): string[] {
   if (typeof window === "undefined") return [];
@@ -61,6 +70,8 @@ export default function Home() {
   const [completedHours, setCompletedHours] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
   const liturgy = getLiturgicalInfo();
+  const todayFeast = getTodayFeast();
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     setCompletedHours(getCompletedHours());
@@ -119,8 +130,15 @@ export default function Home() {
                 The Hours &middot; The Rule &middot; The Gospel
               </p>
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <AuthButton />
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                aria-label="Toggle dark mode"
+              >
+                <SunMoon className="w-4 h-4" />
+              </button>
               {streak > 0 && (
                 <span className="flex items-center gap-1 text-xs font-medium text-franciscan bg-franciscan-light px-2 py-1 rounded-full">
                   <Flame className="w-3 h-3" /> {streak}d
@@ -181,6 +199,24 @@ export default function Home() {
         {/* === HOME VIEW === */}
         {view === "home" && (
           <div className="space-y-3">
+            {/* Today's Franciscan feast */}
+            {todayFeast && (
+              <button
+                onClick={() => setView("calendar")}
+                className="w-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left hover:opacity-90 transition-opacity"
+              >
+                <p className="text-xs text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">
+                  Today&apos;s Franciscan Feast
+                </p>
+                <p className="text-sm font-semibold text-foreground mt-1">
+                  {todayFeast.name}
+                </p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {todayFeast.description}
+                </p>
+              </button>
+            )}
+
             {/* Next hour quick action */}
             {nextHour && (
               <button
@@ -228,9 +264,15 @@ export default function Home() {
                 onClick={() => setView("office")}
               />
               <NavTile
+                icon={<Cross className="w-5 h-5 text-franciscan" />}
+                title="Stations of the Cross"
+                subtitle="14 Stations &middot; A Franciscan devotion"
+                onClick={() => setView("stations")}
+              />
+              <NavTile
                 icon={<HandHeart className="w-5 h-5 text-franciscan" />}
                 title="Prayers"
-                subtitle="Pater Noster, Ave Maria, St. Francis &middot; 5 languages"
+                subtitle="13 prayers in 5 languages &middot; Franciscan &amp; traditional"
                 onClick={() => setView("prayers")}
               />
               <NavTile
@@ -238,6 +280,12 @@ export default function Home() {
                 title="The Rule of St. Francis"
                 subtitle="Daily reading from the Regula Bullata (1223)"
                 onClick={() => setView("rule")}
+              />
+              <NavTile
+                icon={<Calendar className="w-5 h-5 text-franciscan" />}
+                title="Franciscan Calendar"
+                subtitle={`${42} feasts &middot; Saints, solemnities, memorials`}
+                onClick={() => setView("calendar")}
               />
               <a
                 href={getTodayUSCCBUrl()}
@@ -377,6 +425,31 @@ export default function Home() {
               The Rule of St. Francis
             </h2>
             <DailyRule />
+          </div>
+        )}
+
+        {/* === STATIONS VIEW === */}
+        {view === "stations" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              Stations of the Cross
+            </h2>
+            <StationsOfTheCross />
+          </div>
+        )}
+
+        {/* === CALENDAR VIEW === */}
+        {view === "calendar" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              Franciscan Calendar
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Feasts, memorials, and solemnities proper to the Franciscan family.
+            </p>
+            <FranciscanCalendarView />
           </div>
         )}
 

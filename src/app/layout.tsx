@@ -16,8 +16,9 @@ const geistMono = Geist_Mono({
 
 const APP_NAME = "Franciscan Prayer";
 const APP_DESCRIPTION =
-  "The Hours. The Rule. The Gospel. Pray as a Franciscan every day with the Liturgy of the Hours, the Original Pater Count, and Daily Mass Readings.";
+  "The Hours. The Rule. The Gospel. Pray as a Franciscan every day with the Original Pater Count, Franciscan Crown Rosary, Stations of the Cross, and Daily Mass Readings in 5 languages.";
 const APP_URL = "https://franciscan-prayer.pages.dev";
+const OG_IMAGE = `${APP_URL}/og-image.png`;
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -28,7 +29,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: APP_NAME,
+  title: {
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
+  },
   description: APP_DESCRIPTION,
   manifest: "/site.webmanifest",
   metadataBase: new URL(APP_URL),
@@ -39,12 +43,31 @@ export const metadata: Metadata = {
     siteName: APP_NAME,
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "Franciscan Prayer — The Hours. The Rule. The Gospel.",
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+    images: [OG_IMAGE],
   },
   other: {
     "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "default",
     "apple-mobile-web-app-title": APP_NAME,
+  },
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/apple-touch-icon.png",
   },
 };
 
