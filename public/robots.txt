@@ -1,0 +1,24 @@
+# Allow search engines to crawl public pages
+User-agent: *
+Allow: /
+Allow: /documentation
+
+# Block authenticated/private sections
+Disallow: /login
+Disallow: /signup
+Disallow: /onboarding
+Disallow: /dashboard
+Disallow: /weddings
+Disallow: /funerals
+Disallow: /baptisms
+Disallow: /presentations
+Disallow: /quinceaneras
+Disallow: /calendar
+Disallow: /people
+Disallow: /groups
+Disallow: /mass-liturgies
+Disallow: /settings
+Disallow: /print
+Disallow: /api
+
+Sitemap: https://catholicsocialmarriage.com/sitemap.xml

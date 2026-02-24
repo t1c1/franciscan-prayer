@@ -1,0 +1,21 @@
+{
+  "name": "Franciscan Prayer",
+  "short_name": "FranPrayer",
+  "description": "The Hours. The Rule. The Gospel.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f5f0",
+  "theme_color": "#5C3A1E",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
