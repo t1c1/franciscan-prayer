@@ -31,7 +31,8 @@ import { SyncDashboard } from "@/components/sync-dashboard";
 import { ExaminationOfConscience } from "@/components/examination-of-conscience";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Onboarding, useOnboarding } from "@/components/onboarding";
-import { getTodayFeast } from "@/lib/franciscan-calendar";
+import { useAuth } from "@/lib/auth-context";
+import { getTodayFeast, CALENDAR_I18N } from "@/lib/franciscan-calendar";
 import { cn } from "@/lib/utils";
 import {
   trackHourStarted, trackAllHoursCompleted, trackViewChanged,
@@ -70,6 +71,7 @@ export default function Home() {
   const [showExamination, setShowExamination] = useState(false);
   const { showOnboarding, dismiss: dismissOnboarding } = useOnboarding();
   const [onboardingDone, setOnboardingDone] = useState(!showOnboarding);
+  const { syncToCloud, user } = useAuth();
   const liturgy = getLiturgicalInfo();
   const todayFeast = getTodayFeast();
   const { theme, setTheme } = useTheme();
@@ -141,6 +143,7 @@ export default function Home() {
               playMonasteryBell();
               trackAllHoursCompleted(getStreak());
             }
+            if (user) syncToCloud();
           }}
           onBack={() => setActiveHourId(null)}
         />
@@ -227,13 +230,17 @@ export default function Home() {
         {view === "home" && (
           <div className="space-y-3">
             <LiturgicalBanner />
-            {todayFeast && (
-              <button onClick={() => navigateTo("calendar")} className="w-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left hover:opacity-90 transition-opacity">
-                <p className="text-xs text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">{t("home.feast_today")}</p>
-                <p className="text-sm font-semibold text-foreground mt-1">{todayFeast.name}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{todayFeast.description}</p>
-              </button>
-            )}
+            {todayFeast && (() => {
+              const fKey = `${String(todayFeast.month).padStart(2, "0")}-${String(todayFeast.day).padStart(2, "0")}`;
+              const fi = (locale !== "en" && CALENDAR_I18N?.[locale]?.[fKey]) || { name: todayFeast.name, description: todayFeast.description };
+              return (
+                <button onClick={() => navigateTo("calendar")} className="w-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left hover:opacity-90 transition-opacity">
+                  <p className="text-xs text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">{t("home.feast_today")}</p>
+                  <p className="text-sm font-semibold text-foreground mt-1">{fi.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{fi.description}</p>
+                </button>
+              );
+            })()}
             <div className="bg-card rounded-xl border border-border p-4">
               <p className="text-sm text-foreground/80 italic leading-relaxed">&ldquo;{dailyQuote.text}&rdquo;</p>
               <p className="text-xs text-muted-foreground mt-2">— {dailyQuote.author}{dailyQuote.source && <span className="italic">, {dailyQuote.source}</span>}</p>

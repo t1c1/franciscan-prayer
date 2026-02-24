@@ -63,6 +63,7 @@ export function SyncDashboard() {
   const handleSync = async () => {
     setSyncing(true);
     await syncToCloud();
+    setStats(getLocalStats(30)); // Refresh after pull-from-cloud restores data
     setSyncing(false);
   };
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Calendar, Star, Crown, Cross } from "lucide-react";
 import {
   FRANCISCAN_FEASTS,
+  CALENDAR_I18N,
   getTodayFeast,
   getUpcomingFeasts,
   type FranciscanFeast,
@@ -154,6 +155,13 @@ export function FranciscanCalendarView() {
   );
 }
 
+function getFeastI18n(feast: FranciscanFeast, locale: string) {
+  if (locale === "en") return { name: feast.name, description: feast.description };
+  const key = `${String(feast.month).padStart(2, "0")}-${String(feast.day).padStart(2, "0")}`;
+  const loc = CALENDAR_I18N?.[locale]?.[key];
+  return loc || { name: feast.name, description: feast.description };
+}
+
 function FeastCard({
   feast,
   locale,
@@ -167,6 +175,8 @@ function FeastCard({
   expanded: boolean;
   onToggle: () => void;
 }) {
+  const { name, description } = getFeastI18n(feast, locale);
+
   return (
     <button
       onClick={onToggle}
@@ -179,7 +189,7 @@ function FeastCard({
         <div className="mt-0.5">{RANK_ICONS[feast.rank]}</div>
         <div className="flex-1">
           <div className="flex items-baseline justify-between gap-2">
-            <p className="font-medium text-sm text-foreground">{feast.name}</p>
+            <p className="font-medium text-sm text-foreground">{name}</p>
             <p className="text-xs text-muted-foreground whitespace-nowrap">
               {getMonthAbbr(locale, feast.month)} {feast.day}
             </p>
@@ -187,7 +197,7 @@ function FeastCard({
           <p className="text-xs text-muted-foreground capitalize">{ranks[feast.rank] || feast.rank}</p>
           {expanded && (
             <p className="mt-2 text-sm text-foreground/80 leading-relaxed">
-              {feast.description}
+              {description}
             </p>
           )}
         </div>
