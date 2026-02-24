@@ -17,6 +17,8 @@ import {
   Cross,
   Calendar,
   SunMoon,
+  Heart,
+  Info,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
@@ -29,6 +31,10 @@ import { FranciscanCrown } from "@/components/franciscan-crown";
 import { DivineOfficeLinks } from "@/components/divine-office-links";
 import { StationsOfTheCross } from "@/components/stations-of-the-cross";
 import { FranciscanCalendarView } from "@/components/franciscan-calendar-view";
+import { LiturgicalBanner } from "@/components/liturgical-banner";
+import { NotificationToggle } from "@/components/notification-toggle";
+import { IntentionsJournal } from "@/components/intentions-journal";
+import { AboutPage } from "@/components/about-page";
 import { AuthButton } from "@/components/auth-button";
 import { getTodayFeast } from "@/lib/franciscan-calendar";
 import { cn } from "@/lib/utils";
@@ -42,7 +48,9 @@ type View =
   | "rule"
   | "community"
   | "stations"
-  | "calendar";
+  | "calendar"
+  | "intentions"
+  | "about";
 
 function getCompletedHours(): string[] {
   if (typeof window === "undefined") return [];
@@ -132,6 +140,7 @@ export default function Home() {
             </button>
             <div className="flex items-center gap-1.5">
               <AuthButton />
+              <NotificationToggle />
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
@@ -199,6 +208,9 @@ export default function Home() {
         {/* === HOME VIEW === */}
         {view === "home" && (
           <div className="space-y-3">
+            {/* Liturgical day from LitCal API */}
+            <LiturgicalBanner />
+
             {/* Today's Franciscan feast */}
             {todayFeast && (
               <button
@@ -311,6 +323,18 @@ export default function Home() {
                 title="Franciscan Family"
                 subtitle="Orders, communities &middot; Find your vocation"
                 onClick={() => setView("community")}
+              />
+              <NavTile
+                icon={<Heart className="w-5 h-5 text-franciscan" />}
+                title="Prayer Intentions"
+                subtitle="Your private prayer journal"
+                onClick={() => setView("intentions")}
+              />
+              <NavTile
+                icon={<Info className="w-5 h-5 text-franciscan" />}
+                title="About &amp; How to Pray"
+                subtitle="The Franciscan prayer tradition"
+                onClick={() => setView("about")}
               />
             </div>
           </div>
@@ -465,6 +489,28 @@ export default function Home() {
               sisters, contemplatives, and lay people across the world.
             </p>
             <CommunityFinder />
+          </div>
+        )}
+
+        {/* === INTENTIONS VIEW === */}
+        {view === "intentions" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              Prayer Intentions
+            </h2>
+            <IntentionsJournal />
+          </div>
+        )}
+
+        {/* === ABOUT VIEW === */}
+        {view === "about" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              About &amp; How to Pray
+            </h2>
+            <AboutPage />
           </div>
         )}
 
