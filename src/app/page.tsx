@@ -10,14 +10,29 @@ import {
   ChevronRight,
   Check,
   Flame,
+  Users,
+  Scroll,
+  Flower2,
+  ExternalLink,
 } from "lucide-react";
 import { HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
 import { getTodayUSCCBUrl, getLiturgicalInfo } from "@/lib/readings";
 import { PrayerCounter } from "@/components/prayer-counter";
 import { PrayerTextViewer } from "@/components/prayer-text-viewer";
+import { CommunityFinder } from "@/components/community-finder";
+import { DailyRule } from "@/components/daily-rule";
+import { FranciscanCrown } from "@/components/franciscan-crown";
+import { DivineOfficeLinks } from "@/components/divine-office-links";
 import { cn } from "@/lib/utils";
 
-type View = "home" | "hours" | "prayers" | "readings";
+type View =
+  | "home"
+  | "hours"
+  | "prayers"
+  | "crown"
+  | "office"
+  | "rule"
+  | "community";
 
 function getCompletedHours(): string[] {
   if (typeof window === "undefined") return [];
@@ -61,14 +76,15 @@ export default function Home() {
     return sum + (hour?.paterCount || 0);
   }, 0);
 
-  // Determine which hour is "next"
   const currentHourOfDay = new Date().getHours();
   const hourTimeMap: Record<string, number> = {
     matins: 3, lauds: 6, prime: 7, terce: 9,
     sext: 12, none: 15, vespers: 18, compline: 21,
   };
   const nextHour = HOURS.find(
-    (h) => !completedHours.includes(h.id) && hourTimeMap[h.id] >= currentHourOfDay
+    (h) =>
+      !completedHours.includes(h.id) &&
+      hourTimeMap[h.id] >= currentHourOfDay
   ) || HOURS.find((h) => !completedHours.includes(h.id));
 
   // Active hour prayer counter
@@ -94,14 +110,14 @@ export default function Home() {
       <header className="border-b border-border bg-card">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
+            <button onClick={() => setView("home")} className="text-left">
               <h1 className="text-xl font-bold text-foreground tracking-tight">
                 Franciscan Prayer
               </h1>
               <p className="text-xs text-muted-foreground">
                 The Hours &middot; The Rule &middot; The Gospel
               </p>
-            </div>
+            </button>
             <div className="flex items-center gap-2">
               {streak > 0 && (
                 <span className="flex items-center gap-1 text-xs font-medium text-franciscan bg-franciscan-light px-2 py-1 rounded-full">
@@ -111,9 +127,12 @@ export default function Home() {
               <span
                 className={cn(
                   "text-xs px-2 py-1 rounded-full font-medium",
-                  liturgy.color === "green" && "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-                  liturgy.color === "purple" && "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-                  liturgy.color === "white" && "bg-amber-50 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
+                  liturgy.color === "green" &&
+                    "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+                  liturgy.color === "purple" &&
+                    "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+                  liturgy.color === "white" &&
+                    "bg-amber-50 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
                 )}
               >
                 {liturgy.season}
@@ -124,7 +143,7 @@ export default function Home() {
       </header>
 
       <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
-        {/* Daily progress */}
+        {/* Daily progress — always visible */}
         <div className="bg-card rounded-xl border border-border p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-foreground">
@@ -138,7 +157,10 @@ export default function Home() {
             <div
               className="h-full bg-franciscan rounded-full transition-all duration-500"
               style={{
-                width: `${Math.min((completedPaters / TOTAL_DAILY_PATERS) * 100, 100)}%`,
+                width: `${Math.min(
+                  (completedPaters / TOTAL_DAILY_PATERS) * 100,
+                  100
+                )}%`,
               }}
             />
           </div>
@@ -154,7 +176,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Navigation tiles */}
+        {/* === HOME VIEW === */}
         {view === "home" && (
           <div className="space-y-3">
             {/* Next hour quick action */}
@@ -183,42 +205,38 @@ export default function Home() {
               </button>
             )}
 
-            {/* Three main tiles */}
+            {/* Main navigation */}
             <div className="grid grid-cols-1 gap-3">
-              <button
+              <NavTile
+                icon={<Clock className="w-5 h-5 text-franciscan" />}
+                title="Pray the Hours"
+                subtitle="Original Pater Count &middot; 76 per day"
                 onClick={() => setView("hours")}
-                className="bg-card rounded-xl border border-border p-4 text-left hover:border-franciscan/40 transition-colors flex items-center gap-4"
-              >
-                <div className="w-10 h-10 rounded-lg bg-franciscan-light flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-franciscan" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-foreground">
-                    Pray the Hours
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Original Pater Count &middot; 76 per day
-                  </p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
-              </button>
-
-              <button
+              />
+              <NavTile
+                icon={<Flower2 className="w-5 h-5 text-franciscan" />}
+                title="Franciscan Crown Rosary"
+                subtitle="7 Joys of Mary &middot; 72 Hail Marys"
+                onClick={() => setView("crown")}
+              />
+              <NavTile
+                icon={<BookOpen className="w-5 h-5 text-franciscan" />}
+                title="Full Liturgy of the Hours"
+                subtitle="Complete texts on DivineOffice.org"
+                onClick={() => setView("office")}
+              />
+              <NavTile
+                icon={<HandHeart className="w-5 h-5 text-franciscan" />}
+                title="Prayers"
+                subtitle="Pater Noster, Ave Maria, St. Francis &middot; 5 languages"
                 onClick={() => setView("prayers")}
-                className="bg-card rounded-xl border border-border p-4 text-left hover:border-franciscan/40 transition-colors flex items-center gap-4"
-              >
-                <div className="w-10 h-10 rounded-lg bg-franciscan-light flex items-center justify-center">
-                  <HandHeart className="w-5 h-5 text-franciscan" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-foreground">Prayers</p>
-                  <p className="text-xs text-muted-foreground">
-                    Pater Noster, Ave Maria, St. Francis &middot; 5 languages
-                  </p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
-              </button>
-
+              />
+              <NavTile
+                icon={<Scroll className="w-5 h-5 text-franciscan" />}
+                title="The Rule of St. Francis"
+                subtitle="Daily reading from the Regula Bullata (1223)"
+                onClick={() => setView("rule")}
+              />
               <a
                 href={getTodayUSCCBUrl()}
                 target="_blank"
@@ -226,7 +244,7 @@ export default function Home() {
                 className="bg-card rounded-xl border border-border p-4 text-left hover:border-franciscan/40 transition-colors flex items-center gap-4"
               >
                 <div className="w-10 h-10 rounded-lg bg-franciscan-light flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-franciscan" />
+                  <ExternalLink className="w-5 h-5 text-franciscan" />
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-foreground">
@@ -238,32 +256,38 @@ export default function Home() {
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
               </a>
+              <NavTile
+                icon={<Users className="w-5 h-5 text-franciscan" />}
+                title="Franciscan Family"
+                subtitle="Orders, communities &middot; Find your vocation"
+                onClick={() => setView("community")}
+              />
             </div>
           </div>
         )}
 
-        {/* Hours list view */}
+        {/* === HOURS VIEW === */}
         {view === "hours" && (
           <div className="space-y-3">
-            <button
-              onClick={() => setView("home")}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              &larr; Home
-            </button>
+            <BackButton onClick={() => setView("home")} />
             <h2 className="text-lg font-semibold text-foreground">
               The Hours — Original Pater Rule
             </h2>
             <p className="text-sm text-muted-foreground">
-              The original Franciscan practice: {TOTAL_DAILY_PATERS} Our Fathers
-              per day, distributed across the eight canonical hours.
+              The original Franciscan practice: {TOTAL_DAILY_PATERS} Our
+              Fathers per day, distributed across the eight canonical hours.
+              From Chapter III of the Rule.
             </p>
-
             <div className="space-y-2">
               {HOURS.map((hour) => {
                 const done = completedHours.includes(hour.id);
-                const isDay = ["lauds", "prime", "terce", "sext", "none"].includes(hour.id);
-
+                const isDay = [
+                  "lauds",
+                  "prime",
+                  "terce",
+                  "sext",
+                  "none",
+                ].includes(hour.id);
                 return (
                   <button
                     key={hour.id}
@@ -285,7 +309,12 @@ export default function Home() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className={cn("font-medium", done && "line-through")}>
+                      <p
+                        className={cn(
+                          "font-medium",
+                          done && "line-through"
+                        )}
+                      >
                         {hour.name}
                         <span className="text-xs text-muted-foreground ml-2 font-normal italic">
                           {hour.latinName}
@@ -305,19 +334,62 @@ export default function Home() {
           </div>
         )}
 
-        {/* Prayers view */}
+        {/* === CROWN ROSARY VIEW === */}
+        {view === "crown" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              Franciscan Crown Rosary
+            </h2>
+            <FranciscanCrown />
+          </div>
+        )}
+
+        {/* === OFFICE VIEW === */}
+        {view === "office" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              Liturgy of the Hours
+            </h2>
+            <DivineOfficeLinks />
+          </div>
+        )}
+
+        {/* === PRAYERS VIEW === */}
         {view === "prayers" && (
           <div className="space-y-3">
-            <button
-              onClick={() => setView("home")}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              &larr; Home
-            </button>
+            <BackButton onClick={() => setView("home")} />
             <h2 className="text-lg font-semibold text-foreground">
               Prayers
             </h2>
             <PrayerTextViewer />
+          </div>
+        )}
+
+        {/* === RULE VIEW === */}
+        {view === "rule" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              The Rule of St. Francis
+            </h2>
+            <DailyRule />
+          </div>
+        )}
+
+        {/* === COMMUNITY VIEW === */}
+        {view === "community" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              The Franciscan Family
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              The Franciscan movement spans 800+ years and includes friars,
+              sisters, contemplatives, and lay people across the world.
+            </p>
+            <CommunityFinder />
           </div>
         )}
 
@@ -332,5 +404,44 @@ export default function Home() {
         </footer>
       </div>
     </main>
+  );
+}
+
+function NavTile({
+  icon,
+  title,
+  subtitle,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="bg-card rounded-xl border border-border p-4 text-left hover:border-franciscan/40 transition-colors flex items-center gap-4"
+    >
+      <div className="w-10 h-10 rounded-lg bg-franciscan-light flex items-center justify-center">
+        {icon}
+      </div>
+      <div className="flex-1">
+        <p className="font-semibold text-foreground">{title}</p>
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+    </button>
+  );
+}
+
+function BackButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+    >
+      &larr; Home
+    </button>
   );
 }
