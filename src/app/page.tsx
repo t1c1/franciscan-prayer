@@ -19,10 +19,15 @@ import {
   SunMoon,
   Heart,
   Info,
+  BarChart3,
+  Share2,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
 import { getTodayUSCCBUrl, getLiturgicalInfo } from "@/lib/readings";
+import { getDailyQuote } from "@/lib/franciscan-quotes";
+import { shareCard } from "@/lib/share-card";
+import { playMonasteryBell } from "@/lib/audio";
 import { PrayerCounter } from "@/components/prayer-counter";
 import { PrayerTextViewer } from "@/components/prayer-text-viewer";
 import { CommunityFinder } from "@/components/community-finder";
@@ -36,6 +41,8 @@ import { NotificationToggle } from "@/components/notification-toggle";
 import { IntentionsJournal } from "@/components/intentions-journal";
 import { AboutPage } from "@/components/about-page";
 import { AuthButton } from "@/components/auth-button";
+import { SyncDashboard } from "@/components/sync-dashboard";
+import { ExaminationOfConscience } from "@/components/examination-of-conscience";
 import { getTodayFeast } from "@/lib/franciscan-calendar";
 import { cn } from "@/lib/utils";
 
@@ -50,6 +57,7 @@ type View =
   | "stations"
   | "calendar"
   | "intentions"
+  | "dashboard"
   | "about";
 
 function getCompletedHours(): string[] {
@@ -79,7 +87,9 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const liturgy = getLiturgicalInfo();
   const todayFeast = getTodayFeast();
+  const dailyQuote = getDailyQuote();
   const { theme, setTheme } = useTheme();
+  const [showExamination, setShowExamination] = useState(false);
 
   useEffect(() => {
     setCompletedHours(getCompletedHours());
@@ -107,6 +117,22 @@ export default function Home() {
       hourTimeMap[h.id] >= currentHourOfDay
   ) || HOURS.find((h) => !completedHours.includes(h.id));
 
+  // Examination of Conscience before Compline
+  if (showExamination) {
+    return (
+      <main className="min-h-screen bg-background">
+        <div className="max-w-lg mx-auto px-4 py-8">
+          <ExaminationOfConscience
+            onClose={() => {
+              setShowExamination(false);
+              setActiveHourId("compline");
+            }}
+          />
+        </div>
+      </main>
+    );
+  }
+
   // Active hour prayer counter
   if (activeHourId) {
     const hour = HOURS.find((h) => h.id === activeHourId)!;
@@ -117,6 +143,11 @@ export default function Home() {
           onComplete={() => {
             refreshCompletions();
             setActiveHourId(null);
+            // Play monastery bell on daily completion
+            const updated = getCompletedHours();
+            if (updated.length >= HOURS.length) {
+              playMonasteryBell();
+            }
           }}
           onBack={() => setActiveHourId(null)}
         />
@@ -198,8 +229,22 @@ export default function Home() {
               {completedHours.length} of {HOURS.length} Hours
             </span>
             {completedPaters >= TOTAL_DAILY_PATERS && (
-              <span className="text-xs font-medium text-franciscan">
+              <span className="flex items-center gap-1 text-xs font-medium text-franciscan">
                 Complete! Deo Gratias!
+                <button
+                  onClick={() =>
+                    shareCard({
+                      title: "All 76 Paters Complete!",
+                      subtitle: new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }),
+                      stat: `${streak} day streak`,
+                      footer: "Pax et Bonum — franciscan-prayer.pages.dev",
+                    })
+                  }
+                  className="ml-1 p-1 rounded-full hover:bg-franciscan-light transition-colors"
+                  title="Share achievement"
+                >
+                  <Share2 className="w-3 h-3" />
+                </button>
               </span>
             )}
           </div>
@@ -229,10 +274,27 @@ export default function Home() {
               </button>
             )}
 
+            {/* Daily Franciscan quote */}
+            <div className="bg-card rounded-xl border border-border p-4">
+              <p className="text-sm text-foreground/80 italic leading-relaxed">
+                &ldquo;{dailyQuote.text}&rdquo;
+              </p>
+              <p className="text-xs text-muted-foreground mt-2">
+                — {dailyQuote.author}
+                {dailyQuote.source && <span className="italic">, {dailyQuote.source}</span>}
+              </p>
+            </div>
+
             {/* Next hour quick action */}
             {nextHour && (
               <button
-                onClick={() => setActiveHourId(nextHour.id)}
+                onClick={() => {
+                  if (nextHour.id === "compline" && !completedHours.includes("compline")) {
+                    setShowExamination(true);
+                  } else {
+                    setActiveHourId(nextHour.id);
+                  }
+                }}
                 className="w-full bg-franciscan text-franciscan-foreground rounded-xl p-5 text-left hover:opacity-90 transition-opacity active:scale-[0.98]"
               >
                 <div className="flex items-center justify-between">
@@ -331,6 +393,12 @@ export default function Home() {
                 onClick={() => setView("intentions")}
               />
               <NavTile
+                icon={<BarChart3 className="w-5 h-5 text-franciscan" />}
+                title="Prayer Dashboard"
+                subtitle="Stats, streaks &middot; Multi-device sync"
+                onClick={() => setView("dashboard")}
+              />
+              <NavTile
                 icon={<Info className="w-5 h-5 text-franciscan" />}
                 title="About &amp; How to Pray"
                 subtitle="The Franciscan prayer tradition"
@@ -365,7 +433,13 @@ export default function Home() {
                 return (
                   <button
                     key={hour.id}
-                    onClick={() => setActiveHourId(hour.id)}
+                    onClick={() => {
+                      if (hour.id === "compline" && !completedHours.includes("compline")) {
+                        setShowExamination(true);
+                      } else {
+                        setActiveHourId(hour.id);
+                      }
+                    }}
                     className={cn(
                       "w-full bg-card rounded-lg border p-4 text-left transition-all flex items-center gap-3",
                       done
@@ -500,6 +574,17 @@ export default function Home() {
               Prayer Intentions
             </h2>
             <IntentionsJournal />
+          </div>
+        )}
+
+        {/* === DASHBOARD VIEW === */}
+        {view === "dashboard" && (
+          <div className="space-y-3">
+            <BackButton onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">
+              Prayer Dashboard
+            </h2>
+            <SyncDashboard />
           </div>
         )}
 
