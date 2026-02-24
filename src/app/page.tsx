@@ -23,6 +23,7 @@ import { CommunityFinder } from "@/components/community-finder";
 import { DailyRule } from "@/components/daily-rule";
 import { FranciscanCrown } from "@/components/franciscan-crown";
 import { DivineOfficeLinks } from "@/components/divine-office-links";
+import { AuthButton } from "@/components/auth-button";
 import { cn } from "@/lib/utils";
 
 type View =
@@ -119,6 +120,7 @@ export default function Home() {
               </p>
             </button>
             <div className="flex items-center gap-2">
+              <AuthButton />
               {streak > 0 && (
                 <span className="flex items-center gap-1 text-xs font-medium text-franciscan bg-franciscan-light px-2 py-1 rounded-full">
                   <Flame className="w-3 h-3" /> {streak}d
