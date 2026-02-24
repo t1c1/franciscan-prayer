@@ -9,6 +9,7 @@ export const MORE_PRAYERS: PrayerText[] = [
     es: "El Señor te bendiga y te guarde.\nEl Señor te muestre su rostro y tenga misericordia de ti.\nEl Señor vuelva hacia ti su mirada y te dé la paz.\nEl Señor te bendiga.",
     it: "Il Signore ti benedica e ti custodisca.\nTi mostri la sua faccia e abbia misericordia di te.\nRivolga il suo volto verso di te e ti dia la pace.\nIl Signore ti benedica.",
     fr: "Que le Seigneur te bénisse et te garde.\nQu'il te montre sa face et ait pitié de toi.\nQu'il tourne vers toi son regard et te donne la paix.\nQue le Seigneur te bénisse.",
+    zh: "愿上主降福你，保护你。\n愿上主的慈颜光照你，仁慈待你。\n愿上主转面垂顾你，赐你平安。\n愿上主降福你。",
   },
   {
     id: "san-damiano-crucifix",
@@ -18,6 +19,7 @@ export const MORE_PRAYERS: PrayerText[] = [
     es: "Altísimo, glorioso Dios,\nilumina las tinieblas de mi corazón.\nY dame fe recta,\nesperanza cierta y caridad perfecta,\nsentido y conocimiento, Señor,\npara que cumpla tu santo y verdadero mandamiento.\nAmén.",
     it: "Altissimo, glorioso Dio,\nillumina le tenebre del cuore mio.\nE dammi fede retta,\nsperanza certa e carità perfetta,\nsenso e conoscimento, Signore,\nche io faccia il tuo santo e verace comandamento.\nAmen.",
     fr: "Très-Haut, Glorieux Dieu,\néclaire les ténèbres de mon cœur.\nEt donne-moi la foi droite,\nl'espérance certaine et la charité parfaite,\nle sens et la connaissance, Seigneur,\nafin que j'accomplisse ton saint et véritable commandement.\nAmen.",
+    zh: "至高至荣的天主，\n求祢光照我心中的黑暗。\n赐我正直的信德，\n坚固的望德和完美的爱德，\n主，求赐我明悟和知识，\n好能承行祢神圣而真实的旨意。\n亚孟。",
   },
   {
     id: "memorare",
@@ -27,6 +29,7 @@ export const MORE_PRAYERS: PrayerText[] = [
     es: "Acordaos, oh piadosísima Virgen María,\nque jamás se ha oído decir\nque ninguno de los que han acudido a vuestra protección,\nimplorado vuestro auxilio,\nreclamado vuestro socorro,\nhaya sido desamparado.\nAnimado por esta confianza,\na vos acudo, oh Madre, Virgen de las vírgenes,\ny gimiendo bajo el peso de mis pecados me atrevo a comparecer ante vos.\nOh Madre del Verbo divino,\nno desechéis mis súplicas,\nsino escuchadlas y acogedlas benignamente.\nAmén.",
     it: "Ricordati, o piissima Vergine Maria,\nche non si è mai udito al mondo\nche alcuno abbia ricorso al tuo patrocinio,\nimplorato il tuo aiuto,\nchiesto la tua protezione,\ne sia stato abbandonato.\nAnimato da tale confidenza,\na te ricorro, o Madre, Vergine delle vergini;\na te vengo e, peccatore contrito, innanzi a te mi prostro.\nNon volere, o Madre del Verbo,\ndisprezzare le mie preghiere,\nma ascoltami propizia ed esaudiscimi.\nAmen.",
     fr: "Souvenez-vous, ô très miséricordieuse Vierge Marie,\nqu'on n'a jamais entendu dire\nqu'aucun de ceux qui ont eu recours à votre protection,\nimploré votre assistance,\nreclamé votre secours,\nait été abandonné.\nAnimé d'une pareille confiance,\nje viens à vous, ô Vierge des vierges, ma Mère ;\nje viens, et gémissant sous le poids de mes péchés, je me prosterne à vos pieds.\nÔ Mère du Verbe incarné,\nne méprisez pas mes prières,\nmais écoutez-les favorablement et daignez les exaucer.\nAmen.",
+    zh: "请记忆，至仁至慈的童贞玛利亚，\n自古以来，\n从未闻有人投奔到妳台前，\n求妳护佑，\n请妳转求，\n而被弃置不顾的。\n我怀着这样的信心，\n奔赴到妳台前，童贞之童贞者，我的母亲；\n我来到妳面前，罪人呻吟，俯伏在妳足下。\n万福圣言之母，\n勿拒我的哀求，\n俯听而应允我。\n亚孟。",
   },
   {
     id: "angelus",
@@ -36,6 +39,7 @@ export const MORE_PRAYERS: PrayerText[] = [
     es: "V. El Ángel del Señor anunció a María;\nR. Y concibió por obra del Espíritu Santo.\nDios te salve, María...\n\nV. He aquí la esclava del Señor.\nR. Hágase en mí según tu palabra.\nDios te salve, María...\n\nV. Y el Verbo se hizo carne.\nR. Y habitó entre nosotros.\nDios te salve, María...\n\nV. Ruega por nosotros, Santa Madre de Dios.\nR. Para que seamos dignos de las promesas de Cristo.\n\nOremos. Infunde, Señor, tu gracia en nuestras almas, para que los que hemos conocido, por el anuncio del Ángel, la Encarnación de tu Hijo Jesucristo, lleguemos por su Pasión y su Cruz, a la gloria de la Resurrección. Por Jesucristo Nuestro Señor.\nR. Amén.",
     it: "V. L'angelo del Signore portò l'annunzio a Maria;\nR. Ed ella concepì per opera dello Spirito Santo.\nAve Maria...\n\nV. Eccomi, sono la serva del Signore.\nR. Si faccia di me secondo la tua parola.\nAve Maria...\n\nV. E il Verbo si fece carne.\nR. E venne ad abitare in mezzo a noi.\nAve Maria...\n\nV. Prega per noi, santa Madre di Dio.\nR. Perché siamo resi degni delle promesse di Cristo.\n\nPreghiamo. Infondi nel nostro spirito la tua grazia, o Padre; tu, che nell'annunzio dell'angelo ci hai rivelato l'incarnazione del tuo Figlio, per la sua passione e la sua croce guidaci alla gloria della risurrezione. Per Cristo nostro Signore.\nR. Amen.",
     fr: "V. L'Ange du Seigneur porta l'annonce à Marie ;\nR. Et elle conçut du Saint-Esprit.\nJe vous salue, Marie...\n\nV. Voici la servante du Seigneur.\nR. Qu'il me soit fait selon votre parole.\nJe vous salue, Marie...\n\nV. Et le Verbe s'est fait chair.\nR. Et il a habité parmi nous.\nJe vous salue, Marie...\n\nV. Priez pour nous, sainte Mère de Dieu.\nR. Afin que nous devenions dignes des promesses du Christ.\n\nPrions. Que ta grâce, Seigneur notre Père, se répande en nos cœurs ; par le message de l'ange, tu nous as fait connaître l'incarnation de ton Fils bien-aimé, conduis-nous par sa passion et par sa croix jusqu'à la gloire de la résurrection. Par Jésus, le Christ, notre Seigneur.\nR. Amen.",
+    zh: "领：主的天使向玛利亚报告；\n应：她因圣神受孕。\n圣母经……\n\n领：我是主的婢女。\n应：请照祢的话在我身上成就。\n圣母经……\n\n领：圣言成了血肉。\n应：寄居在我们中间。\n圣母经……\n\n领：天主圣母，请为我们祈求。\n应：使我们堪当承受基督的恩许。\n\n请众同祷。天主，求祢把祢的圣宠注入我们心中，我们既因天使的预报，得知祢的圣子基督降生成人，亦愿赖祂的苦难及十字圣架，获享复活的光荣。因我们的主基督。\n应：亚孟。",
   },
   {
     id: "salve-regina",
@@ -45,6 +49,7 @@ export const MORE_PRAYERS: PrayerText[] = [
     es: "Dios te salve, Reina y Madre de misericordia,\nvida, dulzura y esperanza nuestra.\nA ti clamamos los desterrados hijos de Eva;\na ti suspiramos, gimiendo y llorando\nen este valle de lágrimas.\nEa, pues, Señora, abogada nuestra,\nvuelve a nosotros esos tus ojos misericordiosos;\ny después de este destierro,\nmuéstranos a Jesús, fruto bendito de tu vientre.\nOh clemente, oh piadosa, oh dulce Virgen María.",
     it: "Salve, Regina, Madre di misericordia,\nvita, dolcezza e speranza nostra, salve.\nA te ricorriamo, esuli figli di Eva;\na te sospiriamo, gementi e piangenti\nin questa valle di lacrime.\nOrsù dunque, avvocata nostra,\nrivolgi a noi gli occhi tuoi misericordiosi.\nE mostraci, dopo questo esilio, Gesù,\nil frutto benedetto del tuo seno.\nO clemente, o pia, o dolce Vergine Maria.",
     fr: "Salut, ô Reine, Mère de miséricorde,\nnotre vie, notre douceur, et notre espérance, salut.\nVers toi nous élevons nos cris, pauvres enfants d'Ève exilés.\nVers toi nous soupirons, gémissant et pleurant\ndans cette vallée de larmes.\nTourne donc vers nous tes regards miséricordieux,\nô toi, notre avocate.\nEt, après cet exil,\nmontre-nous Jésus, le fruit béni de tes entrailles.\nÔ clémente, ô miséricordieuse, ô douce Vierge Marie.",
+    zh: "万福，母后！仁慈的母亲，\n我们的生命，我们的甘饴，我们的希望。\n厄娃子孙，在此尘世，向妳哀呼。\n在这涕泣之谷，向妳叹息哭求。\n我们的主保，求妳回顾，\n怜视我们，\n一旦流亡期满，\n使我们得见妳的圣子，\n万民称颂的耶稣。\n童贞玛利亚，妳是宽仁的、慈悲的、甘饴的。",
   },
   {
     id: "magnificat",
@@ -54,6 +59,7 @@ export const MORE_PRAYERS: PrayerText[] = [
     es: "Proclama mi alma la grandeza del Señor,\nse alegra mi espíritu en Dios, mi salvador;\nporque ha mirado la humillación de su esclava.\nDesde ahora me felicitarán todas las generaciones,\nporque el Poderoso ha hecho obras grandes por mí:\nsu nombre es santo,\ny su misericordia llega a sus fieles\nde generación en generación.\nÉl hace proezas con su brazo:\ndispersa a los soberbios de corazón,\nderriba del trono a los poderosos\ny enaltece a los humildes,\na los hambrientos los colma de bienes\ny a los ricos los despide vacíos.\nAuxilia a Israel, su siervo,\nacordándose de la misericordia\n—como lo había prometido a nuestros padres—\nen favor de Abrahán y su descendencia por siempre.",
     it: "L'anima mia magnifica il Signore\ne il mio spirito esulta in Dio, mio salvatore,\nperché ha guardato l'umiltà della sua serva.\nD'ora in poi tutte le generazioni mi chiameranno beata.\nGrandi cose ha fatto in me l'Onnipotente\ne Santo è il suo nome:\ndi generazione in generazione la sua misericordia\nsi stende su quelli che lo temono.\nHa spiegato la potenza del suo braccio,\nha disperso i superbi nei pensieri del loro cuore;\nha rovesciato i potenti dai troni,\nha innalzato gli umili;\nha ricolmato di beni gli affamati,\nha rimandato i ricchi a mani vuote.\nHa soccorso Israele, suo servo,\nricordandosi della sua misericordia,\ncome aveva promesso ai nostri padri,\nad Abramo e alla sua discendenza, per sempre.",
     fr: "Mon âme exalte le Seigneur,\nexulte mon esprit en Dieu, mon Sauveur !\nIl s'est penché sur son humble servante ;\ndésormais, tous les âges me diront bienheureuse.\nLe Puissant fit pour moi des merveilles ;\nSaint est son nom !\nSa miséricorde s'étend d'âge en âge\nsur ceux qui le craignent.\nDéployant la force de son bras, il disperse les superbes.\nIl renverse les puissants de leurs trônes,\nil élève les humbles.\nIl comble de biens les affamés,\nrenvoie les riches les mains vides.\nIl relève Israël, son serviteur,\nil se souvient de son amour,\nde la promesse faite à nos pères,\nen faveur d'Abraham et de sa race, à jamais.",
+    zh: "我的灵魂颂扬上主，\n我的心神欢跃于天主，我的救主，\n因为祂垂顾了祂婢女的卑微。\n今后万世万代都要称我有福，\n因全能者在我身上行了大事，\n祂的名字是圣的，\n祂的仁慈世世代代于\n无穷世，赐于敬畏祂的人。\n祂伸出了手臂施展大能，\n驱散那些心高气傲的人。\n祂从高座上推下权势者，\n却举扬了卑微贫困的人。\n祂曾使饥饿者饱飨美物，\n反使那富有者空手而去。\n祂曾回忆起自己的仁慈，\n扶助了祂的仆人以色列，\n正如祂向我们的祖先所说过的恩许，\n施恩于亚巴郎和他的子孙，直到永远。",
   },
   {
     id: "act-of-contrition",
@@ -63,6 +69,7 @@ export const MORE_PRAYERS: PrayerText[] = [
     es: "Dios mío, me arrepiento de todo corazón\nde todos mis pecados\ny los aborrezco,\nporque al pecar, no sólo merezco\nlas penas establecidas por ti justamente,\nsino principalmente porque te ofendí a ti,\nque eres el sumo bien y digno de ser amado sobre todas las cosas.\nPor eso propongo firmemente, con la ayuda de tu gracia,\nno pecar más en adelante\ny huir de las ocasiones de pecado.\nAmén.",
     it: "Mio Dio, mi pento e mi dolgo con tutto il cuore\ndei miei peccati,\nperché peccando ho meritato i tuoi castighi,\ne molto più perché ho offeso te,\ninfinitamente buono e degno di essere amato sopra ogni cosa.\nPropongo con il tuo santo aiuto\ndi non offenderti mai più\ne di fuggire le occasioni prossime di peccato.\nSignore, misericordia, perdonami.\nAmen.",
     fr: "Mon Dieu, j'ai un très grand regret de vous avoir offensé,\nparce que vous êtes infiniment bon,\ninfiniment aimable,\net que le péché vous déplaît.\nJe prends la ferme résolution,\navec le secours de votre sainte grâce,\nde ne plus vous offenser\net de faire pénitence.\nAmen.",
+    zh: "吾天主，我重罪人，\n得罪于祢，\n我深为痛悔，\n因为祢是至善的，\n最值得我全心爱慕的天主，\n而罪恶是祢所厌恶的。\n我今定志，宁死不再犯罪，\n并躲避犯罪的近机会，\n恳求祢的圣宠助佑。\n亚孟。",
   },
   {
     id: "nunc-dimittis",
@@ -72,5 +79,6 @@ export const MORE_PRAYERS: PrayerText[] = [
     es: "Ahora, Señor, despide a tu siervo en paz,\nconforme a tu palabra,\nporque mis ojos han visto a tu Salvador,\na quien has presentado ante todos los pueblos:\nluz para alumbrar a las naciones\ny gloria de tu pueblo Israel.",
     it: "Ora puoi lasciare, o Signore, che il tuo servo\nvada in pace, secondo la tua parola,\nperché i miei occhi hanno visto la tua salvezza,\npreparata da te davanti a tutti i popoli:\nluce per rivelarti alle genti\ne gloria del tuo popolo, Israele.",
     fr: "Maintenant, ô Maître souverain,\ntu peux laisser ton serviteur s'en aller en paix,\nselon ta parole.\nCar mes yeux ont vu le salut\nque tu préparais à la face des peuples :\nlumière qui se révèle aux nations\net donne gloire à ton peuple Israël.",
+    zh: "主啊！现在可照祢的话，\n放祢的仆人平安而去；\n因为我亲眼看见了祢的救援，\n即祢在万民之前早已准备好的：\n为作启示列邦的光明，\n祢的百姓以色列的荣耀。",
   },
 ];

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/lib/auth-context";
+import { I18nProvider } from "@/lib/i18n";
 import { ServiceWorkerRegister } from "@/components/sw-register";
 
 const geistSans = Geist({
@@ -89,8 +90,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
-            <ServiceWorkerRegister />
+            <I18nProvider>
+              {children}
+              <ServiceWorkerRegister />
+            </I18nProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
