@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const BASE_URL = "https://franciscan-prayer.pages.dev";
+const BASE_URL = "https://franciscanprayer.com";
 const OG_IMAGE = `${BASE_URL}/og-image.png`;
 
 export function createPageMetadata(overrides: {

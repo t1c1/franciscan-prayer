@@ -58,7 +58,7 @@ export async function generateShareCard(data: ShareCardData): Promise<Blob | nul
     // Footer
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
     ctx.font = "italic 14px -apple-system, BlinkMacSystemFont, sans-serif";
-    ctx.fillText(data.footer || "franciscan-prayer.pages.dev", 300, 370);
+    ctx.fillText(data.footer || "franciscanprayer.com", 300, 370);
 
     // App name
     ctx.fillStyle = "rgba(255, 255, 255, 0.7)";

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5C3A1E"/>
+      <stop offset="100%" stop-color="#7B4F2E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle border -->
+  <rect x="40" y="40" width="1120" height="550" rx="16" fill="none" stroke="rgba(245,230,211,0.15)" stroke-width="2"/>
+
+  <!-- Tau cross -->
+  <text x="600" y="180" text-anchor="middle" font-family="serif" font-size="72" fill="rgba(245,230,211,0.2)" font-weight="bold">&#x2720;</text>
+
+  <!-- Title -->
+  <text x="600" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="64" fill="#F5E6D3" font-weight="bold" letter-spacing="-1">Franciscan Prayer</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="335" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="28" fill="rgba(245,230,211,0.8)" letter-spacing="3">The Hours · The Rule · The Gospel</text>
+
+  <!-- Description -->
+  <text x="600" y="395" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" fill="rgba(245,230,211,0.6)">Pray as a Franciscan every day</text>
+
+  <!-- Features line -->
+  <text x="600" y="440" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" fill="rgba(245,230,211,0.45)">76 Paters · Crown Rosary · Stations of the Cross · 5 Languages</text>
+
+  <!-- Pax et Bonum -->
+  <text x="600" y="530" text-anchor="middle" font-family="serif" font-size="22" fill="rgba(245,230,211,0.4)" font-style="italic">Pax et Bonum</text>
+
+  <!-- Domain -->
+  <text x="600" y="565" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="16" fill="rgba(245,230,211,0.3)" letter-spacing="2">franciscanprayer.com</text>
+</svg>
