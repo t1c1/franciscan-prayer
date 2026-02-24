@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronRight, Clock, Heart, Globe } from "lucide-react";
 import { useI18n, LOCALE_LABELS, type Locale } from "@/lib/i18n";
+import { trackOnboardingCompleted } from "@/lib/analytics";
 
 const STORAGE_KEY = "fp_onboarding_done";
 
@@ -79,6 +80,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
 
   const handleFinish = () => {
     localStorage.setItem(STORAGE_KEY, "true");
+    trackOnboardingCompleted();
     onComplete();
   };
 

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -19,7 +20,8 @@ const geistMono = Geist_Mono({
 const APP_NAME = "Franciscan Prayer";
 const APP_DESCRIPTION =
   "The Hours. The Rule. The Gospel. Pray as a Franciscan every day with the Original Pater Count, Franciscan Crown Rosary, Stations of the Cross, and Daily Mass Readings in 5 languages.";
-const APP_URL = "https://franciscan-prayer.pages.dev";
+const APP_URL = "https://franciscanprayer.com";
+const GA_ID = "G-BQ8VHB1BTB";
 const OG_IMAGE = `${APP_URL}/og-image.png`;
 
 export const viewport: Viewport = {
@@ -80,6 +82,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+        </Script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

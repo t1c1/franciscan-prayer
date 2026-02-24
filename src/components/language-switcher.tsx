@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Globe } from "lucide-react";
 import { useLocale, LOCALE_LABELS, LOCALE_FLAGS, type Locale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { trackLanguageChanged } from "@/lib/analytics";
 
 export function LanguageSwitcher() {
   const { locale, setLocale } = useLocale();
@@ -38,6 +39,7 @@ export function LanguageSwitcher() {
               key={l}
               onClick={() => {
                 setLocale(l);
+                trackLanguageChanged(l);
                 setOpen(false);
               }}
               className={cn(

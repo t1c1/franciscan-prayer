@@ -10,6 +10,7 @@ import {
 } from "react";
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
+import { trackSignIn, trackSignUp } from "./analytics";
 
 interface AuthState {
   user: User | null;
@@ -70,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
       });
       if (error) return error.message;
+      trackSignIn("email");
       return null;
     },
     []
@@ -79,12 +81,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (email: string, password: string): Promise<string | null> => {
       const { error } = await supabase.auth.signUp({ email, password });
       if (error) return error.message;
+      trackSignUp("email");
       return null;
     },
     []
   );
 
   const signInWithGoogle = useCallback(async () => {
+    trackSignIn("google");
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {

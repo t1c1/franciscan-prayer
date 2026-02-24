@@ -5,6 +5,7 @@ import { Star } from "lucide-react";
 import { PRAYERS, LANGUAGE_LABELS, type Language } from "@/lib/prayers";
 import { MORE_PRAYERS } from "@/lib/more-prayers";
 import { cn } from "@/lib/utils";
+import { trackPrayerExpanded, trackPrayerFavorited } from "@/lib/analytics";
 
 const FAVORITES_KEY = "fp_favorite_prayers";
 
@@ -43,7 +44,9 @@ export function PrayerTextViewer() {
 
   const handleToggleFavorite = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    setFavorites(toggleFavorite(id));
+    const next = toggleFavorite(id);
+    setFavorites(next);
+    trackPrayerFavorited(id, next.includes(id));
   };
 
   return (
@@ -79,7 +82,7 @@ export function PrayerTextViewer() {
             className="bg-card rounded-lg border border-border hover:border-franciscan/40 transition-colors"
           >
             <button
-              onClick={() => setExpandedId(isExpanded ? null : prayer.id)}
+              onClick={() => { const next = isExpanded ? null : prayer.id; setExpandedId(next); if (next) trackPrayerExpanded(next); }}
               className="w-full text-left p-4"
             >
               <div className="flex items-start justify-between gap-2">

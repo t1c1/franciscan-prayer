@@ -9,6 +9,7 @@ import {
   disableNotifications,
   scheduleAllReminders,
 } from "@/lib/notifications";
+import { trackNotificationsEnabled, trackNotificationsDisabled } from "@/lib/analytics";
 
 export function NotificationToggle() {
   const [supported, setSupported] = useState(false);
@@ -27,9 +28,11 @@ export function NotificationToggle() {
     if (enabled) {
       disableNotifications();
       setEnabled(false);
+      trackNotificationsDisabled();
     } else {
       const granted = await requestNotificationPermission();
       setEnabled(granted);
+      if (granted) trackNotificationsEnabled();
     }
   };
 

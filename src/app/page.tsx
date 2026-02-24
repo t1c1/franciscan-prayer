@@ -33,6 +33,10 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { Onboarding, useOnboarding } from "@/components/onboarding";
 import { getTodayFeast } from "@/lib/franciscan-calendar";
 import { cn } from "@/lib/utils";
+import {
+  trackHourStarted, trackAllHoursCompleted, trackViewChanged,
+  trackThemeToggled, trackShareCard, trackExaminationStarted,
+} from "@/lib/analytics";
 
 type View =
   | "home" | "hours" | "prayers" | "crown" | "office" | "rule"
@@ -106,6 +110,7 @@ export default function Home() {
 
   const getHourName = (id: string) => hourI18n[id]?.name || HOURS.find(h => h.id === id)?.name || id;
   const getHourTime = (id: string) => hourI18n[id]?.typicalTime || "";
+  const navigateTo = (v: View) => { trackViewChanged(v); setView(v); };
 
   // First-time onboarding
   if (!onboardingDone) {
@@ -131,7 +136,11 @@ export default function Home() {
           onComplete={() => {
             refreshCompletions();
             setActiveHourId(null);
-            if (getCompletedHours().length >= HOURS.length) playMonasteryBell();
+            const completed = getCompletedHours();
+            if (completed.length >= HOURS.length) {
+              playMonasteryBell();
+              trackAllHoursCompleted(getStreak());
+            }
           }}
           onBack={() => setActiveHourId(null)}
         />
@@ -155,7 +164,7 @@ export default function Home() {
               <AuthButton />
               <NotificationToggle />
               <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                onClick={() => { const next = theme === "dark" ? "light" : "dark"; setTheme(next); trackThemeToggled(next); }}
                 className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 aria-label="Toggle dark mode"
               >
@@ -199,12 +208,12 @@ export default function Home() {
               <span className="flex items-center gap-1 text-xs font-medium text-franciscan">
                 {t("progress.complete")}
                 <button
-                  onClick={() => shareCard({
+                  onClick={() => { trackShareCard(); shareCard({
                     title: t("share.title"),
                     subtitle: new Date().toLocaleDateString(locale === "zh" ? "zh-CN" : locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }),
                     stat: `${streak} ${t("share.streak")}`,
                     footer: t("share.footer"),
-                  })}
+                  }); }}
                   className="ml-1 p-1 rounded-full hover:bg-franciscan-light transition-colors"
                 >
                   <Share2 className="w-3 h-3" />
@@ -219,7 +228,7 @@ export default function Home() {
           <div className="space-y-3">
             <LiturgicalBanner />
             {todayFeast && (
-              <button onClick={() => setView("calendar")} className="w-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left hover:opacity-90 transition-opacity">
+              <button onClick={() => navigateTo("calendar")} className="w-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left hover:opacity-90 transition-opacity">
                 <p className="text-xs text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">{t("home.feast_today")}</p>
                 <p className="text-sm font-semibold text-foreground mt-1">{todayFeast.name}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">{todayFeast.description}</p>
@@ -231,7 +240,7 @@ export default function Home() {
             </div>
             {nextHour && (
               <button
-                onClick={() => { if (nextHour.id === "compline" && !completedHours.includes("compline")) { setShowExamination(true); } else { setActiveHourId(nextHour.id); } }}
+                onClick={() => { if (nextHour.id === "compline" && !completedHours.includes("compline")) { trackExaminationStarted(); setShowExamination(true); } else { trackHourStarted(nextHour.id); setActiveHourId(nextHour.id); } }}
                 className="w-full bg-franciscan text-franciscan-foreground rounded-xl p-5 text-left hover:opacity-90 transition-opacity active:scale-[0.98]"
               >
                 <div className="flex items-center justify-between">
@@ -248,13 +257,13 @@ export default function Home() {
               </button>
             )}
             <div className="grid grid-cols-1 gap-3">
-              <NavTile icon={<Clock className="w-5 h-5 text-franciscan" />} title={t("nav.hours")} subtitle={t("nav.hours_sub")} onClick={() => setView("hours")} />
-              <NavTile icon={<Flower2 className="w-5 h-5 text-franciscan" />} title={t("nav.crown")} subtitle={t("nav.crown_sub")} onClick={() => setView("crown")} />
-              <NavTile icon={<BookOpen className="w-5 h-5 text-franciscan" />} title={t("nav.office")} subtitle={t("nav.office_sub")} onClick={() => setView("office")} />
-              <NavTile icon={<Cross className="w-5 h-5 text-franciscan" />} title={t("nav.stations")} subtitle={t("nav.stations_sub")} onClick={() => setView("stations")} />
-              <NavTile icon={<HandHeart className="w-5 h-5 text-franciscan" />} title={t("nav.prayers")} subtitle={t("nav.prayers_sub")} onClick={() => setView("prayers")} />
-              <NavTile icon={<Scroll className="w-5 h-5 text-franciscan" />} title={t("nav.rule")} subtitle={t("nav.rule_sub")} onClick={() => setView("rule")} />
-              <NavTile icon={<Calendar className="w-5 h-5 text-franciscan" />} title={t("nav.calendar")} subtitle={`42 ${t("nav.calendar_sub")}`} onClick={() => setView("calendar")} />
+              <NavTile icon={<Clock className="w-5 h-5 text-franciscan" />} title={t("nav.hours")} subtitle={t("nav.hours_sub")} onClick={() => navigateTo("hours")} />
+              <NavTile icon={<Flower2 className="w-5 h-5 text-franciscan" />} title={t("nav.crown")} subtitle={t("nav.crown_sub")} onClick={() => navigateTo("crown")} />
+              <NavTile icon={<BookOpen className="w-5 h-5 text-franciscan" />} title={t("nav.office")} subtitle={t("nav.office_sub")} onClick={() => navigateTo("office")} />
+              <NavTile icon={<Cross className="w-5 h-5 text-franciscan" />} title={t("nav.stations")} subtitle={t("nav.stations_sub")} onClick={() => navigateTo("stations")} />
+              <NavTile icon={<HandHeart className="w-5 h-5 text-franciscan" />} title={t("nav.prayers")} subtitle={t("nav.prayers_sub")} onClick={() => navigateTo("prayers")} />
+              <NavTile icon={<Scroll className="w-5 h-5 text-franciscan" />} title={t("nav.rule")} subtitle={t("nav.rule_sub")} onClick={() => navigateTo("rule")} />
+              <NavTile icon={<Calendar className="w-5 h-5 text-franciscan" />} title={t("nav.calendar")} subtitle={`42 ${t("nav.calendar_sub")}`} onClick={() => navigateTo("calendar")} />
               <a href={getTodayUSCCBUrl()} target="_blank" rel="noopener noreferrer" className="bg-card rounded-xl border border-border p-4 text-left hover:border-franciscan/40 transition-colors flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-franciscan-light flex items-center justify-center"><ExternalLink className="w-5 h-5 text-franciscan" /></div>
                 <div className="flex-1">
@@ -263,10 +272,10 @@ export default function Home() {
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground" />
               </a>
-              <NavTile icon={<Users className="w-5 h-5 text-franciscan" />} title={t("nav.community")} subtitle={t("nav.community_sub")} onClick={() => setView("community")} />
-              <NavTile icon={<Heart className="w-5 h-5 text-franciscan" />} title={t("nav.intentions")} subtitle={t("nav.intentions_sub")} onClick={() => setView("intentions")} />
-              <NavTile icon={<BarChart3 className="w-5 h-5 text-franciscan" />} title={t("nav.dashboard")} subtitle={t("nav.dashboard_sub")} onClick={() => setView("dashboard")} />
-              <NavTile icon={<Info className="w-5 h-5 text-franciscan" />} title={t("nav.about")} subtitle={t("nav.about_sub")} onClick={() => setView("about")} />
+              <NavTile icon={<Users className="w-5 h-5 text-franciscan" />} title={t("nav.community")} subtitle={t("nav.community_sub")} onClick={() => navigateTo("community")} />
+              <NavTile icon={<Heart className="w-5 h-5 text-franciscan" />} title={t("nav.intentions")} subtitle={t("nav.intentions_sub")} onClick={() => navigateTo("intentions")} />
+              <NavTile icon={<BarChart3 className="w-5 h-5 text-franciscan" />} title={t("nav.dashboard")} subtitle={t("nav.dashboard_sub")} onClick={() => navigateTo("dashboard")} />
+              <NavTile icon={<Info className="w-5 h-5 text-franciscan" />} title={t("nav.about")} subtitle={t("nav.about_sub")} onClick={() => navigateTo("about")} />
             </div>
           </div>
         )}
@@ -282,7 +291,7 @@ export default function Home() {
                 const done = completedHours.includes(hour.id);
                 const isDay = ["lauds", "prime", "terce", "sext", "none"].includes(hour.id);
                 return (
-                  <button key={hour.id} onClick={() => { if (hour.id === "compline" && !completedHours.includes("compline")) { setShowExamination(true); } else { setActiveHourId(hour.id); } }}
+                  <button key={hour.id} onClick={() => { if (hour.id === "compline" && !completedHours.includes("compline")) { trackExaminationStarted(); setShowExamination(true); } else { trackHourStarted(hour.id); setActiveHourId(hour.id); } }}
                     className={cn("w-full bg-card rounded-lg border p-4 text-left transition-all flex items-center gap-3", done ? "border-franciscan/30 opacity-70" : "border-border hover:border-franciscan/40")}>
                     <div className="w-8 h-8 rounded-full flex items-center justify-center bg-muted">
                       {done ? <Check className="w-4 h-4 text-franciscan" /> : isDay ? <Sun className="w-4 h-4 text-muted-foreground" /> : <Moon className="w-4 h-4 text-muted-foreground" />}

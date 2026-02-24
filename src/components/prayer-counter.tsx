@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { playTap, playBell, playCompletionChime } from "@/lib/audio";
 import { useI18n } from "@/lib/i18n";
 import { HOURS_I18N, type Hour } from "@/lib/prayers";
+import { trackHourCompleted } from "@/lib/analytics";
 
 interface PrayerCounterProps {
   hour: Hour;
@@ -82,6 +83,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
         completions.push(hour.id);
         localStorage.setItem(completionsKey, JSON.stringify(completions));
       }
+      trackHourCompleted(hour.id, hour.paterCount);
       setTimeout(onComplete, 800);
     }
   }, [count, completed, hour, onComplete, soundEnabled]);
