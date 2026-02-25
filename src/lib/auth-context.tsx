@@ -163,6 +163,7 @@ async function pullPreferences(userId: string) {
   // Only restore if local has no saved preference (fresh device)
   if (!localStorage.getItem("fp_locale") && data.locale) {
     localStorage.setItem("fp_locale", data.locale);
+    window.dispatchEvent(new CustomEvent("fp-locale-sync", { detail: data.locale }));
   }
   if (!localStorage.getItem("fp_sound_enabled") && data.sound_enabled !== null) {
     localStorage.setItem("fp_sound_enabled", String(data.sound_enabled));

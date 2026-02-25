@@ -69,8 +69,7 @@ export default function Home() {
   const [completedHours, setCompletedHours] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
   const [showExamination, setShowExamination] = useState(false);
-  const { showOnboarding, dismiss: dismissOnboarding } = useOnboarding();
-  const [onboardingDone, setOnboardingDone] = useState(!showOnboarding);
+  const { showOnboarding, dismiss: dismissOnboarding, checked } = useOnboarding();
   const { syncToCloud, user } = useAuth();
   const liturgy = getLiturgicalInfo();
   const todayFeast = getTodayFeast();
@@ -114,9 +113,12 @@ export default function Home() {
   const getHourTime = (id: string) => hourI18n[id]?.typicalTime || "";
   const navigateTo = (v: View) => { trackViewChanged(v); setView(v); };
 
-  // First-time onboarding
-  if (!onboardingDone) {
-    return <Onboarding onComplete={() => { dismissOnboarding(); setOnboardingDone(true); }} />;
+  // Wait for hydration check
+  if (!checked) return null;
+
+  // First-time onboarding / sign-in
+  if (showOnboarding) {
+    return <Onboarding onComplete={dismissOnboarding} />;
   }
 
   if (showExamination) {

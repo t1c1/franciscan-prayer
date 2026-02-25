@@ -21,6 +21,7 @@ export const LOCALE_FLAGS: Record<Locale, string> = {
 };
 
 const STORAGE_KEY = "fp_locale";
+const SUPPORTED: Locale[] = ["en", "es", "it", "fr", "zh"];
 
 interface I18nContextType {
   locale: Locale;
@@ -61,19 +62,35 @@ async function loadTranslations(): Promise<Record<Locale, Record<string, string>
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("en");
   const [strings, setStrings] = useState<Record<string, string>>({});
+  const [ready, setReady] = useState(false);
 
+  // Detect locale on mount
   useEffect(() => {
-    // Detect saved locale or browser language
     const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
-    if (saved && saved in LOCALE_LABELS) {
+    if (saved && SUPPORTED.includes(saved)) {
       setLocaleState(saved);
     } else {
-      const browserLang = navigator.language.slice(0, 2);
-      const detected = (["en", "es", "it", "fr", "zh"].includes(browserLang) ? browserLang : "en") as Locale;
+      const browserLang = navigator.language.slice(0, 2) as Locale;
+      const detected = SUPPORTED.includes(browserLang) ? browserLang : "en";
       setLocaleState(detected);
+      localStorage.setItem(STORAGE_KEY, detected);
     }
+    setReady(true);
   }, []);
 
+  // Listen for cloud locale sync from auth-context
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const locale = (e as CustomEvent).detail as Locale;
+      if (SUPPORTED.includes(locale)) {
+        setLocaleState(locale);
+      }
+    };
+    window.addEventListener("fp-locale-sync", handler);
+    return () => window.removeEventListener("fp-locale-sync", handler);
+  }, []);
+
+  // Load translation strings when locale changes
   useEffect(() => {
     loadTranslations().then((t) => {
       setStrings(t[locale] || t.en);
@@ -88,6 +105,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const t = (key: string): string => {
     return strings[key] || key;
   };
+
+  if (!ready) return null;
 
   return (
     <I18nContext.Provider value={{ locale, setLocale, t }}>

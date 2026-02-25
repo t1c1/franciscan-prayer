@@ -1,163 +1,195 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronRight, Clock, Heart, Globe } from "lucide-react";
-import { useI18n, LOCALE_LABELS, type Locale } from "@/lib/i18n";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { cn } from "@/lib/utils";
 import { trackOnboardingCompleted } from "@/lib/analytics";
 
 const STORAGE_KEY = "fp_onboarding_done";
 
 export function useOnboarding() {
-  if (typeof window === "undefined") return { showOnboarding: false, dismiss: () => {} };
-  const done = localStorage.getItem(STORAGE_KEY) === "true";
-  const dismiss = () => localStorage.setItem(STORAGE_KEY, "true");
-  return { showOnboarding: !done, dismiss };
-}
+  const [show, setShow] = useState(false);
+  const [checked, setChecked] = useState(false);
 
-interface Step {
-  icon: React.ReactNode;
-  title: Record<string, string>;
-  body: Record<string, string>;
-}
+  useEffect(() => {
+    setShow(localStorage.getItem(STORAGE_KEY) !== "true");
+    setChecked(true);
+  }, []);
 
-const STEPS: Step[] = [
-  {
-    icon: <div className="text-4xl">☦️</div>,
-    title: {
-      en: "Welcome to Franciscan Prayer",
-      es: "Bienvenido a Oración Franciscana",
-      it: "Benvenuto in Preghiera Francescana",
-      fr: "Bienvenue dans Prière Franciscaine",
-      zh: "欢迎使用方济各祈祷",
-    },
-    body: {
-      en: "Pray as a Franciscan every day — whether you are a friar, a sister, a secular Franciscan, or anyone drawn to the spirituality of St. Francis.",
-      es: "Reza como franciscano cada día — ya seas fraile, hermana, franciscano seglar, o cualquiera atraído por la espiritualidad de San Francisco.",
-      it: "Prega come un francescano ogni giorno — che tu sia un frate, una suora, un francescano secolare, o chiunque attratto dalla spiritualità di San Francesco.",
-      fr: "Priez comme un franciscain chaque jour — que vous soyez frère, sœur, franciscain séculier, ou toute personne attirée par la spiritualité de Saint François.",
-      zh: "每天像方济各会士一样祈祷——无论你是修士、修女、在俗方济各会员，还是被亚西西圣方济各的灵修吸引的任何人。",
-    },
-  },
-  {
-    icon: <Clock className="w-12 h-12 text-franciscan" />,
-    title: {
-      en: "The Original Pater Count",
-      es: "El Recuento Original del Padrenuestro",
-      it: "Il Conteggio Originale del Pater",
-      fr: "Le Décompte Original du Pater",
-      zh: "原始天主经计数",
-    },
-    body: {
-      en: "The Rule of St. Francis (1223) prescribes 76 Our Fathers per day across 8 canonical hours. Tap to count each prayer — the app tracks your progress and streaks.",
-      es: "La Regla de San Francisco (1223) prescribe 76 Padrenuestros por día en 8 horas canónicas. Toca para contar cada oración — la app rastrea tu progreso y rachas.",
-      it: "La Regola di San Francesco (1223) prescrive 76 Pater Noster al giorno nelle 8 ore canoniche. Tocca per contare ogni preghiera — l'app tiene traccia del tuo progresso.",
-      fr: "La Règle de Saint François (1223) prescrit 76 Notre Père par jour sur 8 heures canoniques. Appuyez pour compter chaque prière — l'app suit votre progression.",
-      zh: "圣方济各会规（1223年）规定每天在8个时辰中诵念76遍天主经。点击计数每遍祈祷——应用会追踪你的进度和连续天数。",
-    },
-  },
-  {
-    icon: <Heart className="w-12 h-12 text-franciscan" />,
-    title: {
-      en: "Rich Franciscan Tradition",
-      es: "Rica Tradición Franciscana",
-      it: "Ricca Tradizione Francescana",
-      fr: "Riche Tradition Franciscaine",
-      zh: "丰富的方济各传统",
-    },
-    body: {
-      en: "Explore the Franciscan Crown Rosary, Stations of the Cross, 13 prayers in 6 languages, the Rule, daily quotes from Franciscan saints, and an examination of conscience for Compline.",
-      es: "Explora la Corona Franciscana, el Viacrucis, 13 oraciones en 6 idiomas, la Regla, citas diarias de santos franciscanos, y un examen de conciencia para Completas.",
-      it: "Esplora la Corona Francescana, la Via Crucis, 13 preghiere in 6 lingue, la Regola, citazioni quotidiane di santi francescani, e un esame di coscienza per la Compieta.",
-      fr: "Explorez la Couronne Franciscaine, le Chemin de Croix, 13 prières en 6 langues, la Règle, des citations quotidiennes de saints franciscains, et un examen de conscience pour les Complies.",
-      zh: "探索方济各玫瑰经、苦路十四处、6种语言的13篇祈祷、会规、方济各圣人每日名言，以及夜课省察。",
-    },
-  },
-];
+  const dismiss = () => {
+    localStorage.setItem(STORAGE_KEY, "true");
+    setShow(false);
+  };
+
+  return { showOnboarding: show, dismiss, checked };
+}
 
 export function Onboarding({ onComplete }: { onComplete: () => void }) {
-  const [step, setStep] = useState(0);
-  const { locale, setLocale } = useI18n();
+  const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleFinish = () => {
+  const finish = () => {
     localStorage.setItem(STORAGE_KEY, "true");
     trackOnboardingCompleted();
     onComplete();
   };
 
-  // Language picker on step 0
-  if (step === 0) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
-        <Globe className="w-12 h-12 text-franciscan mb-4" />
-        <h2 className="text-xl font-bold text-foreground mb-2">
-          {locale === "zh" ? "选择你的语言" : locale === "es" ? "Elige tu idioma" : locale === "it" ? "Scegli la tua lingua" : locale === "fr" ? "Choisissez votre langue" : "Choose Your Language"}
-        </h2>
-        <div className="grid grid-cols-1 gap-2 w-full max-w-xs mt-4">
-          {(Object.keys(LOCALE_LABELS) as Locale[]).map((l) => (
-            <button
-              key={l}
-              onClick={() => setLocale(l)}
-              className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${locale === l ? "bg-franciscan text-franciscan-foreground" : "bg-card border border-border text-foreground hover:border-franciscan/40"}`}
-            >
-              {LOCALE_LABELS[l]}
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={() => setStep(1)}
-          className="mt-6 flex items-center gap-1 text-franciscan font-medium text-sm hover:opacity-80 transition-opacity"
-        >
-          {locale === "zh" ? "继续" : locale === "es" ? "Continuar" : locale === "it" ? "Continua" : locale === "fr" ? "Continuer" : "Continue"} <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-    );
-  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setSubmitting(true);
 
-  const s = STEPS[step - 1];
-  const isLast = step >= STEPS.length;
+    const fn = mode === "signin" ? signInWithEmail : signUpWithEmail;
+    const err = await fn(email, password);
 
-  if (isLast) {
-    handleFinish();
-    return null;
-  }
+    setSubmitting(false);
+    if (err) {
+      setError(err);
+    } else if (mode === "signup") {
+      setSuccess(true);
+    } else {
+      finish();
+    }
+  };
+
+  const handleGoogle = () => {
+    // Mark onboarding done before redirect so user doesn't see it again
+    localStorage.setItem(STORAGE_KEY, "true");
+    signInWithGoogle();
+  };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
-      <div className="mb-6">{s.icon}</div>
-      <h2 className="text-xl font-bold text-foreground mb-3">
-        {s.title[locale] || s.title.en}
-      </h2>
-      <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
-        {s.body[locale] || s.body.en}
-      </p>
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+      <div className="w-full max-w-sm">
+        {/* Branding */}
+        <div className="text-center mb-8">
+          <div className="text-5xl mb-3">☦️</div>
+          <h1 className="text-2xl font-bold text-foreground">
+            Franciscan Prayer
+          </h1>
+          <p className="text-sm text-muted-foreground mt-2">
+            Sign in to sync your prayers across devices
+          </p>
+        </div>
 
-      {/* Progress dots */}
-      <div className="flex gap-2 mt-8">
-        {STEPS.map((_, i) => (
-          <div
-            key={i}
-            className={`w-2 h-2 rounded-full transition-colors ${i === step - 1 ? "bg-franciscan" : "bg-muted"}`}
-          />
-        ))}
-      </div>
+        {success ? (
+          <div className="text-center py-4">
+            <p className="text-sm text-foreground">
+              Check your email for a confirmation link.
+            </p>
+            <button
+              onClick={finish}
+              className="mt-4 text-sm text-franciscan hover:underline"
+            >
+              Continue to app
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Google sign-in */}
+            <button
+              onClick={handleGoogle}
+              className="w-full flex items-center justify-center gap-2 bg-card border border-border rounded-lg p-3 text-sm font-medium hover:bg-accent transition-colors mb-4"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+              </svg>
+              Continue with Google
+            </button>
 
-      <div className="flex gap-4 mt-6">
-        <button
-          onClick={handleFinish}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
-          {locale === "zh" ? "跳过" : locale === "es" ? "Omitir" : locale === "it" ? "Salta" : locale === "fr" ? "Passer" : "Skip"}
-        </button>
-        <button
-          onClick={() => setStep(step + 1)}
-          className="flex items-center gap-1 bg-franciscan text-franciscan-foreground px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-        >
-          {step >= STEPS.length
-            ? (locale === "zh" ? "开始祈祷" : locale === "es" ? "Comenzar" : locale === "it" ? "Inizia" : locale === "fr" ? "Commencer" : "Start Praying")
-            : (locale === "zh" ? "下一步" : locale === "es" ? "Siguiente" : locale === "it" ? "Avanti" : locale === "fr" ? "Suivant" : "Next")
-          }
-          <ChevronRight className="w-4 h-4" />
-        </button>
+            {/* Divider */}
+            <div className="relative mb-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="bg-background px-2 text-muted-foreground">
+                  or with email
+                </span>
+              </div>
+            </div>
+
+            {/* Email form */}
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full bg-background border border-input rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className="w-full bg-background border border-input rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+
+              {error && (
+                <p className="text-xs text-destructive">{error}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className={cn(
+                  "w-full bg-franciscan text-franciscan-foreground rounded-lg p-3 text-sm font-semibold hover:opacity-90 transition-opacity",
+                  submitting && "opacity-50"
+                )}
+              >
+                {submitting
+                  ? "..."
+                  : mode === "signin"
+                  ? "Sign In"
+                  : "Create Account"}
+              </button>
+            </form>
+
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              {mode === "signin" ? (
+                <>
+                  No account?{" "}
+                  <button
+                    onClick={() => setMode("signup")}
+                    className="text-franciscan hover:underline"
+                  >
+                    Sign up
+                  </button>
+                </>
+              ) : (
+                <>
+                  Already have an account?{" "}
+                  <button
+                    onClick={() => setMode("signin")}
+                    className="text-franciscan hover:underline"
+                  >
+                    Sign in
+                  </button>
+                </>
+              )}
+            </p>
+
+            {/* Skip */}
+            <button
+              onClick={finish}
+              className="w-full text-center text-xs text-muted-foreground hover:text-foreground mt-6 transition-colors"
+            >
+              Continue without account →
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
