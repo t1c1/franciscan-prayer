@@ -182,6 +182,7 @@ function SourceLink({ label, href }: { label: string; href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={(e) => { e.preventDefault(); window.open(href, "_blank", "noopener,noreferrer"); }}
       className="flex items-center gap-1 text-franciscan hover:underline"
     >
       <ExternalLink className="w-3 h-3" /> {label}

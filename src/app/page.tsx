@@ -326,7 +326,7 @@ export default function Home() {
                   <button key={hour.id} onClick={() => { if (hour.id === "compline" && !completedHours.includes("compline")) { trackExaminationStarted(); setShowExamination(true); } else { trackHourStarted(hour.id); setActiveHourId(hour.id); } }}
                     className={cn("w-full bg-card rounded-lg border p-4 text-left transition-all flex items-center gap-3", done ? "border-franciscan/30 opacity-70" : "border-border hover:border-franciscan/40")}>
                     <div className="w-8 h-8 rounded-full flex items-center justify-center bg-muted">
-                      {done ? <Check className="w-4 h-4 text-franciscan" /> : isDay ? <Sun className="w-4 h-4 text-muted-foreground" /> : <Moon className="w-4 h-4 text-muted-foreground" />}
+                      {done ? <Check className="w-4 h-4 text-franciscan" /> : hour.id === "dead" ? <Cross className="w-4 h-4 text-muted-foreground" /> : isDay ? <Sun className="w-4 h-4 text-muted-foreground" /> : <Moon className="w-4 h-4 text-muted-foreground" />}
                     </div>
                     <div className="flex-1">
                       <p className={cn("font-medium", done && "line-through")}>

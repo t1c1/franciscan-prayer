@@ -36,7 +36,7 @@ export function DivineOfficeLinks() {
       <p className="text-sm text-muted-foreground">{u.desc}</p>
 
       <div className="space-y-2">
-        {HOURS.map((hour) => {
+        {HOURS.filter((hour) => HOUR_LINKS[hour.id]).map((hour) => {
           const h = hourI18n[hour.id];
           return (
             <a
@@ -44,7 +44,7 @@ export function DivineOfficeLinks() {
               href={HOUR_LINKS[hour.id]}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => trackExternalLink(`divineoffice-${hour.id}`)}
+              onClick={(e) => { e.preventDefault(); trackExternalLink(`divineoffice-${hour.id}`); window.open(HOUR_LINKS[hour.id], "_blank", "noopener,noreferrer"); }}
               className="flex items-center justify-between bg-card rounded-lg border border-border p-3 hover:border-franciscan/40 transition-colors"
             >
               <div>
