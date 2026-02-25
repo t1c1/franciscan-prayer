@@ -31,6 +31,7 @@ import { SyncDashboard } from "@/components/sync-dashboard";
 import { ExaminationOfConscience } from "@/components/examination-of-conscience";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Onboarding, useOnboarding } from "@/components/onboarding";
+import { IntroOnboarding, useIntroOnboarding } from "@/components/intro-onboarding";
 import { useAuth } from "@/lib/auth-context";
 import { getTodayFeast, CALENDAR_I18N } from "@/lib/franciscan-calendar";
 import { cn } from "@/lib/utils";
@@ -70,6 +71,7 @@ export default function Home() {
   const [streak, setStreak] = useState(0);
   const [showExamination, setShowExamination] = useState(false);
   const { showOnboarding, dismiss: dismissOnboarding, checked } = useOnboarding();
+  const { state: introState, dismiss: dismissIntro } = useIntroOnboarding();
   const { syncToCloud, user } = useAuth();
   const liturgy = getLiturgicalInfo();
   const todayFeast = getTodayFeast();
@@ -114,9 +116,23 @@ export default function Home() {
   const navigateTo = (v: View) => { trackViewChanged(v); setView(v); };
 
   // Wait for hydration check
-  if (!checked) return null;
+  if (!checked || introState === "loading") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-5xl mb-3">☦️</div>
+          <h1 className="text-xl font-bold text-foreground">Franciscan Prayer</h1>
+        </div>
+      </div>
+    );
+  }
 
-  // First-time onboarding / sign-in
+  // First-time intro onboarding
+  if (introState === "show") {
+    return <IntroOnboarding onComplete={dismissIntro} />;
+  }
+
+  // Sign-in onboarding (if user hasn't signed in)
   if (showOnboarding) {
     return <Onboarding onComplete={dismissOnboarding} />;
   }

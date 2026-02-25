@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, RotateCcw } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { ABOUT_I18N } from "@/lib/about-i18n";
 import { ListenButton } from "@/components/listen-button";
@@ -49,6 +49,11 @@ export function AboutPage() {
   const i = locale !== "en" ? ABOUT_I18N[locale as keyof typeof ABOUT_I18N] : EN_ABOUT;
   const dailyTotalLabel = getDailyTotalLabel(locale);
 
+  const handleReplayOnboarding = () => {
+    localStorage.removeItem("fp_onboarding_done");
+    window.location.reload();
+  };
+
   const aboutNarration = [
     i.intro1,
     i.intro2,
@@ -68,7 +73,11 @@ export function AboutPage() {
 
   return (
     <div className="space-y-6">
-      <ListenButton text={aboutNarration} locale={locale} />
+      <ListenButton
+        text={aboutNarration}
+        locale={locale}
+        audioSrc={`/audio/about/${locale}/full.mp3`}
+      />
 
       {/* Intro */}
       <div className="space-y-3">
@@ -144,6 +153,17 @@ export function AboutPage() {
           <SourceLink label="Liturgical Calendar API" href="https://litcal.johnromanodorazio.com" />
           <SourceLink label="Rule of St. Francis (1223)" href="https://www.franciscanarchive.org/patriarcha/writings/opuscula/reg2.html" />
         </div>
+      </div>
+
+      {/* Replay Onboarding */}
+      <div className="bg-card rounded-xl border border-border p-4">
+        <button
+          onClick={handleReplayOnboarding}
+          className="w-full flex items-center justify-center gap-2 text-franciscan hover:opacity-80 transition-opacity text-sm font-medium"
+        >
+          <RotateCcw className="w-4 h-4" />
+          {locale === "zh" ? "重新播放介绍" : locale === "es" ? "Reproducir Introducción" : locale === "it" ? "Riproduci Introduzione" : locale === "fr" ? "Revoir l'Introduction" : "Replay Introduction"}
+        </button>
       </div>
 
       {/* Pax et Bonum */}

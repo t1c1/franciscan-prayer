@@ -7,6 +7,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "app.subtitle": "The Hours · The Rule · The Gospel",
     "app.sound_on": "Sound On",
     "app.sound_off": "Sound Off",
+    "audio.listen": "Listen",
+    "audio.stop": "Stop",
+    "audio.loading": "Loading Audio",
 
     // Progress
     "progress.title": "Today's Progress",
@@ -157,6 +160,19 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "footer.pax": "Pax et Bonum",
     "footer.amdg": "Ad Maiorem Dei Gloriam",
 
+    // Onboarding
+    "onboarding.lang_title": "Choose Your Language",
+    "onboarding.continue": "Continue",
+    "onboarding.skip": "Skip",
+    "onboarding.next": "Next",
+    "onboarding.start": "Start Praying",
+    "onboarding.step1_title": "Welcome to Franciscan Prayer",
+    "onboarding.step1_body": "Pray as a Franciscan every day. Whether you are a friar, a sister, a secular Franciscan, or anyone drawn to the spirituality of St. Francis, this app helps you live the Franciscan prayer tradition.",
+    "onboarding.step2_title": "The Original Pater Count",
+    "onboarding.step2_body": "The Rule of St. Francis (1223) prescribes 76 Our Fathers per day across 8 canonical hours. Tap to count each prayer as you pray. The app tracks your daily progress and helps you build a consistent prayer habit.",
+    "onboarding.step3_title": "Rich Franciscan Tradition",
+    "onboarding.step3_body": "Explore the Franciscan Crown Rosary, Stations of the Cross, 13 prayers in 5 languages, daily readings from the Rule, quotes from Franciscan saints, and an examination of conscience for Compline. Everything you need to pray as a Franciscan.",
+
     // Misc
     "share.title": "All 76 Paters Complete!",
     "share.streak": "day streak",
@@ -168,6 +184,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "app.subtitle": "Las Horas · La Regla · El Evangelio",
     "app.sound_on": "Sonido",
     "app.sound_off": "Sin Sonido",
+    "audio.listen": "Escuchar",
+    "audio.stop": "Detener",
+    "audio.loading": "Cargando audio",
 
     "progress.title": "Progreso de Hoy",
     "progress.paters": "Padrenuestros",
@@ -291,6 +310,18 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "footer.pax": "Pax et Bonum",
     "footer.amdg": "Ad Maiorem Dei Gloriam",
 
+    "onboarding.lang_title": "Elige tu idioma",
+    "onboarding.continue": "Continuar",
+    "onboarding.skip": "Omitir",
+    "onboarding.next": "Siguiente",
+    "onboarding.start": "Comenzar a Rezar",
+    "onboarding.step1_title": "Bienvenido a Oración Franciscana",
+    "onboarding.step1_body": "Reza como franciscano cada día. Ya seas fraile, hermana, franciscano seglar, o cualquiera atraído por la espiritualidad de San Francisco, esta app te ayuda a vivir la tradición de oración franciscana.",
+    "onboarding.step2_title": "El Recuento Original del Padrenuestro",
+    "onboarding.step2_body": "La Regla de San Francisco (1223) prescribe 76 Padrenuestros por día en 8 horas canónicas. Toca para contar cada oración mientras rezas. La app rastrea tu progreso diario y te ayuda a construir un hábito de oración constante.",
+    "onboarding.step3_title": "Rica Tradición Franciscana",
+    "onboarding.step3_body": "Explora la Corona Franciscana, el Viacrucis, 13 oraciones en 5 idiomas, lecturas diarias de la Regla, citas de santos franciscanos, y un examen de conciencia para Completas. Todo lo que necesitas para rezar como franciscano.",
+
     "share.title": "¡76 Padrenuestros Completados!",
     "share.streak": "días de racha",
     "share.footer": "Pax et Bonum — franciscan-prayer.pages.dev",
@@ -301,6 +332,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "app.subtitle": "Le Ore · La Regola · Il Vangelo",
     "app.sound_on": "Suono",
     "app.sound_off": "Muto",
+    "audio.listen": "Ascolta",
+    "audio.stop": "Ferma",
+    "audio.loading": "Caricamento audio",
 
     "progress.title": "Progresso di Oggi",
     "progress.paters": "Pater",
@@ -424,6 +458,18 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "footer.pax": "Pax et Bonum",
     "footer.amdg": "Ad Maiorem Dei Gloriam",
 
+    "onboarding.lang_title": "Scegli la tua lingua",
+    "onboarding.continue": "Continua",
+    "onboarding.skip": "Salta",
+    "onboarding.next": "Avanti",
+    "onboarding.start": "Inizia a Pregare",
+    "onboarding.step1_title": "Benvenuto in Preghiera Francescana",
+    "onboarding.step1_body": "Prega come un francescano ogni giorno. Che tu sia un frate, una suora, un francescano secolare, o chiunque attratto dalla spiritualità di San Francesco, questa app ti aiuta a vivere la tradizione di preghiera francescana.",
+    "onboarding.step2_title": "Il Conteggio Originale del Pater",
+    "onboarding.step2_body": "La Regola di San Francesco (1223) prescrive 76 Pater Noster al giorno nelle 8 ore canoniche. Tocca per contare ogni preghiera mentre preghi. L'app tiene traccia del tuo progresso quotidiano e ti aiuta a costruire un'abitudine di preghiera costante.",
+    "onboarding.step3_title": "Ricca Tradizione Francescana",
+    "onboarding.step3_body": "Esplora la Corona Francescana, la Via Crucis, 13 preghiere in 5 lingue, letture quotidiane della Regola, citazioni di santi francescani, e un esame di coscienza per la Compieta. Tutto ciò che ti serve per pregare come un francescano.",
+
     "share.title": "76 Pater Completati!",
     "share.streak": "giorni di serie",
     "share.footer": "Pax et Bonum — franciscan-prayer.pages.dev",
@@ -434,6 +480,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "app.subtitle": "Les Heures · La Règle · L'Évangile",
     "app.sound_on": "Son",
     "app.sound_off": "Muet",
+    "audio.listen": "Écouter",
+    "audio.stop": "Arrêter",
+    "audio.loading": "Chargement audio",
 
     "progress.title": "Progrès du Jour",
     "progress.paters": "Pater",
@@ -557,6 +606,18 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "footer.pax": "Pax et Bonum",
     "footer.amdg": "Ad Maiorem Dei Gloriam",
 
+    "onboarding.lang_title": "Choisissez votre langue",
+    "onboarding.continue": "Continuer",
+    "onboarding.skip": "Passer",
+    "onboarding.next": "Suivant",
+    "onboarding.start": "Commencer à Prier",
+    "onboarding.step1_title": "Bienvenue dans Prière Franciscaine",
+    "onboarding.step1_body": "Priez comme un franciscain chaque jour. Que vous soyez frère, sœur, franciscain séculier, ou toute personne attirée par la spiritualité de Saint François, cette app vous aide à vivre la tradition de prière franciscaine.",
+    "onboarding.step2_title": "Le Décompte Original du Pater",
+    "onboarding.step2_body": "La Règle de Saint François (1223) prescrit 76 Notre Père par jour sur 8 heures canoniques. Appuyez pour compter chaque prière pendant que vous priez. L'app suit votre progression quotidienne et vous aide à construire une habitude de prière constante.",
+    "onboarding.step3_title": "Riche Tradition Franciscaine",
+    "onboarding.step3_body": "Explorez la Couronne Franciscaine, le Chemin de Croix, 13 prières en 5 langues, lectures quotidiennes de la Règle, citations de saints franciscains, et un examen de conscience pour les Complies. Tout ce dont vous avez besoin pour prier comme un franciscain.",
+
     "share.title": "76 Pater Complétés !",
     "share.streak": "jours de série",
     "share.footer": "Pax et Bonum — franciscan-prayer.pages.dev",
@@ -567,6 +628,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "app.subtitle": "日课 · 会规 · 福音",
     "app.sound_on": "开启声音",
     "app.sound_off": "静音",
+    "audio.listen": "收听",
+    "audio.stop": "停止",
+    "audio.loading": "音频加载中",
 
     "progress.title": "今日进度",
     "progress.paters": "天主经",
@@ -689,6 +753,18 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "footer.pax": "和平与美善",
     "footer.amdg": "愈显主荣",
+
+    "onboarding.lang_title": "选择你的语言",
+    "onboarding.continue": "继续",
+    "onboarding.skip": "跳过",
+    "onboarding.next": "下一步",
+    "onboarding.start": "开始祈祷",
+    "onboarding.step1_title": "欢迎使用方济各祈祷",
+    "onboarding.step1_body": "每天像方济各会士一样祈祷。无论你是修士、修女、在俗方济各会员，还是被亚西西圣方济各的灵修吸引的任何人，这个应用帮助你活出方济各祈祷传统。",
+    "onboarding.step2_title": "原始天主经计数",
+    "onboarding.step2_body": "圣方济各会规（1223年）规定每天在8个时辰中诵念76遍天主经。点击计数每遍祈祷。应用会追踪你的每日进度，帮助你建立持续的祈祷习惯。",
+    "onboarding.step3_title": "丰富的方济各传统",
+    "onboarding.step3_body": "探索方济各七苦玫瑰经、苦路十四处、5种语言的13篇祈祷、每日会规诵读、方济各圣人名言，以及夜课省察。你需要的一切，都在这里，帮助你像方济各会士一样祈祷。",
 
     "share.title": "76遍天主经全部完成！",
     "share.streak": "天连续",

@@ -118,6 +118,14 @@ export function trackOnboardingCompleted() {
   track("onboarding_completed");
 }
 
+export function trackOnboardingStepViewed(step: number) {
+  track("onboarding_step_viewed", { step_number: step });
+}
+
+export function trackOnboardingSkipped(stepWhenSkipped: number) {
+  track("onboarding_skipped", { step_when_skipped: stepWhenSkipped });
+}
+
 // Achievement
 export function trackAchievementEarned(achievementId: string) {
   track("achievement_earned", { achievement_id: achievementId });
