@@ -3,10 +3,9 @@
 import { useState, useEffect } from "react";
 import { BookOpen, ExternalLink } from "lucide-react";
 import { fetchTodayLiturgical, type LitCalDay } from "@/lib/litcal";
-import { getTodayUSCCBUrl, fetchTodayReadingAudio } from "@/lib/readings";
+import { getTodayUSCCBUrl } from "@/lib/readings";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-import { ListenButton } from "@/components/listen-button";
 
 const COLOR_STYLES: Record<string, string> = {
   green: "bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-800",
@@ -27,28 +26,16 @@ const COLOR_DOT: Record<string, string> = {
 };
 
 export function LiturgicalBanner() {
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const [day, setDay] = useState<LitCalDay | null>(null);
-  const [podcastUrl, setPodcastUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetchTodayLiturgical().then(setDay);
-    fetchTodayReadingAudio().then(setPodcastUrl);
   }, []);
 
   if (!day) return null;
 
   const psalmPrefix = t("banner.psalm");
-  const bannerListenText = [
-    day.name,
-    day.season ? `${day.season}. ${day.grade}` : day.grade,
-    day.readings?.first_reading,
-    day.readings?.psalm ? `${psalmPrefix}${day.readings.psalm}` : null,
-    day.readings?.second_reading,
-    day.readings?.gospel,
-  ]
-    .filter(Boolean)
-    .join("\n\n");
 
   return (
     <div className={cn("rounded-xl border p-4 space-y-2", COLOR_STYLES[day.color] || COLOR_STYLES.green)}>
@@ -74,8 +61,6 @@ export function LiturgicalBanner() {
           {day.readings.gospel && <span className="font-medium">{day.readings.gospel}</span>}
         </div>
       )}
-
-      <ListenButton text={bannerListenText} locale={locale} audioSrc={podcastUrl || undefined} />
 
       <a
         href={getTodayUSCCBUrl()}
