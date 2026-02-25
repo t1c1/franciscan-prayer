@@ -9,6 +9,7 @@ import { EXAMINATION_I18N, EXAMINATION_QUESTIONS } from "../src/lib/examination"
 import { ABOUT_I18N } from "../src/lib/about-i18n";
 import { FRANCISCAN_FEASTS, CALENDAR_I18N } from "../src/lib/franciscan-calendar";
 import { UI_STRINGS } from "../src/lib/ui-strings";
+import { spellOutSmallNumbers } from "../src/lib/number-words";
 
 type Locale = "latin" | "en" | "es" | "it" | "fr" | "zh";
 type AppLocale = Exclude<Locale, "latin">;
@@ -52,7 +53,7 @@ function stripScriptureReference(text: string): string {
 }
 
 function addAsset(map: Map<string, AssetItem>, filePath: string, text: string, locale: Locale) {
-  const normalized = normalizeText(text);
+  const normalized = normalizeText(spellOutSmallNumbers(text, locale));
   if (!normalized) return;
   map.set(filePath, { filePath, text: normalized, locale });
 }

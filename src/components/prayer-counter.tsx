@@ -22,7 +22,7 @@ function getStorageKey(hourId: string): string {
 const VOICE_RATE_STORAGE_KEY = "fp_voice_rate";
 const VOICE_RATE_RANGE = {
   min: 0.7,
-  max: 1.4,
+  max: 2.25,
   step: 0.1,
 } as const;
 
@@ -48,6 +48,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   const guidedAudioRef = useRef<HTMLAudioElement | null>(null);
   const guidedQueueRef = useRef<string[]>([]);
   const guidedIndexRef = useRef(0);
+  const advanceCountRef = useRef<() => void>(() => {});
 
   const stopGuidedPlayback = useCallback(() => {
     const audio = guidedAudioRef.current;
@@ -155,7 +156,12 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     };
 
     audio.onended = () => {
-      const next = guidedIndexRef.current + 1;
+      const currentIdx = guidedIndexRef.current;
+      // Each pair is [pater, response] — odd index means a full cycle completed
+      if (currentIdx % 2 === 1) {
+        advanceCountRef.current();
+      }
+      const next = currentIdx + 1;
       if (next >= guidedQueueRef.current.length) {
         stopGuidedPlayback();
       } else {
@@ -207,6 +213,9 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       setTimeout(onComplete, 800);
     }
   }, [count, completed, hour, onComplete, soundEnabled, stopGuidedPlayback]);
+
+  // Keep ref in sync so onended closure always calls latest advanceCount
+  advanceCountRef.current = advanceCount;
 
   const handleTap = useCallback(() => {
     if (pacingActive) return; // In pacing mode, taps are auto
