@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Check, RotateCcw, Timer, Pause, Play } from "lucide-react";
 import { cn, getLocalDateString } from "@/lib/utils";
-import { playTap, playBell, playCompletionChime } from "@/lib/audio";
+import { playTap, playBell, playCompletionChime, loadBellSettings } from "@/lib/audio";
 import { useI18n } from "@/lib/i18n";
 import { HOURS_I18N, PRAYERS, type Hour } from "@/lib/prayers";
 import { trackHourCompleted } from "@/lib/analytics";
@@ -14,12 +14,6 @@ interface PrayerCounterProps {
   onComplete: () => void;
   onBack: () => void;
 }
-
-const PACE_OPTIONS = [
-  { label: "15s", seconds: 15 },
-  { label: "30s", seconds: 30 },
-  { label: "60s", seconds: 60 },
-];
 
 function getStorageKey(hourId: string): string {
   const today = getLocalDateString();
@@ -32,10 +26,11 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   const [completed, setCompleted] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
-  // Pacing timer state
+  // Pacing timer state — interval loaded from bell settings
+  const bellSettings = loadBellSettings();
   const [pacingActive, setPacingActive] = useState(false);
   const [pacingPaused, setPacingPaused] = useState(false);
-  const [paceSeconds, setPaceSeconds] = useState(30);
+  const [paceSeconds, setPaceSeconds] = useState(bellSettings.interval);
   const [timeLeft, setTimeLeft] = useState(0);
   const pacingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -343,21 +338,22 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
           )}
 
           {!pacingActive && (
-            <div className="flex gap-1">
-              {PACE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.seconds}
-                  onClick={() => setPaceSeconds(opt.seconds)}
-                  className={cn(
-                    "text-xs px-2 py-1 rounded-full transition-colors",
-                    paceSeconds === opt.seconds
-                      ? "bg-franciscan-light text-franciscan font-medium"
-                      : "bg-muted text-muted-foreground"
-                  )}
-                >
-                  {opt.label}
-                </button>
-              ))}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPaceSeconds(Math.max(5, paceSeconds - 5))}
+                className="text-xs w-6 h-6 rounded-full bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center"
+              >
+                &minus;
+              </button>
+              <span className="text-xs font-medium text-franciscan tabular-nums min-w-[32px] text-center">
+                {paceSeconds}s
+              </span>
+              <button
+                onClick={() => setPaceSeconds(Math.min(120, paceSeconds + 5))}
+                className="text-xs w-6 h-6 rounded-full bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center"
+              >
+                +
+              </button>
             </div>
           )}
         </div>

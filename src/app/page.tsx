@@ -27,6 +27,7 @@ import { NotificationToggle } from "@/components/notification-toggle";
 import { IntentionsJournal } from "@/components/intentions-journal";
 import { AboutPage } from "@/components/about-page";
 import { AuthButton } from "@/components/auth-button";
+import { BellSettingsCard } from "@/components/bell-settings";
 import { SyncDashboard } from "@/components/sync-dashboard";
 import { ExaminationOfConscience } from "@/components/examination-of-conscience";
 import { Onboarding, useOnboarding } from "@/components/onboarding";
@@ -187,6 +188,7 @@ export default function Home() {
             </button>
             <div className="flex items-center gap-1.5">
               <span className="text-xs text-muted-foreground font-medium italic">J.M.J.</span>
+              <AuthButton />
               <button
                 onClick={() => navigateTo("settings")}
                 className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
@@ -293,7 +295,7 @@ export default function Home() {
               <NavTile icon={<HandHeart className="w-5 h-5 text-franciscan" />} title={t("nav.prayers")} subtitle={t("nav.prayers_sub")} onClick={() => navigateTo("prayers")} />
               <NavTile icon={<Scroll className="w-5 h-5 text-franciscan" />} title={t("nav.rule")} subtitle={t("nav.rule_sub")} onClick={() => navigateTo("rule")} />
               <NavTile icon={<Calendar className="w-5 h-5 text-franciscan" />} title={t("nav.calendar")} subtitle={`42 ${t("nav.calendar_sub")}`} onClick={() => navigateTo("calendar")} />
-              <a href={getTodayUSCCBUrl()} target="_blank" rel="noopener noreferrer" className="bg-card rounded-xl border border-border p-4 text-left hover:border-franciscan/40 transition-colors flex items-center gap-4">
+              <a href={getTodayUSCCBUrl()} target="_blank" rel="noopener noreferrer" onClick={(e) => { e.preventDefault(); window.open(getTodayUSCCBUrl(), "_blank", "noopener,noreferrer"); }} className="bg-card rounded-xl border border-border p-4 text-left hover:border-franciscan/40 transition-colors flex items-center gap-4">
                 <div className="w-10 h-10 rounded-lg bg-franciscan-light flex items-center justify-center"><ExternalLink className="w-5 h-5 text-franciscan" /></div>
                 <div className="flex-1">
                   <p className="font-semibold text-foreground">{t("nav.readings")}</p>
@@ -374,6 +376,8 @@ export default function Home() {
                 />
               </div>
             </div>
+
+            <BellSettingsCard />
 
             <div className="bg-card rounded-xl border border-border p-4">
               <p className="text-sm font-medium text-foreground">{t("settings.language")}</p>

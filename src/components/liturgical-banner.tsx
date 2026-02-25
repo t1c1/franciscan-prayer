@@ -27,7 +27,7 @@ const COLOR_DOT: Record<string, string> = {
 };
 
 export function LiturgicalBanner() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [day, setDay] = useState<LitCalDay | null>(null);
 
   useEffect(() => {
@@ -73,12 +73,13 @@ export function LiturgicalBanner() {
         </div>
       )}
 
-      <ListenButton text={bannerListenText} locale="en" />
+      <ListenButton text={bannerListenText} locale={locale} />
 
       <a
         href={getTodayUSCCBUrl()}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={(e) => { e.preventDefault(); window.open(getTodayUSCCBUrl(), "_blank", "noopener,noreferrer"); }}
         className="inline-flex items-center gap-1 text-xs text-franciscan hover:underline"
       >
         <ExternalLink className="w-3 h-3" /> {t("banner.read_usccb")}
