@@ -511,10 +511,18 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
           )}
 
           {!pacingActive && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button
-                onClick={() => setPaceSeconds(Math.max(5, paceSeconds - 5))}
+                onClick={() => setPaceSeconds(Math.max(1, paceSeconds - 5))}
                 className="text-xs w-6 h-6 rounded-full bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center"
+                title="-5"
+              >
+                &minus;5
+              </button>
+              <button
+                onClick={() => setPaceSeconds(Math.max(1, paceSeconds - 1))}
+                className="text-xs w-6 h-6 rounded-full bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center"
+                title="-1"
               >
                 &minus;
               </button>
@@ -522,10 +530,18 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
                 {paceSeconds}s
               </span>
               <button
-                onClick={() => setPaceSeconds(Math.min(120, paceSeconds + 5))}
+                onClick={() => setPaceSeconds(Math.min(120, paceSeconds + 1))}
                 className="text-xs w-6 h-6 rounded-full bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center"
+                title="+1"
               >
                 +
+              </button>
+              <button
+                onClick={() => setPaceSeconds(Math.min(120, paceSeconds + 5))}
+                className="text-xs w-6 h-6 rounded-full bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center"
+                title="+5"
+              >
+                +5
               </button>
             </div>
           )}

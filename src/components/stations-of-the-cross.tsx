@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Cross, RotateCcw, Check } from "lucide-react";
 import { STATIONS, STATIONS_PRAYERS, STATIONS_I18N } from "@/lib/stations";
+import { PRAYERS } from "@/lib/prayers";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { ListenButton } from "@/components/listen-button";
@@ -20,11 +21,18 @@ function stationOfLabel(locale: string, t: (key: string) => string, num: number,
   return `${t("stations.station")} ${num} ${t("stations.of")} ${total}`;
 }
 
+function stripScriptureReference(scripture: string): string {
+  return scripture.replace(/[\s\u3000]*[（(][^()（）]{2,120}[)）]\s*$/, "").trim();
+}
+
 export function StationsOfTheCross() {
   const { locale, t } = useI18n();
   const [view, setView] = useState<StationsView>("intro");
   const [current, setCurrent] = useState(0);
   const i18nStations = locale !== "en" && STATIONS_I18N[locale] ? STATIONS_I18N[locale] : null;
+  const ourFather = PRAYERS.find((p) => p.id === "pater-noster")!;
+  const hailMary = PRAYERS.find((p) => p.id === "ave-maria")!;
+  const gloriaPatri = PRAYERS.find((p) => p.id === "gloria-patri")!;
   const introListenText = [t("stations.intro"), STATIONS_PRAYERS.opening].filter(Boolean).join("\n\n");
 
   if (view === "intro") {
@@ -101,12 +109,21 @@ export function StationsOfTheCross() {
 
   const station = STATIONS[current];
   const i18nStation = i18nStations ? i18nStations[current] : null;
+  const stationScripture = i18nStation ? i18nStation.scripture : station.scripture;
+  const fullPrayerSet = [
+    t("stations.pray_instruction"),
+    `${ourFather.titles[locale] || ourFather.title}\n${ourFather[locale] || ourFather.en}`,
+    `${hailMary.titles[locale] || hailMary.title}\n${hailMary[locale] || hailMary.en}`,
+    `${gloriaPatri.titles[locale] || gloriaPatri.title}\n${gloriaPatri[locale] || gloriaPatri.en}`,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
   const stationListenText = [
     i18nStation ? i18nStation.title : station.title,
-    i18nStation ? i18nStation.scripture : station.scripture,
+    stripScriptureReference(stationScripture),
     i18nStation ? i18nStation.meditation : station.meditation,
     STATIONS_PRAYERS.stationResponse,
-    t("stations.pray_instruction"),
+    fullPrayerSet,
   ]
     .filter(Boolean)
     .join("\n\n");
@@ -151,7 +168,7 @@ export function StationsOfTheCross() {
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-1">{t("stations.scripture")}</p>
           <p className="text-sm text-foreground/80 italic leading-relaxed">
-            {i18nStation ? i18nStation.scripture : station.scripture}
+            {stationScripture}
           </p>
         </div>
 

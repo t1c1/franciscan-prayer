@@ -36,6 +36,8 @@ const LANGUAGE_CODES: Record<Locale, string> = {
 
 const force = process.argv.includes("--force");
 const concurrencyArg = process.argv.find((arg) => arg.startsWith("--concurrency="));
+const matchArg = process.argv.find((arg) => arg.startsWith("--match="));
+const matchFilter = matchArg ? matchArg.split("=")[1] : "";
 const requestedConcurrency = concurrencyArg ? Number(concurrencyArg.split("=")[1]) : 4;
 const CONCURRENCY = Number.isFinite(requestedConcurrency) && requestedConcurrency > 0
   ? Math.floor(requestedConcurrency)
@@ -43,6 +45,10 @@ const CONCURRENCY = Number.isFinite(requestedConcurrency) && requestedConcurrenc
 
 function normalizeText(text: string): string {
   return text.replace(/\s+/g, " ").trim();
+}
+
+function stripScriptureReference(text: string): string {
+  return text.replace(/[\s\u3000]*[（(][^()（）]{2,120}[)）]\s*$/, "").trim();
 }
 
 function addAsset(map: Map<string, AssetItem>, filePath: string, text: string, locale: Locale) {
@@ -95,22 +101,22 @@ function buildStationUi() {
     en: {
       intro:
         "The Stations of the Cross is a Franciscan devotion. The Franciscans, as custodians of the Holy Land, popularized this meditation on Christ's Passion. Walk with Jesus from His condemnation to His burial through 14 stations of prayer.",
-      prayInstruction: "Pray 1 Our Father, 1 Hail Mary, 1 Glory Be",
+      prayInstruction: "Pray One Our Father, One Hail Mary, One Glory Be",
     },
     es: {
       intro:
         "El Viacrucis es una devoción franciscana. Los franciscanos, como custodios de Tierra Santa, popularizaron esta meditación sobre la Pasión de Cristo. Camina con Jesús desde su condena hasta su sepultura a través de 14 estaciones de oración.",
-      prayInstruction: "Reza 1 Padrenuestro, 1 Avemaría, 1 Gloria",
+      prayInstruction: "Reza un Padrenuestro, un Avemaría, un Gloria",
     },
     it: {
       intro:
         "La Via Crucis è una devozione francescana. I francescani, come custodi della Terra Santa, hanno diffuso questa meditazione sulla Passione di Cristo. Cammina con Gesù dalla sua condanna alla sua sepoltura attraverso 14 stazioni di preghiera.",
-      prayInstruction: "Prega 1 Padre Nostro, 1 Ave Maria, 1 Gloria",
+      prayInstruction: "Prega un Padre Nostro, un Ave Maria, un Gloria",
     },
     fr: {
       intro:
         "Le Chemin de Croix est une dévotion franciscaine. Les franciscains, en tant que gardiens de la Terre Sainte, ont popularisé cette méditation sur la Passion du Christ. Marchez avec Jésus de sa condamnation à sa mise au tombeau à travers 14 stations de prière.",
-      prayInstruction: "Priez 1 Notre Père, 1 Je vous salue Marie, 1 Gloire au Père",
+      prayInstruction: "Priez un Notre Père, un Je vous salue Marie, un Gloire au Père",
     },
     zh: {
       intro:
@@ -122,10 +128,10 @@ function buildStationUi() {
 
 function buildCrownUi() {
   return {
-    en: { fruit: "Fruit", complete: "Now pray 1 Our Father, 1 Hail Mary, and 1 Glory Be for the Holy Father." },
-    es: { fruit: "Fruto", complete: "Ahora reza 1 Padrenuestro, 1 Avemaría y 1 Gloria al Padre por el Santo Padre." },
-    it: { fruit: "Frutto", complete: "Ora prega 1 Padre Nostro, 1 Ave Maria e 1 Gloria al Padre per il Santo Padre." },
-    fr: { fruit: "Fruit", complete: "Priez maintenant 1 Notre Père, 1 Je vous salue Marie et 1 Gloire au Père pour le Saint-Père." },
+    en: { fruit: "Fruit", complete: "Now pray One Our Father, One Hail Mary, and One Glory Be for the Holy Father." },
+    es: { fruit: "Fruto", complete: "Ahora reza un Padrenuestro, un Avemaría y un Gloria al Padre por el Santo Padre." },
+    it: { fruit: "Frutto", complete: "Ora prega un Padre Nostro, un Ave Maria e un Gloria al Padre per il Santo Padre." },
+    fr: { fruit: "Fruit", complete: "Priez maintenant un Notre Père, un Je vous salue Marie et un Gloire au Père pour le Saint-Père." },
     zh: { fruit: "神果", complete: "现在诵念天主经一遍、圣母经一遍、圣三光荣颂一遍，为教宗的意向祈祷。" },
   } as const;
 }
@@ -181,6 +187,12 @@ function buildAssets(): AssetItem[] {
 
   // Stations
   const stationsUi = buildStationUi();
+  const ourFather = PRAYERS.find((p) => p.id === "pater-noster");
+  const hailMary = PRAYERS.find((p) => p.id === "ave-maria");
+  const gloriaPatri = PRAYERS.find((p) => p.id === "gloria-patri");
+  if (!ourFather || !hailMary || !gloriaPatri) {
+    throw new Error("Missing core prayers for Stations audio generation.");
+  }
   for (const locale of APP_LOCALES) {
     const ui = stationsUi[locale];
     const translatedStations = locale === "en" ? null : STATIONS_I18N[locale];
@@ -199,7 +211,19 @@ function buildAssets(): AssetItem[] {
       const title = translated?.title || station.title;
       const scripture = translated?.scripture || station.scripture;
       const meditation = translated?.meditation || station.meditation;
-      const stationText = [title, scripture, meditation, STATIONS_PRAYERS.stationResponse, ui.prayInstruction].join("\n\n");
+      const prayersText = [
+        ui.prayInstruction,
+        `${ourFather.titles[locale] || ourFather.title}\n${ourFather[locale] || ourFather.en}`,
+        `${hailMary.titles[locale] || hailMary.title}\n${hailMary[locale] || hailMary.en}`,
+        `${gloriaPatri.titles[locale] || gloriaPatri.title}\n${gloriaPatri[locale] || gloriaPatri.en}`,
+      ].join("\n\n");
+      const stationText = [
+        title,
+        stripScriptureReference(scripture),
+        meditation,
+        STATIONS_PRAYERS.stationResponse,
+        prayersText,
+      ].join("\n\n");
       addAsset(
         assets,
         `/audio/stations/${locale}/station-${station.number}.mp3`,
@@ -394,7 +418,10 @@ async function ensureDir(filePath: string) {
 async function run() {
   await loadEnvLocal();
 
-  const assets = buildAssets();
+  const allAssets = buildAssets();
+  const assets = matchFilter
+    ? allAssets.filter((asset) => asset.filePath.includes(matchFilter))
+    : allAssets;
   const apiKey = process.env.ELEVENLABS_API_KEY;
 
   if (!apiKey) {
@@ -403,6 +430,7 @@ async function run() {
   }
 
   console.log(`Planned assets: ${assets.length}`);
+  if (matchFilter) console.log(`Match filter: ${matchFilter}`);
   console.log(`Concurrency: ${CONCURRENCY}`);
 
   let generated = 0;
