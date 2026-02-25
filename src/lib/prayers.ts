@@ -23,6 +23,7 @@ export const TOTAL_DAILY_PATERS = HOURS.reduce((sum, h) => sum + h.paterCount, 0
 export interface PrayerText {
   id: string;
   title: string;
+  titles: Record<string, string>;
   latin: string;
   en: string;
   es: string;
@@ -35,6 +36,7 @@ export const PRAYERS: PrayerText[] = [
   {
     id: "pater-noster",
     title: "Our Father",
+    titles: { en: "Our Father", es: "Padre Nuestro", it: "Padre Nostro", fr: "Notre Père", zh: "天主经" },
     latin: "Pater noster, qui es in caelis,\nsanctificetur nomen tuum.\nAdveniat regnum tuum.\nFiat voluntas tua, sicut in caelo et in terra.\nPanem nostrum quotidianum da nobis hodie,\net dimitte nobis debita nostra,\nsicut et nos dimittimus debitoribus nostris.\nEt ne nos inducas in tentationem,\nsed libera nos a malo.\nAmen.",
     en: "Our Father, who art in heaven,\nhallowed be thy name.\nThy kingdom come.\nThy will be done, on earth as it is in heaven.\nGive us this day our daily bread,\nand forgive us our trespasses,\nas we forgive those who trespass against us.\nAnd lead us not into temptation,\nbut deliver us from evil.\nAmen.",
     es: "Padre nuestro, que estás en el cielo,\nsantificado sea tu nombre.\nVenga a nosotros tu reino.\nHágase tu voluntad en la tierra como en el cielo.\nDanos hoy nuestro pan de cada día,\nperdona nuestras ofensas,\ncomo también nosotros perdonamos a los que nos ofenden.\nNo nos dejes caer en la tentación,\ny líbranos del mal.\nAmén.",
@@ -45,6 +47,7 @@ export const PRAYERS: PrayerText[] = [
   {
     id: "ave-maria",
     title: "Hail Mary",
+    titles: { en: "Hail Mary", es: "Ave María", it: "Ave Maria", fr: "Je vous salue Marie", zh: "圣母经" },
     latin: "Ave Maria, gratia plena,\nDominus tecum.\nBenedicta tu in mulieribus,\net benedictus fructus ventris tui, Iesus.\nSancta Maria, Mater Dei,\nora pro nobis peccatoribus,\nnunc, et in hora mortis nostrae.\nAmen.",
     en: "Hail Mary, full of grace,\nthe Lord is with thee.\nBlessed art thou amongst women,\nand blessed is the fruit of thy womb, Jesus.\nHoly Mary, Mother of God,\npray for us sinners,\nnow, and at the hour of our death.\nAmen.",
     es: "Dios te salve, María, llena eres de gracia,\nel Señor es contigo.\nBendita tú eres entre todas las mujeres,\ny bendito es el fruto de tu vientre, Jesús.\nSanta María, Madre de Dios,\nruega por nosotros, pecadores,\nahora y en la hora de nuestra muerte.\nAmén.",
@@ -55,6 +58,7 @@ export const PRAYERS: PrayerText[] = [
   {
     id: "gloria-patri",
     title: "Glory Be",
+    titles: { en: "Glory Be", es: "Gloria", it: "Gloria", fr: "Gloire au Père", zh: "圣三光荣经" },
     latin: "Gloria Patri, et Filio, et Spiritui Sancto.\nSicut erat in principio, et nunc, et semper,\net in saecula saeculorum.\nAmen.",
     en: "Glory be to the Father, and to the Son, and to the Holy Spirit.\nAs it was in the beginning, is now, and ever shall be,\nworld without end.\nAmen.",
     es: "Gloria al Padre, y al Hijo, y al Espíritu Santo.\nComo era en el principio, ahora y siempre,\npor los siglos de los siglos.\nAmén.",
@@ -65,6 +69,7 @@ export const PRAYERS: PrayerText[] = [
   {
     id: "prayer-of-st-francis",
     title: "Prayer of St. Francis",
+    titles: { en: "Prayer of St. Francis", es: "Oración de San Francisco", it: "Preghiera di San Francesco", fr: "Prière de Saint François", zh: "圣方济各祷词" },
     latin: "",
     en: "Lord, make me an instrument of your peace:\nwhere there is hatred, let me sow love;\nwhere there is injury, pardon;\nwhere there is doubt, faith;\nwhere there is despair, hope;\nwhere there is darkness, light;\nwhere there is sadness, joy.\n\nO divine Master, grant that I may not so much seek\nto be consoled as to console,\nto be understood as to understand,\nto be loved as to love.\nFor it is in giving that we receive,\nit is in pardoning that we are pardoned,\nand it is in dying that we are born to eternal life.\nAmen.",
     es: "Señor, hazme un instrumento de tu paz:\ndonde haya odio, ponga yo amor;\ndonde haya ofensa, ponga yo perdón;\ndonde haya duda, ponga yo fe;\ndonde haya desesperación, ponga yo esperanza;\ndonde haya tinieblas, ponga yo luz;\ndonde haya tristeza, ponga yo alegría.\n\nOh, divino Maestro, concédeme\nque no busque tanto ser consolado como consolar,\nser comprendido como comprender,\nser amado como amar.\nPorque dando es como se recibe,\nperdonando es como se es perdonado,\ny muriendo es como se nace a la vida eterna.\nAmén.",
@@ -75,6 +80,7 @@ export const PRAYERS: PrayerText[] = [
   {
     id: "canticle-of-the-sun",
     title: "Canticle of the Sun",
+    titles: { en: "Canticle of the Sun", es: "Cántico del Sol", it: "Cantico delle Creature", fr: "Cantique du Soleil", zh: "太阳颂" },
     latin: "",
     en: "Most High, all-powerful, all-good Lord,\nAll praise is yours, all glory, all honor, and all blessing.\nTo you, alone, Most High, do they belong.\nNo mortal lips are worthy to pronounce your name.\n\nBe praised, my Lord, through all your creatures,\nespecially through my lord Brother Sun,\nwho brings the day; and you give light through him.\nAnd he is beautiful and radiant in all his splendor!\nOf you, Most High, he bears the likeness.\n\nBe praised, my Lord, through Sister Moon and the stars;\nin the heavens you have made them bright, precious and beautiful.\n\nBe praised, my Lord, through Brothers Wind and Air,\nand clouds and storms, and all the weather,\nthrough which you give your creatures sustenance.\n\nBe praised, my Lord, through Sister Water;\nshe is very useful, and humble, and precious, and pure.\n\nBe praised, my Lord, through Brother Fire,\nthrough whom you brighten the night.\nHe is beautiful and cheerful, and powerful and strong.\n\nBe praised, my Lord, through our sister Mother Earth,\nwho feeds us and rules us,\nand produces various fruits with colored flowers and herbs.\n\nPraise and bless my Lord, and give thanks,\nand serve him with great humility.",
     es: "Altísimo, omnipotente, buen Señor,\ntuyas son las alabanzas, la gloria y el honor y toda bendición.\nA ti solo, Altísimo, te convienen,\ny ningún hombre es digno de hacer de ti mención.\n\nLoado seas, mi Señor, con todas tus criaturas,\nespecialmente el señor hermano Sol,\nel cual es día, y por el cual nos alumbras.\nY él es bello y radiante con gran esplendor,\nde ti, Altísimo, lleva significación.\n\nLoado seas, mi Señor, por la hermana Luna y las estrellas,\nen el cielo las has formado luminosas, preciosas y bellas.\n\nLoado seas, mi Señor, por el hermano Viento,\ny por el aire, y el nublado, y el sereno, y todo tiempo,\npor el cual a tus criaturas das sustento.\n\nLoado seas, mi Señor, por la hermana Agua,\nla cual es muy útil, y humilde, y preciosa, y casta.\n\nLoado seas, mi Señor, por el hermano Fuego,\npor el cual alumbras la noche,\ny él es bello, y alegre, y robusto, y fuerte.\n\nLoado seas, mi Señor, por nuestra hermana la madre Tierra,\nla cual nos sustenta y gobierna,\ny produce diversos frutos con coloridas flores y hierbas.\n\nAlabad y bendecid a mi Señor,\ny dadle gracias y servidle con gran humildad.",

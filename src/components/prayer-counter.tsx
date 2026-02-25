@@ -5,7 +5,7 @@ import { Check, RotateCcw, Timer, Pause, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { playTap, playBell, playCompletionChime } from "@/lib/audio";
 import { useI18n } from "@/lib/i18n";
-import { HOURS_I18N, type Hour } from "@/lib/prayers";
+import { HOURS_I18N, PRAYERS, type Hour } from "@/lib/prayers";
 import { trackHourCompleted } from "@/lib/analytics";
 import { ListenButton } from "@/components/listen-button";
 
@@ -186,6 +186,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   }, [hour.id]);
 
   const progress = Math.min((count / hour.paterCount) * 100, 100);
+  const paterNoster = PRAYERS.find(p => p.id === "pater-noster")!;
   const hourI18n = HOURS_I18N[locale]?.[hour.id] || HOURS_I18N.en[hour.id];
   const hourName = hourI18n?.name || hour.name;
   const hourDesc = hourI18n?.description || hour.description;
@@ -225,7 +226,18 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       <ListenButton
         text={`${hourName}. ${hourDesc}`}
         locale={locale}
+        audioSrc={`/audio/hours/${locale}/${hour.id}.mp3`}
       />
+
+      {/* Our Father prayer text - collapsible */}
+      <details className="w-full max-w-xs">
+        <summary className="text-sm text-franciscan cursor-pointer font-medium text-center">
+          {paterNoster.titles[locale] || paterNoster.title}
+        </summary>
+        <p className="mt-2 text-sm text-foreground/80 whitespace-pre-line leading-relaxed bg-card rounded-lg border border-border p-3">
+          {paterNoster[locale] || paterNoster.en}
+        </p>
+      </details>
 
       {/* The big tap target */}
       <button

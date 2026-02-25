@@ -94,7 +94,7 @@ export function PrayerTextViewer() {
                   onClick={toggleExpanded}
                   className="text-left flex-1"
                 >
-                  <h3 className="font-semibold text-foreground">{prayer.title}</h3>
+                  <h3 className="font-semibold text-foreground">{prayer.titles[lang] || prayer.title}</h3>
                 </button>
                 <button
                   type="button"
@@ -110,7 +110,11 @@ export function PrayerTextViewer() {
               </div>
               {isExpanded ? (
                 <div className="mt-3 space-y-3">
-                  <ListenButton text={text} locale={lang} />
+                  <ListenButton
+                    text={text}
+                    locale={lang}
+                    audioSrc={`/audio/prayers/${lang}/${prayer.id}.mp3`}
+                  />
                   <p className="text-sm text-foreground/80 whitespace-pre-line leading-relaxed">
                     {text}
                   </p>

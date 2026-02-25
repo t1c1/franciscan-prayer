@@ -4,6 +4,7 @@ export const MORE_PRAYERS: PrayerText[] = [
   {
     id: "blessing-of-st-francis",
     title: "Blessing of St. Francis",
+    titles: { en: "Blessing of St. Francis", es: "Bendición de San Francisco", it: "Benedizione di San Francesco", fr: "Bénédiction de Saint François", zh: "圣方济各降福" },
     latin: "Benedicat tibi Dominus et custodiat te.\nOstendat faciem suam tibi et misereatur tui.\nConvertat vultum suum ad te et det tibi pacem.\nDominus benedicat te.",
     en: "May the Lord bless you and keep you.\nMay He show His face to you and have mercy on you.\nMay He turn His countenance to you and give you peace.\nThe Lord bless you.",
     es: "El Señor te bendiga y te guarde.\nEl Señor te muestre su rostro y tenga misericordia de ti.\nEl Señor vuelva hacia ti su mirada y te dé la paz.\nEl Señor te bendiga.",
@@ -14,6 +15,7 @@ export const MORE_PRAYERS: PrayerText[] = [
   {
     id: "san-damiano-crucifix",
     title: "Prayer before the San Damiano Crucifix",
+    titles: { en: "Prayer before the San Damiano Crucifix", es: "Oración ante el Crucifijo de San Damiano", it: "Preghiera davanti al Crocifisso di San Damiano", fr: "Prière devant le Crucifix de San Damiano", zh: "圣达弥盎十字架前祷文" },
     latin: "Altissime, gloriosissime Deus,\nillumina tenebras cordis mei.\nEt da mihi fidem rectam,\nspem certam et caritatem perfectam,\nsensum et cognitionem, Domine,\nut faciam tuum sanctum et verax mandatum.\nAmen.",
     en: "Most High, Glorious God,\nenlighten the darkness of my heart.\nAnd give me true faith,\ncertain hope, and perfect charity,\nsense and knowledge, Lord,\nthat I may carry out Your holy and true command.\nAmen.",
     es: "Altísimo, glorioso Dios,\nilumina las tinieblas de mi corazón.\nY dame fe recta,\nesperanza cierta y caridad perfecta,\nsentido y conocimiento, Señor,\npara que cumpla tu santo y verdadero mandamiento.\nAmén.",
@@ -24,6 +26,7 @@ export const MORE_PRAYERS: PrayerText[] = [
   {
     id: "memorare",
     title: "Memorare",
+    titles: { en: "Memorare", es: "Acordaos", it: "Memorare", fr: "Souvenez-vous", zh: "求忆经" },
     latin: "Memorare, O piissima Virgo Maria,\nnon esse auditum a saeculo,\nquemquam ad tua currentem praesidia,\ntua implorantem auxilia,\ntua petentem suffragia,\nesse derelictum.\nEgo tali animatus confidentia,\nad te, Virgo Virginum, Mater, curro,\nad te venio, coram te gemens peccator assisto.\nNoli, Mater Verbi, verba mea despicere;\nsed audi propitia et exaudi.\nAmen.",
     en: "Remember, O most gracious Virgin Mary,\nthat never was it known\nthat anyone who fled to thy protection,\nimplored thy help,\nor sought thine intercession,\nwas left unaided.\nInspired with this confidence,\nI fly unto thee, O Virgin of virgins, my mother;\nto thee do I come, before thee I stand, sinful and sorrowful.\nO Mother of the Word Incarnate,\ndespise not my petitions,\nbut in thy mercy hear and answer me.\nAmen.",
     es: "Acordaos, oh piadosísima Virgen María,\nque jamás se ha oído decir\nque ninguno de los que han acudido a vuestra protección,\nimplorado vuestro auxilio,\nreclamado vuestro socorro,\nhaya sido desamparado.\nAnimado por esta confianza,\na vos acudo, oh Madre, Virgen de las vírgenes,\ny gimiendo bajo el peso de mis pecados me atrevo a comparecer ante vos.\nOh Madre del Verbo divino,\nno desechéis mis súplicas,\nsino escuchadlas y acogedlas benignamente.\nAmén.",
@@ -34,6 +37,7 @@ export const MORE_PRAYERS: PrayerText[] = [
   {
     id: "angelus",
     title: "The Angelus",
+    titles: { en: "The Angelus", es: "El Ángelus", it: "L'Angelus", fr: "L'Angélus", zh: "三钟经" },
     latin: "V. Angelus Domini nuntiavit Mariae;\nR. Et concepit de Spiritu Sancto.\nAve Maria...\n\nV. Ecce ancilla Domini.\nR. Fiat mihi secundum verbum tuum.\nAve Maria...\n\nV. Et Verbum caro factum est.\nR. Et habitavit in nobis.\nAve Maria...\n\nV. Ora pro nobis, sancta Dei Genetrix.\nR. Ut digni efficiamur promissionibus Christi.\n\nOremus. Gratiam tuam, quaesumus, Domine, mentibus nostris infunde; ut qui, Angelo nuntiante, Christi Filii tui incarnationem cognovimus, per passionem ejus et crucem ad resurrectionis gloriam perducamur. Per eundem Christum Dominum nostrum.\nR. Amen.",
     en: "V. The Angel of the Lord declared unto Mary;\nR. And she conceived of the Holy Spirit.\nHail Mary...\n\nV. Behold the handmaid of the Lord.\nR. Be it done unto me according to thy word.\nHail Mary...\n\nV. And the Word was made flesh.\nR. And dwelt among us.\nHail Mary...\n\nV. Pray for us, O Holy Mother of God.\nR. That we may be made worthy of the promises of Christ.\n\nLet us pray. Pour forth, we beseech Thee, O Lord, Thy grace into our hearts; that we, to whom the incarnation of Christ, Thy Son, was made known by the message of an angel, may by His Passion and Cross be brought to the glory of His Resurrection. Through the same Christ our Lord.\nR. Amen.",
     es: "V. El Ángel del Señor anunció a María;\nR. Y concibió por obra del Espíritu Santo.\nDios te salve, María...\n\nV. He aquí la esclava del Señor.\nR. Hágase en mí según tu palabra.\nDios te salve, María...\n\nV. Y el Verbo se hizo carne.\nR. Y habitó entre nosotros.\nDios te salve, María...\n\nV. Ruega por nosotros, Santa Madre de Dios.\nR. Para que seamos dignos de las promesas de Cristo.\n\nOremos. Infunde, Señor, tu gracia en nuestras almas, para que los que hemos conocido, por el anuncio del Ángel, la Encarnación de tu Hijo Jesucristo, lleguemos por su Pasión y su Cruz, a la gloria de la Resurrección. Por Jesucristo Nuestro Señor.\nR. Amén.",
@@ -44,6 +48,7 @@ export const MORE_PRAYERS: PrayerText[] = [
   {
     id: "salve-regina",
     title: "Salve Regina",
+    titles: { en: "Salve Regina", es: "Salve Regina", it: "Salve Regina", fr: "Salve Regina", zh: "又圣母经" },
     latin: "Salve, Regina, Mater misericordiae,\nvita, dulcedo, et spes nostra, salve.\nAd te clamamus exsules filii Hevae,\nad te suspiramus, gementes et flentes\nin hac lacrimarum valle.\nEia, ergo, advocata nostra, illos tuos\nmisericordes oculos ad nos converte;\net Iesum, benedictum fructum ventris tui,\nnobis post hoc exsilium ostende.\nO clemens, O pia, O dulcis Virgo Maria.",
     en: "Hail, Holy Queen, Mother of Mercy,\nour life, our sweetness, and our hope.\nTo thee do we cry, poor banished children of Eve;\nto thee do we send up our sighs,\nmourning and weeping in this valley of tears.\nTurn then, most gracious advocate,\nthine eyes of mercy toward us;\nand after this our exile,\nshow unto us the blessed fruit of thy womb, Jesus.\nO clement, O loving, O sweet Virgin Mary.",
     es: "Dios te salve, Reina y Madre de misericordia,\nvida, dulzura y esperanza nuestra.\nA ti clamamos los desterrados hijos de Eva;\na ti suspiramos, gimiendo y llorando\nen este valle de lágrimas.\nEa, pues, Señora, abogada nuestra,\nvuelve a nosotros esos tus ojos misericordiosos;\ny después de este destierro,\nmuéstranos a Jesús, fruto bendito de tu vientre.\nOh clemente, oh piadosa, oh dulce Virgen María.",
@@ -54,6 +59,7 @@ export const MORE_PRAYERS: PrayerText[] = [
   {
     id: "magnificat",
     title: "Magnificat (Canticle of Mary)",
+    titles: { en: "Magnificat (Canticle of Mary)", es: "Magnificat (Cántico de María)", it: "Magnificat (Cantico di Maria)", fr: "Magnificat (Cantique de Marie)", zh: "圣母谢主曲" },
     latin: "Magnificat anima mea Dominum,\net exsultavit spiritus meus in Deo salvatore meo,\nquia respexit humilitatem ancillae suae.\nEcce enim ex hoc beatam me dicent omnes generationes,\nquia fecit mihi magna, qui potens est,\net sanctum nomen eius,\net misericordia eius in progenies et progenies\ntimentibus eum.\nFecit potentiam in brachio suo,\ndispersit superbos mente cordis sui;\ndeposuit potentes de sede\net exaltavit humiles;\nesurientes implevit bonis\net divites dimisit inanes.\nSuscepit Israel puerum suum,\nrecordatus misericordiae,\nsicut locutus est ad patres nostros,\nAbraham et semini eius in saecula.",
     en: "My soul proclaims the greatness of the Lord,\nmy spirit rejoices in God my Savior,\nfor he has looked with favor on his lowly servant.\nFrom this day all generations will call me blessed:\nthe Almighty has done great things for me,\nand holy is his Name.\nHe has mercy on those who fear him\nin every generation.\nHe has shown the strength of his arm,\nhe has scattered the proud in their conceit.\nHe has cast down the mighty from their thrones,\nand has lifted up the lowly.\nHe has filled the hungry with good things,\nand the rich he has sent away empty.\nHe has come to the help of his servant Israel\nfor he has remembered his promise of mercy,\nthe promise he made to our fathers,\nto Abraham and his children forever.",
     es: "Proclama mi alma la grandeza del Señor,\nse alegra mi espíritu en Dios, mi salvador;\nporque ha mirado la humillación de su esclava.\nDesde ahora me felicitarán todas las generaciones,\nporque el Poderoso ha hecho obras grandes por mí:\nsu nombre es santo,\ny su misericordia llega a sus fieles\nde generación en generación.\nÉl hace proezas con su brazo:\ndispersa a los soberbios de corazón,\nderriba del trono a los poderosos\ny enaltece a los humildes,\na los hambrientos los colma de bienes\ny a los ricos los despide vacíos.\nAuxilia a Israel, su siervo,\nacordándose de la misericordia\n—como lo había prometido a nuestros padres—\nen favor de Abrahán y su descendencia por siempre.",
@@ -64,6 +70,7 @@ export const MORE_PRAYERS: PrayerText[] = [
   {
     id: "act-of-contrition",
     title: "Act of Contrition",
+    titles: { en: "Act of Contrition", es: "Acto de Contrición", it: "Atto di Dolore", fr: "Acte de Contrition", zh: "痛悔经" },
     latin: "",
     en: "O my God, I am heartily sorry\nfor having offended Thee,\nand I detest all my sins\nbecause of Thy just punishments,\nbut most of all because they offend Thee, my God,\nwho art all-good and deserving of all my love.\nI firmly resolve, with the help of Thy grace,\nto sin no more and to avoid the near occasions of sin.\nAmen.",
     es: "Dios mío, me arrepiento de todo corazón\nde todos mis pecados\ny los aborrezco,\nporque al pecar, no sólo merezco\nlas penas establecidas por ti justamente,\nsino principalmente porque te ofendí a ti,\nque eres el sumo bien y digno de ser amado sobre todas las cosas.\nPor eso propongo firmemente, con la ayuda de tu gracia,\nno pecar más en adelante\ny huir de las ocasiones de pecado.\nAmén.",
@@ -74,6 +81,7 @@ export const MORE_PRAYERS: PrayerText[] = [
   {
     id: "nunc-dimittis",
     title: "Nunc Dimittis (Canticle of Simeon)",
+    titles: { en: "Nunc Dimittis (Canticle of Simeon)", es: "Nunc Dimittis (Cántico de Simeón)", it: "Nunc Dimittis (Cantico di Simeone)", fr: "Nunc Dimittis (Cantique de Siméon)", zh: "西默盎赞歌" },
     latin: "Nunc dimittis servum tuum, Domine,\nsecundum verbum tuum in pace:\nquia viderunt oculi mei salutare tuum\nquod parasti ante faciem omnium populorum:\nlumen ad revelationem gentium,\net gloriam plebis tuae Israel.",
     en: "Lord, now you let your servant go in peace;\nyour word has been fulfilled:\nmy own eyes have seen the salvation\nwhich you have prepared in the sight of every people:\na light to reveal you to the nations\nand the glory of your people Israel.",
     es: "Ahora, Señor, despide a tu siervo en paz,\nconforme a tu palabra,\nporque mis ojos han visto a tu Salvador,\na quien has presentado ante todos los pueblos:\nluz para alumbrar a las naciones\ny gloria de tu pueblo Israel.",
