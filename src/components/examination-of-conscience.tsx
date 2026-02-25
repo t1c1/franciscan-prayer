@@ -29,8 +29,8 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
           {t("exam.intro")}
         </p>
         <p className="text-xs text-muted-foreground italic">
-          &ldquo;Let us begin again, for up to now we have done nothing.&rdquo;
-          — St. Francis
+          &ldquo;{t("exam.quote")}&rdquo;
+          — {t("exam.quote_author")}
         </p>
         <button
           onClick={() => setStep(0)}

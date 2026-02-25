@@ -23,7 +23,7 @@
      - `https://franciscan-prayer.pages.dev`
      - `http://localhost:3000`
    - **Authorized redirect URIs** — add this exact URI:
-     - `https://wiefcvuafvtdvyhvzzyh.supabase.co/auth/v1/callback`
+     - `https://api.franciscanprayer.com/auth/v1/callback`
    - Click **Create**
 9. Copy your **Client ID** and **Client Secret**
 
