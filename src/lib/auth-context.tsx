@@ -11,6 +11,7 @@ import {
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import { trackSignIn, trackSignUp } from "./analytics";
+import { getLocalDateString } from "./utils";
 
 interface AuthState {
   user: User | null;
@@ -35,7 +36,7 @@ async function pushCompletions(userId: string) {
   for (let i = 0; i < 90; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() - i);
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = getLocalDateString(d);
     const completions: string[] = JSON.parse(
       localStorage.getItem(`fp_completions_${dateStr}`) || "[]"
     );

@@ -58,6 +58,7 @@ export function FranciscanCalendarView() {
   const [view, setView] = useState<CalendarView>("upcoming");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const todayFeast = getTodayFeast();
+  const todayFeastI18n = todayFeast ? getFeastI18n(todayFeast, locale) : null;
   const upcoming = getUpcomingFeasts(8);
   const u = UI[locale] || UI.en;
   const ranks = RANK_LABELS[locale] || RANK_LABELS.en;
@@ -72,11 +73,12 @@ export function FranciscanCalendarView() {
           <p className="text-xs opacity-80 uppercase tracking-wide">
             {u.todayFeast}
           </p>
-          <p className="text-lg font-bold mt-1">{todayFeast.name}</p>
-          <p className="text-sm opacity-80 mt-1">{todayFeast.description}</p>
+          <p className="text-lg font-bold mt-1">{todayFeastI18n?.name || todayFeast.name}</p>
+          <p className="text-sm opacity-80 mt-1">{todayFeastI18n?.description || todayFeast.description}</p>
           <ListenButton
-            text={`${todayFeast.name}\n\n${todayFeast.description}`}
+            text={`${todayFeastI18n?.name || todayFeast.name}\n\n${todayFeastI18n?.description || todayFeast.description}`}
             locale={locale}
+            audioSrc={`/audio/calendar/${locale}/${String(todayFeast.month).padStart(2, "0")}-${String(todayFeast.day).padStart(2, "0")}.mp3`}
             className="mt-3 bg-white/20 text-white hover:bg-white/30 hover:text-white"
           />
         </div>

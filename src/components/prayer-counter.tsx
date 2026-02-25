@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Check, RotateCcw, Timer, Pause, Play } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, getLocalDateString } from "@/lib/utils";
 import { playTap, playBell, playCompletionChime } from "@/lib/audio";
 import { useI18n } from "@/lib/i18n";
 import { HOURS_I18N, PRAYERS, type Hour } from "@/lib/prayers";
@@ -22,7 +22,7 @@ const PACE_OPTIONS = [
 ];
 
 function getStorageKey(hourId: string): string {
-  const today = new Date().toISOString().split("T")[0];
+  const today = getLocalDateString();
   return `fp_count_${hourId}_${today}`;
 }
 
@@ -78,7 +78,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
         pacingRef.current = null;
       }
       setPacingActive(false);
-      const completionsKey = `fp_completions_${new Date().toISOString().split("T")[0]}`;
+      const completionsKey = `fp_completions_${getLocalDateString()}`;
       const completions = JSON.parse(localStorage.getItem(completionsKey) || "[]");
       if (!completions.includes(hour.id)) {
         completions.push(hour.id);
@@ -187,6 +187,8 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
 
   const progress = Math.min((count / hour.paterCount) * 100, 100);
   const paterNoster = PRAYERS.find(p => p.id === "pater-noster")!;
+  const gloriaPatri = PRAYERS.find(p => p.id === "gloria-patri")!;
+  const requiem = PRAYERS.find(p => p.id === "requiem-aeternam")!;
   const hourI18n = HOURS_I18N[locale]?.[hour.id] || HOURS_I18N.en[hour.id];
   const hourName = hourI18n?.name || hour.name;
   const hourDesc = hourI18n?.description || hour.description;
@@ -236,6 +238,27 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
         </summary>
         <p className="mt-2 text-sm text-foreground/80 whitespace-pre-line leading-relaxed bg-card rounded-lg border border-border p-3">
           {paterNoster[locale] || paterNoster.en}
+        </p>
+      </details>
+
+      {/* Gloria Patri / Requiem reminder */}
+      <p className="text-xs text-muted-foreground italic text-center max-w-xs">
+        {hour.id === "dead"
+          ? t("counter.requiem_reminder")
+          : t("counter.gloria_reminder")}
+      </p>
+
+      {/* Gloria Patri / Requiem - collapsible */}
+      <details className="w-full max-w-xs">
+        <summary className="text-xs text-franciscan/70 cursor-pointer text-center">
+          {hour.id === "dead"
+            ? (requiem.titles[locale] || requiem.title)
+            : (gloriaPatri.titles[locale] || gloriaPatri.title)}
+        </summary>
+        <p className="mt-2 text-xs text-foreground/70 whitespace-pre-line leading-relaxed bg-card rounded-lg border border-border p-3">
+          {hour.id === "dead"
+            ? (requiem[locale] || requiem.en)
+            : (gloriaPatri[locale] || gloriaPatri.en)}
         </p>
       </details>
 

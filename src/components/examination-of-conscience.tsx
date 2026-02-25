@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronRight, ChevronLeft, Check, Heart } from "lucide-react";
-import { getTonightExamination, EXAMINATION_I18N } from "@/lib/examination";
+import { getTonightExamination, EXAMINATION_I18N, getExaminationQuestionAudioSrc } from "@/lib/examination";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { ListenButton } from "@/components/listen-button";
@@ -36,6 +36,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
         <ListenButton
           text={`${t("exam.intro")}\n\n${t("exam.quote")} — ${t("exam.quote_author")}`}
           locale={locale}
+          audioSrc={`/audio/exam/${locale}/intro.mp3`}
           className="mx-auto"
         />
         <button
@@ -70,6 +71,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
         <ListenButton
           text={`${t("exam.complete_text")}\n\n${t("exam.complete_prayer")}`}
           locale={locale}
+          audioSrc={`/audio/exam/${locale}/complete.mp3`}
           className="mx-auto"
         />
         <button
@@ -83,6 +85,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
   }
 
   const question = questions[step];
+  const questionAudioSrc = getExaminationQuestionAudioSrc(locale, question.question);
 
   return (
     <div className="bg-card rounded-xl border border-border p-6 space-y-4">
@@ -108,7 +111,11 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
       </p>
 
       <div className="flex justify-center">
-        <ListenButton text={question.question} locale={locale} />
+        <ListenButton
+          text={question.question}
+          locale={locale}
+          audioSrc={questionAudioSrc || undefined}
+        />
       </div>
 
       {/* Reflection toggle */}

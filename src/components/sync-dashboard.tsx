@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n";
 import { HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
 import { getEarnedAchievements, getNextAchievement } from "@/lib/achievements";
+import { getLocalDateString } from "@/lib/utils";
 
 interface DayStats {
   date: string;
@@ -17,7 +18,7 @@ function getLocalStats(days: number): DayStats[] {
   const stats: DayStats[] = [];
   const d = new Date();
   for (let i = 0; i < days; i++) {
-    const dateStr = d.toISOString().split("T")[0];
+    const dateStr = getLocalDateString(d);
     const completions: string[] = JSON.parse(
       localStorage.getItem(`fp_completions_${dateStr}`) || "[]"
     );

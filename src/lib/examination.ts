@@ -219,6 +219,34 @@ export const EXAMINATION_I18N: Record<string, { categories: string[]; questions:
   },
 };
 
+const EXAMINATION_AUDIO_LOCALES = ["en", "es", "it", "fr", "zh"] as const;
+const EXAMINATION_AUDIO_INDEX: Record<string, Record<string, number>> = {
+  en: Object.fromEntries(
+    EXAMINATION_QUESTIONS.map((q, index) => [q.question, index + 1])
+  ),
+  es: Object.fromEntries(
+    (EXAMINATION_I18N.es?.questions || []).map((q, index) => [q.question, index + 1])
+  ),
+  it: Object.fromEntries(
+    (EXAMINATION_I18N.it?.questions || []).map((q, index) => [q.question, index + 1])
+  ),
+  fr: Object.fromEntries(
+    (EXAMINATION_I18N.fr?.questions || []).map((q, index) => [q.question, index + 1])
+  ),
+  zh: Object.fromEntries(
+    (EXAMINATION_I18N.zh?.questions || []).map((q, index) => [q.question, index + 1])
+  ),
+};
+
+export function getExaminationQuestionAudioSrc(locale: string, question: string): string | null {
+  const normalizedLocale = EXAMINATION_AUDIO_LOCALES.includes(locale as typeof EXAMINATION_AUDIO_LOCALES[number])
+    ? locale
+    : "en";
+  const index = EXAMINATION_AUDIO_INDEX[normalizedLocale]?.[question];
+  if (!index) return null;
+  return `/audio/exam/${normalizedLocale}/question-${index}.mp3`;
+}
+
 /** Get tonight's examination questions — 5 questions rotating by day */
 export function getTonightExamination(): ExaminationQuestion[] {
   const dayOfYear = Math.floor(

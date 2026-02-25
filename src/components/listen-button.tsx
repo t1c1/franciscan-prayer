@@ -38,10 +38,11 @@ function stopSharedPlayback() {
 interface ListenButtonProps {
   text: string;
   locale?: ListenLocale;
+  audioSrc?: string;
   className?: string;
 }
 
-export function ListenButton({ text, locale = "en", className }: ListenButtonProps) {
+export function ListenButton({ text, locale = "en", audioSrc, className }: ListenButtonProps) {
   const { t } = useI18n();
   const ownerId = useRef(`listen_${Math.random().toString(36).slice(2)}`);
   const [status, setStatus] = useState<PlaybackStatus>("idle");
@@ -52,8 +53,9 @@ export function ListenButton({ text, locale = "en", className }: ListenButtonPro
   );
 
   useEffect(() => {
+    const currentOwnerId = ownerId.current;
     const listener = (activeOwnerId: string | null) => {
-      if (activeOwnerId !== ownerId.current) {
+      if (activeOwnerId !== currentOwnerId) {
         setStatus((current) => (current === "playing" || current === "loading" ? "idle" : current));
       }
     };
@@ -61,14 +63,44 @@ export function ListenButton({ text, locale = "en", className }: ListenButtonPro
 
     return () => {
       ownerListeners.delete(listener);
-      if (sharedPlayback.ownerId === ownerId.current) {
+      if (sharedPlayback.ownerId === currentOwnerId) {
         stopSharedPlayback();
       }
     };
   }, []);
 
+  const playUrl = async (url: string) => {
+    stopSharedPlayback();
+
+    const audio = new Audio(url);
+    audio.preload = "auto";
+    audio.onended = () => {
+      if (sharedPlayback.ownerId === ownerId.current) {
+        sharedPlayback.audio = null;
+        sharedPlayback.ownerId = null;
+        setStatus("idle");
+        notifyOwnerChange(null);
+      }
+    };
+    audio.onerror = () => {
+      if (sharedPlayback.ownerId === ownerId.current) {
+        sharedPlayback.audio = null;
+        sharedPlayback.ownerId = null;
+        setStatus("error");
+        notifyOwnerChange(null);
+      }
+    };
+
+    sharedPlayback.audio = audio;
+    sharedPlayback.ownerId = ownerId.current;
+    notifyOwnerChange(ownerId.current);
+
+    await audio.play();
+    setStatus("playing");
+  };
+
   const handlePlay = async () => {
-    if (!normalizedText) return;
+    if (!normalizedText && !audioSrc) return;
 
     if (status === "playing" && sharedPlayback.ownerId === ownerId.current) {
       stopSharedPlayback();
@@ -79,8 +111,16 @@ export function ListenButton({ text, locale = "en", className }: ListenButtonPro
     if (status === "loading") return;
 
     try {
-      stopSharedPlayback();
       setStatus("loading");
+
+      if (audioSrc) {
+        try {
+          await playUrl(audioSrc);
+          return;
+        } catch (error) {
+          console.warn(`Static audio unavailable for ${audioSrc}, falling back to TTS`, error);
+        }
+      }
 
       const cacheKey = `${locale}::${normalizedText}`;
       let audioUrl = audioCache.get(cacheKey);
@@ -103,32 +143,7 @@ export function ListenButton({ text, locale = "en", className }: ListenButtonPro
         audioCache.set(cacheKey, audioUrl);
       }
 
-      const audio = new Audio(audioUrl);
-
-      audio.onended = () => {
-        if (sharedPlayback.ownerId === ownerId.current) {
-          sharedPlayback.audio = null;
-          sharedPlayback.ownerId = null;
-          setStatus("idle");
-          notifyOwnerChange(null);
-        }
-      };
-
-      audio.onerror = () => {
-        if (sharedPlayback.ownerId === ownerId.current) {
-          sharedPlayback.audio = null;
-          sharedPlayback.ownerId = null;
-          setStatus("error");
-          notifyOwnerChange(null);
-        }
-      };
-
-      sharedPlayback.audio = audio;
-      sharedPlayback.ownerId = ownerId.current;
-      notifyOwnerChange(ownerId.current);
-
-      await audio.play();
-      setStatus("playing");
+      await playUrl(audioUrl);
     } catch (error) {
       console.error("Listen playback failed", error);
       setStatus("error");

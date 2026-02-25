@@ -131,6 +131,7 @@ export function DailyRule() {
             <ListenButton
               text={`${displayTitle}\n\n${displayText}`}
               locale={spokenLocale}
+              audioSrc={`/audio/rule/${spokenLocale}/chapter-${chapter.chapter}.mp3`}
               className="mt-3"
             />
             <p className="mt-3 text-sm text-foreground/80 leading-relaxed">

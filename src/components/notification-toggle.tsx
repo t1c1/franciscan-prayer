@@ -10,8 +10,21 @@ import {
   scheduleAllReminders,
 } from "@/lib/notifications";
 import { trackNotificationsEnabled, trackNotificationsDisabled } from "@/lib/analytics";
+import { cn } from "@/lib/utils";
 
-export function NotificationToggle() {
+interface NotificationToggleProps {
+  compact?: boolean;
+  labelOn?: string;
+  labelOff?: string;
+  className?: string;
+}
+
+export function NotificationToggle({
+  compact = true,
+  labelOn = "Reminders On",
+  labelOff = "Enable Reminders",
+  className,
+}: NotificationToggleProps) {
   const [supported, setSupported] = useState(false);
   const [enabled, setEnabled] = useState(false);
 
@@ -39,7 +52,13 @@ export function NotificationToggle() {
   return (
     <button
       onClick={handleToggle}
-      className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+      className={cn(
+        compact
+          ? "p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent"
+          : "inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground hover:border-franciscan/40 transition-colors",
+        "transition-colors",
+        className
+      )}
       aria-label={enabled ? "Disable prayer reminders" : "Enable prayer reminders"}
       title={enabled ? "Reminders on" : "Enable reminders"}
     >
@@ -47,6 +66,9 @@ export function NotificationToggle() {
         <Bell className="w-4 h-4 text-franciscan" />
       ) : (
         <BellOff className="w-4 h-4" />
+      )}
+      {!compact && (
+        <span>{enabled ? labelOn : labelOff}</span>
       )}
     </button>
   );

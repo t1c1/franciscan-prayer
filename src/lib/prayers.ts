@@ -16,9 +16,10 @@ export const HOURS: Hour[] = [
   { id: "none", name: "None", latinName: "Nona", paterCount: 7, description: "The Ninth Hour — when Christ died on the Cross", typicalTime: "~3:00 PM" },
   { id: "vespers", name: "Vespers", latinName: "Vesperae", paterCount: 12, description: "Evening prayer — giving thanks for the day", typicalTime: "~6:00 PM" },
   { id: "compline", name: "Compline", latinName: "Completorium", paterCount: 7, description: "Night prayer — commending oneself to God before sleep", typicalTime: "Before bed" },
+  { id: "dead", name: "For the Dead", latinName: "Pro Defunctis", paterCount: 7, description: "Prayers for the faithful departed — with Requiem aeternam after each", typicalTime: "After Compline" },
 ];
 
-export const TOTAL_DAILY_PATERS = HOURS.reduce((sum, h) => sum + h.paterCount, 0); // 76
+export const TOTAL_DAILY_PATERS = HOURS.reduce((sum, h) => sum + h.paterCount, 0); // 83
 
 export interface PrayerText {
   id: string;
@@ -88,6 +89,17 @@ export const PRAYERS: PrayerText[] = [
     fr: "Très-Haut, tout-puissant et bon Seigneur,\nà toi louange, gloire, honneur, et toute bénédiction.\nÀ toi seul, Très-Haut, ils conviennent,\net aucun homme n'est digne de te nommer.\n\nLoué sois-tu, mon Seigneur, avec toutes tes créatures,\nspécialement messire frère Soleil,\npar qui tu nous donnes le jour et la lumière.\nIl est beau, rayonnant d'une grande splendeur,\net de toi, Très-Haut, il est le symbole.\n\nLoué sois-tu, mon Seigneur, pour sœur Lune et les étoiles :\ndans le ciel tu les as formées claires, précieuses et belles.\n\nLoué sois-tu, mon Seigneur, pour frère Vent,\net pour l'air et pour les nuages, pour l'azur calme et tous les temps,\npar lesquels tu donnes soutien à tes créatures.\n\nLoué sois-tu, mon Seigneur, pour sœur Eau,\nqui est très utile et humble, précieuse et chaste.\n\nLoué sois-tu, mon Seigneur, pour frère Feu,\npar qui tu éclaires la nuit :\nil est beau et joyeux, indomptable et fort.\n\nLoué sois-tu, mon Seigneur, pour sœur notre mère la Terre,\nqui nous nourrit et nous soutient,\net produit les fruits divers avec les fleurs colorées et l'herbe.\n\nLouez et bénissez mon Seigneur,\nrendez-lui grâce et servez-le en toute humilité.",
     zh: "至高、全能、美善的主，\n一切赞颂、光荣、尊崇和祝福都归于你。\n至高者，唯有你堪当，\n无人配称呼你的圣名。\n\n我的主，愿你因你所造的万物而受赞美，\n尤其因太阳兄弟，\n他带来白昼，你藉他赐给我们光明。\n他是美丽的，光芒四射，充满灿烂的光辉，\n至高者啊，他是你的肖像。\n\n我的主，愿你因月亮姊妹和星辰而受赞美，\n你在天上造了她们，明亮、珍贵又美丽。\n\n我的主，愿你因风兄弟而受赞美，\n因空气、云彩、晴天和各种天气，\n你藉此供养你的受造物。\n\n我的主，愿你因水姊妹而受赞美，\n她非常有用，谦卑，珍贵又纯洁。\n\n我的主，愿你因火兄弟而受赞美，\n你藉他照亮黑夜，\n他美丽、欢乐、强壮有力。\n\n我的主，愿你因我们的姊妹大地母亲而受赞美，\n她养育支撑我们，\n生产各种果实、彩色的花朵和草木。\n\n赞美称颂我的主，\n感谢他，以极大的谦卑事奉他。",
   },
+  {
+    id: "requiem-aeternam",
+    title: "Eternal Rest",
+    titles: { en: "Eternal Rest", es: "Descanso Eterno", it: "Eterno Riposo", fr: "Repos Éternel", zh: "永息经" },
+    latin: "Requiem aeternam dona eis, Domine,\net lux perpetua luceat eis.\nRequiescant in pace.\nAmen.",
+    en: "Eternal rest grant unto them, O Lord,\nand let perpetual light shine upon them.\nMay they rest in peace.\nAmen.",
+    es: "Dale, Señor, el descanso eterno,\ny brille para ellos la luz perpetua.\nDescansen en paz.\nAmén.",
+    it: "L'eterno riposo dona loro, o Signore,\ne splenda ad essi la luce perpetua.\nRiposino in pace.\nAmen.",
+    fr: "Donne-leur, Seigneur, le repos éternel,\net que la lumière sans fin les illumine.\nQu'ils reposent en paix.\nAmen.",
+    zh: "主，求祢赐他们永远的安息，\n并以永恒之光照耀他们。\n愿他们安息。\n阿们。",
+  },
 ];
 
 export type Language = "latin" | "en" | "es" | "it" | "fr" | "zh";
@@ -114,6 +126,7 @@ export const HOURS_I18N: Record<string, HourTranslations> = {
     none: { name: "None", description: "The Ninth Hour — when Christ died on the Cross", typicalTime: "~3:00 PM" },
     vespers: { name: "Vespers", description: "Evening prayer — giving thanks for the day", typicalTime: "~6:00 PM" },
     compline: { name: "Compline", description: "Night prayer — commending oneself to God before sleep", typicalTime: "Before bed" },
+    dead: { name: "For the Dead", description: "Prayers for the faithful departed — with Requiem aeternam after each", typicalTime: "After Compline" },
   },
   es: {
     matins: { name: "Maitines", description: "El Oficio Nocturno — oración en las vigilias de la noche", typicalTime: "Durante la noche o temprano" },
@@ -124,6 +137,7 @@ export const HOURS_I18N: Record<string, HourTranslations> = {
     none: { name: "Nona", description: "La Novena Hora — cuando Cristo murió en la Cruz", typicalTime: "~15:00" },
     vespers: { name: "Vísperas", description: "Oración vespertina — dando gracias por el día", typicalTime: "~18:00" },
     compline: { name: "Completas", description: "Oración nocturna — encomendándose a Dios antes de dormir", typicalTime: "Antes de dormir" },
+    dead: { name: "Por los Difuntos", description: "Oraciones por los fieles difuntos — con Requiem aeternam después de cada una", typicalTime: "Después de Completas" },
   },
   it: {
     matins: { name: "Mattutino", description: "L'Ufficio Notturno — preghiera nelle veglie della notte", typicalTime: "Durante la notte o mattina presto" },
@@ -134,6 +148,7 @@ export const HOURS_I18N: Record<string, HourTranslations> = {
     none: { name: "Nona", description: "La Nona Ora — quando Cristo morì sulla Croce", typicalTime: "~15:00" },
     vespers: { name: "Vespri", description: "Preghiera serale — rendendo grazie per la giornata", typicalTime: "~18:00" },
     compline: { name: "Compieta", description: "Preghiera notturna — affidandosi a Dio prima del sonno", typicalTime: "Prima di dormire" },
+    dead: { name: "Per i Defunti", description: "Preghiere per i fedeli defunti — con Requiem aeternam dopo ogni preghiera", typicalTime: "Dopo Compieta" },
   },
   fr: {
     matins: { name: "Matines", description: "L'Office de Nuit — prière dans les veilles de la nuit", typicalTime: "Pendant la nuit ou tôt le matin" },
@@ -144,6 +159,7 @@ export const HOURS_I18N: Record<string, HourTranslations> = {
     none: { name: "None", description: "La Neuvième Heure — quand le Christ mourut sur la Croix", typicalTime: "~15h00" },
     vespers: { name: "Vêpres", description: "Prière du soir — rendant grâce pour la journée", typicalTime: "~18h00" },
     compline: { name: "Complies", description: "Prière de la nuit — se confiant à Dieu avant le sommeil", typicalTime: "Avant le coucher" },
+    dead: { name: "Pour les Défunts", description: "Prières pour les fidèles défunts — avec Requiem aeternam après chaque prière", typicalTime: "Après Complies" },
   },
   zh: {
     matins: { name: "夜祷", description: "夜间礼仪 — 在深夜守望中祈祷", typicalTime: "夜间或清晨" },
@@ -154,5 +170,6 @@ export const HOURS_I18N: Record<string, HourTranslations> = {
     none: { name: "第九时辰", description: "第九时辰 — 基督在十字架上死亡的时刻", typicalTime: "~下午3:00" },
     vespers: { name: "晚祷", description: "晚间祈祷 — 为这一天感恩", typicalTime: "~下午6:00" },
     compline: { name: "夜课", description: "睡前祈祷 — 在入睡前将自己托付给天主", typicalTime: "睡前" },
+    dead: { name: "为亡者祈祷", description: "为忠实的亡者祈祷——每遍后诵念安息经", typicalTime: "夜课之后" },
   },
 };

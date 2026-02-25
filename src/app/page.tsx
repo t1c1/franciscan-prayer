@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   Clock, BookOpen, HandHeart, Sun, Moon, ChevronRight, Check, Flame,
-  Users, Scroll, Flower2, ExternalLink, Cross, Calendar, SunMoon,
+  Users, Scroll, Flower2, ExternalLink, Cross, Calendar, Settings,
   Heart, Info, BarChart3, Share2,
 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -13,7 +13,6 @@ import { getDailyQuote } from "@/lib/franciscan-quotes";
 import { QUOTES_I18N } from "@/lib/franciscan-quotes";
 import { shareCard } from "@/lib/share-card";
 import { playMonasteryBell } from "@/lib/audio";
-import { useI18n } from "@/lib/i18n";
 import { PrayerCounter } from "@/components/prayer-counter";
 import { PrayerTextViewer } from "@/components/prayer-text-viewer";
 import { CommunityFinder } from "@/components/community-finder";
@@ -23,30 +22,32 @@ import { DivineOfficeLinks } from "@/components/divine-office-links";
 import { StationsOfTheCross } from "@/components/stations-of-the-cross";
 import { FranciscanCalendarView } from "@/components/franciscan-calendar-view";
 import { LiturgicalBanner } from "@/components/liturgical-banner";
+import { SaintsOfTheDay } from "@/components/saints-of-the-day";
 import { NotificationToggle } from "@/components/notification-toggle";
 import { IntentionsJournal } from "@/components/intentions-journal";
 import { AboutPage } from "@/components/about-page";
 import { AuthButton } from "@/components/auth-button";
 import { SyncDashboard } from "@/components/sync-dashboard";
 import { ExaminationOfConscience } from "@/components/examination-of-conscience";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { Onboarding, useOnboarding } from "@/components/onboarding";
 import { IntroOnboarding, useIntroOnboarding } from "@/components/intro-onboarding";
 import { useAuth } from "@/lib/auth-context";
 import { getTodayFeast, CALENDAR_I18N } from "@/lib/franciscan-calendar";
-import { cn } from "@/lib/utils";
+import { cn, getLocalDateString } from "@/lib/utils";
+import { LOCALE_FLAGS, LOCALE_LABELS, type Locale, useI18n } from "@/lib/i18n";
 import {
   trackHourStarted, trackAllHoursCompleted, trackViewChanged,
   trackThemeToggled, trackShareCard, trackExaminationStarted,
+  trackLanguageChanged,
 } from "@/lib/analytics";
 
 type View =
   | "home" | "hours" | "prayers" | "crown" | "office" | "rule"
-  | "community" | "stations" | "calendar" | "intentions" | "dashboard" | "about";
+  | "community" | "stations" | "calendar" | "intentions" | "dashboard" | "about" | "settings";
 
 function getCompletedHours(): string[] {
   if (typeof window === "undefined") return [];
-  const key = `fp_completions_${new Date().toISOString().split("T")[0]}`;
+  const key = `fp_completions_${getLocalDateString()}`;
   return JSON.parse(localStorage.getItem(key) || "[]");
 }
 
@@ -55,7 +56,7 @@ function getStreak(): number {
   let streak = 0;
   const d = new Date();
   for (let i = 0; i < 365; i++) {
-    const key = `fp_completions_${d.toISOString().split("T")[0]}`;
+    const key = `fp_completions_${getLocalDateString(d)}`;
     const completions = JSON.parse(localStorage.getItem(key) || "[]");
     if (completions.length === 0 && i > 0) break;
     if (completions.length > 0) streak++;
@@ -76,7 +77,7 @@ export default function Home() {
   const liturgy = getLiturgicalInfo();
   const todayFeast = getTodayFeast();
   const { theme, setTheme } = useTheme();
-  const { locale, t } = useI18n();
+  const { locale, setLocale, t } = useI18n();
 
   // Get locale-aware daily quote
   const enQuote = getDailyQuote();
@@ -181,15 +182,13 @@ export default function Home() {
               <p className="text-xs text-muted-foreground">{t("app.subtitle")}</p>
             </button>
             <div className="flex items-center gap-1.5">
-              <LanguageSwitcher />
-              <AuthButton />
-              <NotificationToggle />
+              <span className="text-xs text-muted-foreground font-medium italic">J.M.J.</span>
               <button
-                onClick={() => { const next = theme === "dark" ? "light" : "dark"; setTheme(next); trackThemeToggled(next); }}
+                onClick={() => navigateTo("settings")}
                 className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                aria-label="Toggle dark mode"
+                aria-label={t("settings.title")}
               >
-                <SunMoon className="w-4 h-4" />
+                <Settings className="w-4 h-4" />
               </button>
               {streak > 0 && (
                 <span className="flex items-center gap-1 text-xs font-medium text-franciscan bg-franciscan-light px-2 py-1 rounded-full">
@@ -248,6 +247,7 @@ export default function Home() {
         {view === "home" && (
           <div className="space-y-3">
             <LiturgicalBanner />
+            <SaintsOfTheDay />
             {todayFeast && (() => {
               const fKey = `${String(todayFeast.month).padStart(2, "0")}-${String(todayFeast.day).padStart(2, "0")}`;
               const fi = (locale !== "en" && CALENDAR_I18N?.[locale]?.[fKey]) || { name: todayFeast.name, description: todayFeast.description };
@@ -300,6 +300,7 @@ export default function Home() {
               <NavTile icon={<Users className="w-5 h-5 text-franciscan" />} title={t("nav.community")} subtitle={t("nav.community_sub")} onClick={() => navigateTo("community")} />
               <NavTile icon={<Heart className="w-5 h-5 text-franciscan" />} title={t("nav.intentions")} subtitle={t("nav.intentions_sub")} onClick={() => navigateTo("intentions")} />
               <NavTile icon={<BarChart3 className="w-5 h-5 text-franciscan" />} title={t("nav.dashboard")} subtitle={t("nav.dashboard_sub")} onClick={() => navigateTo("dashboard")} />
+              <NavTile icon={<Settings className="w-5 h-5 text-franciscan" />} title={t("nav.settings")} subtitle={t("nav.settings_sub")} onClick={() => navigateTo("settings")} />
               <NavTile icon={<Info className="w-5 h-5 text-franciscan" />} title={t("nav.about")} subtitle={t("nav.about_sub")} onClick={() => navigateTo("about")} />
             </div>
           </div>
@@ -345,6 +346,85 @@ export default function Home() {
         {view === "community" && (<div className="space-y-3"><BackButton label={t("home.back")} onClick={() => setView("home")} /><h2 className="text-lg font-semibold text-foreground">{t("community.title")}</h2><p className="text-sm text-muted-foreground">{t("community.desc")}</p><CommunityFinder /></div>)}
         {view === "intentions" && (<div className="space-y-3"><BackButton label={t("home.back")} onClick={() => setView("home")} /><h2 className="text-lg font-semibold text-foreground">{t("intentions.title")}</h2><IntentionsJournal /></div>)}
         {view === "dashboard" && (<div className="space-y-3"><BackButton label={t("home.back")} onClick={() => setView("home")} /><h2 className="text-lg font-semibold text-foreground">{t("dashboard.title")}</h2><SyncDashboard /></div>)}
+        {view === "settings" && (
+          <div className="space-y-3">
+            <BackButton label={t("home.back")} onClick={() => setView("home")} />
+            <h2 className="text-lg font-semibold text-foreground">{t("settings.title")}</h2>
+
+            <div className="bg-card rounded-xl border border-border p-4">
+              <p className="text-sm font-medium text-foreground">{t("settings.account")}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("settings.account_desc")}</p>
+              <div className="mt-3">
+                <AuthButton />
+              </div>
+            </div>
+
+            <div className="bg-card rounded-xl border border-border p-4">
+              <p className="text-sm font-medium text-foreground">{t("settings.notifications")}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("settings.notifications_desc")}</p>
+              <div className="mt-3">
+                <NotificationToggle
+                  compact={false}
+                  labelOn={t("settings.notifications_on")}
+                  labelOff={t("settings.notifications_off")}
+                />
+              </div>
+            </div>
+
+            <div className="bg-card rounded-xl border border-border p-4">
+              <p className="text-sm font-medium text-foreground">{t("settings.language")}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t("settings.language_desc")}</p>
+              <div className="grid grid-cols-2 gap-2 mt-3">
+                {(Object.keys(LOCALE_LABELS) as Locale[]).map((l) => (
+                  <button
+                    key={l}
+                    onClick={() => {
+                      setLocale(l);
+                      trackLanguageChanged(l);
+                    }}
+                    className={cn(
+                      "px-3 py-2 rounded-lg border text-sm text-left transition-colors",
+                      locale === l
+                        ? "border-franciscan bg-franciscan-light text-franciscan"
+                        : "border-border bg-background text-foreground hover:border-franciscan/40"
+                    )}
+                  >
+                    <span className="text-xs font-mono mr-2">{LOCALE_FLAGS[l]}</span>
+                    <span>{LOCALE_LABELS[l]}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-card rounded-xl border border-border p-4">
+              <p className="text-sm font-medium text-foreground">{t("settings.appearance")}</p>
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={() => { setTheme("light"); trackThemeToggled("light"); }}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-sm transition-colors",
+                    theme === "light"
+                      ? "border-franciscan bg-franciscan-light text-franciscan"
+                      : "border-border bg-background text-foreground hover:border-franciscan/40"
+                  )}
+                >
+                  <Sun className="w-4 h-4" /> {t("settings.theme_light")}
+                </button>
+                <button
+                  onClick={() => { setTheme("dark"); trackThemeToggled("dark"); }}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border text-sm transition-colors",
+                    theme === "dark"
+                      ? "border-franciscan bg-franciscan-light text-franciscan"
+                      : "border-border bg-background text-foreground hover:border-franciscan/40"
+                  )}
+                >
+                  <Moon className="w-4 h-4" /> {t("settings.theme_dark")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         {view === "about" && (<div className="space-y-3"><BackButton label={t("home.back")} onClick={() => setView("home")} /><h2 className="text-lg font-semibold text-foreground">{t("about.title")}</h2><AboutPage /></div>)}
 
         <footer className="text-center pt-8 pb-4">

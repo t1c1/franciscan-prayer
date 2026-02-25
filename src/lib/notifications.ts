@@ -1,3 +1,5 @@
+import { getLocalDateString } from "./utils";
+
 const HOUR_SCHEDULES: Record<string, { hour: number; minute: number; label: string }> = {
   lauds: { hour: 6, minute: 30, label: "Lauds — Morning Prayer" },
   terce: { hour: 9, minute: 0, label: "Terce — Mid-Morning Prayer" },
@@ -55,7 +57,7 @@ export function scheduleAllReminders(): void {
     if (delay < 0) continue; // Already past this hour today
 
     // Check if this hour is already completed
-    const dateStr = now.toISOString().split("T")[0];
+    const dateStr = getLocalDateString(now);
     const completions = JSON.parse(
       localStorage.getItem(`fp_completions_${dateStr}`) || "[]"
     );

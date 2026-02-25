@@ -9,87 +9,13 @@ import { ListenButton } from "@/components/listen-button";
 
 type CrownView = "intro" | "praying";
 
-const UI: Record<string, Record<string, string>> = {
-  en: {
-    begin: "Begin the Crown",
-    complete: "Crown Complete!",
-    decades: "7 decades",
-    hailMarys: "72 Hail Marys",
-    closingInstruction: "Now pray 1 Our Father, 1 Hail Mary, and 1 Glory Be for the Holy Father.",
-    startOver: "Start Over",
-    joy: "Joy",
-    decade: "Decade",
-    of: "of",
-    fruit: "Fruit",
-    tapOurFather: "Tap for\nOur Father",
-    ofHailMarys: "of 10 Hail Marys",
-  },
-  es: {
-    begin: "Comenzar la Corona",
-    complete: "\u00a1Corona Completada!",
-    decades: "7 decenas",
-    hailMarys: "72 Avemarías",
-    closingInstruction: "Ahora reza 1 Padrenuestro, 1 Avemaría y 1 Gloria al Padre por el Santo Padre.",
-    startOver: "Comenzar de nuevo",
-    joy: "Gozo",
-    decade: "Decena",
-    of: "de",
-    fruit: "Fruto",
-    tapOurFather: "Toca para\nPadrenuestro",
-    ofHailMarys: "de 10 Avemarías",
-  },
-  it: {
-    begin: "Inizia la Corona",
-    complete: "Corona Completata!",
-    decades: "7 decine",
-    hailMarys: "72 Ave Maria",
-    closingInstruction: "Ora prega 1 Padre Nostro, 1 Ave Maria e 1 Gloria al Padre per il Santo Padre.",
-    startOver: "Ricomincia",
-    joy: "Gioia",
-    decade: "Decina",
-    of: "di",
-    fruit: "Frutto",
-    tapOurFather: "Tocca per\nPadre Nostro",
-    ofHailMarys: "di 10 Ave Maria",
-  },
-  fr: {
-    begin: "Commencer la Couronne",
-    complete: "Couronne Terminée !",
-    decades: "7 dizaines",
-    hailMarys: "72 Je vous salue Marie",
-    closingInstruction: "Priez maintenant 1 Notre Père, 1 Je vous salue Marie et 1 Gloire au Père pour le Saint-Père.",
-    startOver: "Recommencer",
-    joy: "Joie",
-    decade: "Dizaine",
-    of: "de",
-    fruit: "Fruit",
-    tapOurFather: "Appuyez pour\nNotre Père",
-    ofHailMarys: "de 10 Je vous salue",
-  },
-  zh: {
-    begin: "开始诵念圣冠",
-    complete: "圣冠玫瑰经完成！",
-    decades: "七端",
-    hailMarys: "72遍圣母经",
-    closingInstruction: "现在诵念天主经一遍、圣母经一遍、圣三光荣颂一遍，为教宗的意向祈祷。",
-    startOver: "重新开始",
-    joy: "喜乐",
-    decade: "第",
-    of: "/",
-    fruit: "神果",
-    tapOurFather: "点击诵念\n天主经",
-    ofHailMarys: "/ 10遍圣母经",
-  },
-};
-
-function joyLabel(locale: string, num: number, current: number) {
-  const u = UI[locale] || UI.en;
+function joyLabel(locale: string, t: (key: string) => string, num: number, current: number) {
   if (locale === "zh") return `第${num}端喜乐 · 第${current + 1}端 / 7端`;
-  return `${num}${locale === "fr" ? "e" : "th"} ${u.joy} \u00b7 ${u.decade} ${current + 1} ${u.of} 7`;
+  return `${num}${locale === "fr" ? "e" : "th"} ${t("crown.joy")} \u00b7 ${t("crown.decade")} ${current + 1} ${t("crown.of")} 7`;
 }
 
 export function FranciscanCrown() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const [view, setView] = useState<CrownView>("intro");
   const [currentMystery, setCurrentMystery] = useState(0);
   const [aveCount, setAveCount] = useState(0);
@@ -98,7 +24,6 @@ export function FranciscanCrown() {
 
   const mystery = CROWN_MYSTERIES[currentMystery];
   const isFinished = completedMysteries.length === 7;
-  const u = UI[locale] || UI.en;
   const i18nMysteries = locale !== "en" && CROWN_I18N[locale] ? CROWN_I18N[locale] : null;
   const instructions = CROWN_INSTRUCTIONS[locale as keyof typeof CROWN_INSTRUCTIONS] || CROWN_INSTRUCTIONS.en;
 
@@ -141,7 +66,11 @@ export function FranciscanCrown() {
         <p className="text-sm text-foreground/80 whitespace-pre-line leading-relaxed">
           {instructions}
         </p>
-        <ListenButton text={instructions} locale={locale} />
+        <ListenButton
+          text={instructions}
+          locale={locale}
+          audioSrc={`/audio/crown/${locale}/intro.mp3`}
+        />
 
         <div className="space-y-2">
           {CROWN_MYSTERIES.map((m, i) => {
@@ -155,7 +84,7 @@ export function FranciscanCrown() {
                   {m.number}. {locM ? locM.title : m.title}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {u.fruit}: {locM ? locM.fruit : m.fruit}
+                  {t("crown.fruit")}: {locM ? locM.fruit : m.fruit}
                 </p>
               </div>
             );
@@ -166,7 +95,7 @@ export function FranciscanCrown() {
           onClick={() => setView("praying")}
           className="w-full bg-franciscan text-franciscan-foreground rounded-xl p-4 font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
         >
-          {u.begin} <ChevronRight className="w-4 h-4" />
+          {t("crown.begin")} <ChevronRight className="w-4 h-4" />
         </button>
       </div>
     );
@@ -181,17 +110,18 @@ export function FranciscanCrown() {
         </div>
         <div className="text-center">
           <h3 className="text-xl font-bold text-foreground">
-            {u.complete}
+            {t("crown.complete")}
           </h3>
           <p className="text-sm text-muted-foreground mt-2">
-            {u.decades} &middot; {u.hailMarys}
+            {t("crown.decades")} &middot; {t("crown.hail_marys")}
           </p>
           <p className="text-xs text-muted-foreground mt-1 italic">
-            {u.closingInstruction}
+            {t("crown.closing_instruction")}
           </p>
           <ListenButton
-            text={u.closingInstruction}
+            text={t("crown.closing_instruction")}
             locale={locale}
+            audioSrc={`/audio/crown/${locale}/complete.mp3`}
             className="mt-3 mx-auto"
           />
         </div>
@@ -199,7 +129,7 @@ export function FranciscanCrown() {
           onClick={handleReset}
           className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          <RotateCcw className="w-3 h-3" /> {u.startOver}
+          <RotateCcw className="w-3 h-3" /> {t("crown.start_over")}
         </button>
       </div>
     );
@@ -209,7 +139,7 @@ export function FranciscanCrown() {
   const mysteryListenText = [
     locMystery ? locMystery.title : mystery.title,
     locMystery ? locMystery.scripture : mystery.scripture,
-    `${u.fruit}: ${locMystery ? locMystery.fruit : mystery.fruit}`,
+    `${t("crown.fruit")}: ${locMystery ? locMystery.fruit : mystery.fruit}`,
   ]
     .filter(Boolean)
     .join("\n\n");
@@ -219,7 +149,7 @@ export function FranciscanCrown() {
       {/* Mystery info */}
       <div className="text-center max-w-sm">
         <p className="text-xs text-franciscan font-medium uppercase tracking-wide">
-          {joyLabel(locale, mystery.number, currentMystery)}
+          {joyLabel(locale, t, mystery.number, currentMystery)}
         </p>
         <h3 className="text-lg font-bold text-foreground mt-1">
           {locMystery ? locMystery.title : mystery.title}
@@ -228,11 +158,12 @@ export function FranciscanCrown() {
           {locMystery ? locMystery.scripture : mystery.scripture}
         </p>
         <p className="text-xs text-franciscan mt-1 italic">
-          {u.fruit}: {locMystery ? locMystery.fruit : mystery.fruit}
+          {t("crown.fruit")}: {locMystery ? locMystery.fruit : mystery.fruit}
         </p>
         <ListenButton
           text={mysteryListenText}
           locale={locale}
+          audioSrc={`/audio/crown/${locale}/mystery-${currentMystery + 1}.mp3`}
           className="mt-3 mx-auto"
         />
       </div>
@@ -247,13 +178,13 @@ export function FranciscanCrown() {
       >
         {!paterDone ? (
           <span className="text-sm font-medium text-center px-4 whitespace-pre-line">
-            {u.tapOurFather}
+            {t("crown.tap_our_father")}
           </span>
         ) : (
           <>
             <span className="text-4xl font-bold tabular-nums">{aveCount}</span>
             <span className="text-xs text-muted-foreground mt-1">
-              {u.ofHailMarys}
+              {t("crown.of_hail_marys")}
             </span>
           </>
         )}
@@ -280,7 +211,7 @@ export function FranciscanCrown() {
         onClick={handleReset}
         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
       >
-        <RotateCcw className="w-3 h-3" /> {u.startOver}
+        <RotateCcw className="w-3 h-3" /> {t("crown.start_over")}
       </button>
     </div>
   );
