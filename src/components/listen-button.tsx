@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, Play, Square } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { spellOutSmallNumbers } from "@/lib/number-words";
 import { cn } from "@/lib/utils";
 
 type ListenLocale = "latin" | "en" | "es" | "it" | "fr" | "zh";
@@ -64,6 +65,10 @@ export function ListenButton({ text, locale = "en", audioSrc, className }: Liste
   const normalizedText = useMemo(
     () => text.replace(/\s+/g, " ").trim(),
     [text]
+  );
+  const spokenFallbackText = useMemo(
+    () => spellOutSmallNumbers(normalizedText, locale),
+    [locale, normalizedText]
   );
 
   useEffect(() => {
@@ -139,7 +144,7 @@ export function ListenButton({ text, locale = "en", audioSrc, className }: Liste
       // Fall back to browser speech synthesis
       if ("speechSynthesis" in window) {
         stopSharedPlayback();
-        const utterance = new SpeechSynthesisUtterance(normalizedText);
+        const utterance = new SpeechSynthesisUtterance(spokenFallbackText);
         utterance.lang = SPEECH_LANGS[locale] || "en-US";
         utterance.rate = 0.9;
         activeSpeech = utterance;

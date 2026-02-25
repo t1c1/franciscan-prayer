@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "audio:generate": "node --import tsx scripts/generate-audio-assets.ts"
+    "audio:generate": "bun scripts/generate-audio-assets.ts"
   },
   "dependencies": {
     "@radix-ui/react-progress": "^1.1.7",
