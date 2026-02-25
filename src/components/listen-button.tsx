@@ -1,0 +1,171 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Loader2, Play, Square } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
+import { cn } from "@/lib/utils";
+
+type ListenLocale = "latin" | "en" | "es" | "it" | "fr" | "zh";
+
+type PlaybackStatus = "idle" | "loading" | "playing" | "error";
+
+type SharedPlayback = {
+  audio: HTMLAudioElement | null;
+  ownerId: string | null;
+};
+
+const sharedPlayback: SharedPlayback = {
+  audio: null,
+  ownerId: null,
+};
+
+const ownerListeners = new Set<(ownerId: string | null) => void>();
+const audioCache = new Map<string, string>();
+
+function notifyOwnerChange(ownerId: string | null) {
+  ownerListeners.forEach((listener) => listener(ownerId));
+}
+
+function stopSharedPlayback() {
+  if (!sharedPlayback.audio) return;
+  sharedPlayback.audio.pause();
+  sharedPlayback.audio.currentTime = 0;
+  sharedPlayback.audio = null;
+  sharedPlayback.ownerId = null;
+  notifyOwnerChange(null);
+}
+
+interface ListenButtonProps {
+  text: string;
+  locale?: ListenLocale;
+  className?: string;
+}
+
+export function ListenButton({ text, locale = "en", className }: ListenButtonProps) {
+  const { t } = useI18n();
+  const ownerId = useRef(`listen_${Math.random().toString(36).slice(2)}`);
+  const [status, setStatus] = useState<PlaybackStatus>("idle");
+
+  const normalizedText = useMemo(
+    () => text.replace(/\s+/g, " ").trim(),
+    [text]
+  );
+
+  useEffect(() => {
+    const listener = (activeOwnerId: string | null) => {
+      if (activeOwnerId !== ownerId.current) {
+        setStatus((current) => (current === "playing" || current === "loading" ? "idle" : current));
+      }
+    };
+    ownerListeners.add(listener);
+
+    return () => {
+      ownerListeners.delete(listener);
+      if (sharedPlayback.ownerId === ownerId.current) {
+        stopSharedPlayback();
+      }
+    };
+  }, []);
+
+  const handlePlay = async () => {
+    if (!normalizedText) return;
+
+    if (status === "playing" && sharedPlayback.ownerId === ownerId.current) {
+      stopSharedPlayback();
+      setStatus("idle");
+      return;
+    }
+
+    if (status === "loading") return;
+
+    try {
+      stopSharedPlayback();
+      setStatus("loading");
+
+      const cacheKey = `${locale}::${normalizedText}`;
+      let audioUrl = audioCache.get(cacheKey);
+
+      if (!audioUrl) {
+        const response = await fetch("/api/tts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text: normalizedText, locale }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`TTS failed with status ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        audioUrl = URL.createObjectURL(blob);
+        audioCache.set(cacheKey, audioUrl);
+      }
+
+      const audio = new Audio(audioUrl);
+
+      audio.onended = () => {
+        if (sharedPlayback.ownerId === ownerId.current) {
+          sharedPlayback.audio = null;
+          sharedPlayback.ownerId = null;
+          setStatus("idle");
+          notifyOwnerChange(null);
+        }
+      };
+
+      audio.onerror = () => {
+        if (sharedPlayback.ownerId === ownerId.current) {
+          sharedPlayback.audio = null;
+          sharedPlayback.ownerId = null;
+          setStatus("error");
+          notifyOwnerChange(null);
+        }
+      };
+
+      sharedPlayback.audio = audio;
+      sharedPlayback.ownerId = ownerId.current;
+      notifyOwnerChange(ownerId.current);
+
+      await audio.play();
+      setStatus("playing");
+    } catch (error) {
+      console.error("Listen playback failed", error);
+      setStatus("error");
+    }
+  };
+
+  const label =
+    status === "loading"
+      ? t("audio.loading")
+      : status === "playing"
+        ? t("audio.stop")
+        : t("audio.listen");
+
+  return (
+    <button
+      type="button"
+      onClick={handlePlay}
+      disabled={!normalizedText || status === "loading"}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+        status === "playing"
+          ? "bg-franciscan text-franciscan-foreground"
+          : "bg-muted text-muted-foreground hover:text-foreground hover:bg-accent",
+        "disabled:cursor-not-allowed disabled:opacity-60",
+        className
+      )}
+      aria-label={label}
+      title={label}
+    >
+      {status === "loading" ? (
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+      ) : status === "playing" ? (
+        <Square className="h-3.5 w-3.5" />
+      ) : (
+        <Play className="h-3.5 w-3.5" />
+      )}
+      <span>{label}</span>
+    </button>
+  );
+}

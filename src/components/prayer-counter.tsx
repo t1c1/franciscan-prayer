@@ -7,6 +7,7 @@ import { playTap, playBell, playCompletionChime } from "@/lib/audio";
 import { useI18n } from "@/lib/i18n";
 import { HOURS_I18N, type Hour } from "@/lib/prayers";
 import { trackHourCompleted } from "@/lib/analytics";
+import { ListenButton } from "@/components/listen-button";
 
 interface PrayerCounterProps {
   hour: Hour;
@@ -221,6 +222,10 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       <p className="text-sm text-muted-foreground text-center max-w-xs">
         {hourDesc}
       </p>
+      <ListenButton
+        text={`${hourName}. ${hourDesc}`}
+        locale={locale}
+      />
 
       {/* The big tap target */}
       <button

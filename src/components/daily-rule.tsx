@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getDailyChapter, RULE_CHAPTERS, RULE_I18N } from "@/lib/rule";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { ListenButton } from "@/components/listen-button";
 
 const UI: Record<string, Record<string, string>> = {
   en: {
@@ -114,6 +115,7 @@ export function DailyRule() {
         const displayText = showLatin
           ? chapter.textLatin
           : (i18nChapter ? i18nChapter.text : chapter.text);
+        const spokenLocale = showLatin ? "latin" : locale;
 
         return (
           <div
@@ -126,6 +128,11 @@ export function DailyRule() {
             <h3 className="font-semibold text-foreground">
               {displayTitle}
             </h3>
+            <ListenButton
+              text={`${displayTitle}\n\n${displayText}`}
+              locale={spokenLocale}
+              className="mt-3"
+            />
             <p className="mt-3 text-sm text-foreground/80 leading-relaxed">
               {displayText}
             </p>

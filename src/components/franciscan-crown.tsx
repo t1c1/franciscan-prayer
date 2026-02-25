@@ -5,6 +5,7 @@ import { Check, ChevronRight, RotateCcw } from "lucide-react";
 import { CROWN_MYSTERIES, CROWN_INSTRUCTIONS, CROWN_I18N } from "@/lib/franciscan-crown";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { ListenButton } from "@/components/listen-button";
 
 type CrownView = "intro" | "praying";
 
@@ -140,6 +141,7 @@ export function FranciscanCrown() {
         <p className="text-sm text-foreground/80 whitespace-pre-line leading-relaxed">
           {instructions}
         </p>
+        <ListenButton text={instructions} locale={locale} />
 
         <div className="space-y-2">
           {CROWN_MYSTERIES.map((m, i) => {
@@ -187,6 +189,11 @@ export function FranciscanCrown() {
           <p className="text-xs text-muted-foreground mt-1 italic">
             {u.closingInstruction}
           </p>
+          <ListenButton
+            text={u.closingInstruction}
+            locale={locale}
+            className="mt-3 mx-auto"
+          />
         </div>
         <button
           onClick={handleReset}
@@ -199,6 +206,13 @@ export function FranciscanCrown() {
   }
 
   const locMystery = i18nMysteries ? i18nMysteries[currentMystery] : null;
+  const mysteryListenText = [
+    locMystery ? locMystery.title : mystery.title,
+    locMystery ? locMystery.scripture : mystery.scripture,
+    `${u.fruit}: ${locMystery ? locMystery.fruit : mystery.fruit}`,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 px-4">
@@ -216,6 +230,11 @@ export function FranciscanCrown() {
         <p className="text-xs text-franciscan mt-1 italic">
           {u.fruit}: {locMystery ? locMystery.fruit : mystery.fruit}
         </p>
+        <ListenButton
+          text={mysteryListenText}
+          locale={locale}
+          className="mt-3 mx-auto"
+        />
       </div>
 
       {/* Counter */}

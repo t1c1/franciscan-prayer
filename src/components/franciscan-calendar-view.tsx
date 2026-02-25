@@ -11,6 +11,7 @@ import {
 } from "@/lib/franciscan-calendar";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { ListenButton } from "@/components/listen-button";
 
 const RANK_STYLES = {
   solemnity: "border-amber-400 bg-amber-50 dark:bg-amber-950/30",
@@ -73,6 +74,11 @@ export function FranciscanCalendarView() {
           </p>
           <p className="text-lg font-bold mt-1">{todayFeast.name}</p>
           <p className="text-sm opacity-80 mt-1">{todayFeast.description}</p>
+          <ListenButton
+            text={`${todayFeast.name}\n\n${todayFeast.description}`}
+            locale={locale}
+            className="mt-3 bg-white/20 text-white hover:bg-white/30 hover:text-white"
+          />
         </div>
       )}
 

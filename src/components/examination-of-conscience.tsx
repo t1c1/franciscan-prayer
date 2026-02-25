@@ -5,6 +5,7 @@ import { ChevronRight, ChevronLeft, Check, Heart } from "lucide-react";
 import { getTonightExamination, EXAMINATION_I18N } from "@/lib/examination";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { ListenButton } from "@/components/listen-button";
 
 export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
   const { locale, t } = useI18n();
@@ -32,6 +33,11 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
           &ldquo;{t("exam.quote")}&rdquo;
           — {t("exam.quote_author")}
         </p>
+        <ListenButton
+          text={`${t("exam.intro")}\n\n${t("exam.quote")} — ${t("exam.quote_author")}`}
+          locale={locale}
+          className="mx-auto"
+        />
         <button
           onClick={() => setStep(0)}
           className="w-full bg-franciscan text-franciscan-foreground rounded-lg py-3 text-sm font-medium hover:opacity-90 transition-opacity"
@@ -61,6 +67,11 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
         <p className="text-sm text-foreground/80 italic mt-2">
           {t("exam.complete_prayer")}
         </p>
+        <ListenButton
+          text={`${t("exam.complete_text")}\n\n${t("exam.complete_prayer")}`}
+          locale={locale}
+          className="mx-auto"
+        />
         <button
           onClick={onClose}
           className="w-full bg-franciscan text-franciscan-foreground rounded-lg py-3 text-sm font-medium hover:opacity-90 transition-opacity"
@@ -95,6 +106,10 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
       <p className="text-foreground leading-relaxed text-center py-4 min-h-[80px] flex items-center justify-center">
         {question.question}
       </p>
+
+      <div className="flex justify-center">
+        <ListenButton text={question.question} locale={locale} />
+      </div>
 
       {/* Reflection toggle */}
       <div className="flex justify-center gap-3">

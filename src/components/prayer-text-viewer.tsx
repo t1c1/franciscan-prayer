@@ -6,6 +6,7 @@ import { PRAYERS, LANGUAGE_LABELS, type Language } from "@/lib/prayers";
 import { MORE_PRAYERS } from "@/lib/more-prayers";
 import { cn } from "@/lib/utils";
 import { trackPrayerExpanded, trackPrayerFavorited } from "@/lib/analytics";
+import { ListenButton } from "@/components/listen-button";
 
 const FAVORITES_KEY = "fp_favorite_prayers";
 
@@ -75,19 +76,28 @@ export function PrayerTextViewer() {
         if (!text) return null;
         const isExpanded = expandedId === prayer.id;
         const isFav = favorites.includes(prayer.id);
+        const toggleExpanded = () => {
+          const next = isExpanded ? null : prayer.id;
+          setExpandedId(next);
+          if (next) trackPrayerExpanded(next);
+        };
 
         return (
           <div
             key={prayer.id}
             className="bg-card rounded-lg border border-border hover:border-franciscan/40 transition-colors"
           >
-            <button
-              onClick={() => { const next = isExpanded ? null : prayer.id; setExpandedId(next); if (next) trackPrayerExpanded(next); }}
-              className="w-full text-left p-4"
-            >
+            <div className="p-4">
               <div className="flex items-start justify-between gap-2">
-                <h3 className="font-semibold text-foreground">{prayer.title}</h3>
                 <button
+                  type="button"
+                  onClick={toggleExpanded}
+                  className="text-left flex-1"
+                >
+                  <h3 className="font-semibold text-foreground">{prayer.title}</h3>
+                </button>
+                <button
+                  type="button"
                   onClick={(e) => handleToggleFavorite(e, prayer.id)}
                   className={cn(
                     "shrink-0 p-1 rounded-full transition-colors",
@@ -99,15 +109,22 @@ export function PrayerTextViewer() {
                 </button>
               </div>
               {isExpanded ? (
-                <p className="mt-3 text-sm text-foreground/80 whitespace-pre-line leading-relaxed">
-                  {text}
-                </p>
+                <div className="mt-3 space-y-3">
+                  <ListenButton text={text} locale={lang} />
+                  <p className="text-sm text-foreground/80 whitespace-pre-line leading-relaxed">
+                    {text}
+                  </p>
+                </div>
               ) : (
-                <p className="mt-1 text-sm text-muted-foreground truncate">
+                <button
+                  type="button"
+                  onClick={toggleExpanded}
+                  className="mt-1 w-full text-left text-sm text-muted-foreground truncate"
+                >
                   {text.split("\n")[0]}...
-                </p>
+                </button>
               )}
-            </button>
+            </div>
           </div>
         );
       })}

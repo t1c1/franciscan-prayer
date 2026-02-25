@@ -6,6 +6,7 @@ import { fetchTodayLiturgical, type LitCalDay } from "@/lib/litcal";
 import { getTodayUSCCBUrl } from "@/lib/readings";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { ListenButton } from "@/components/listen-button";
 
 const COLOR_STYLES: Record<string, string> = {
   green: "bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-800",
@@ -36,6 +37,16 @@ export function LiturgicalBanner() {
   if (!day) return null;
 
   const psalmPrefix = t("banner.psalm");
+  const bannerListenText = [
+    day.name,
+    day.season ? `${day.season}. ${day.grade}` : day.grade,
+    day.readings?.first_reading,
+    day.readings?.psalm ? `${psalmPrefix}${day.readings.psalm}` : null,
+    day.readings?.second_reading,
+    day.readings?.gospel,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
 
   return (
     <div className={cn("rounded-xl border p-4 space-y-2", COLOR_STYLES[day.color] || COLOR_STYLES.green)}>
@@ -61,6 +72,8 @@ export function LiturgicalBanner() {
           {day.readings.gospel && <span className="font-medium">{day.readings.gospel}</span>}
         </div>
       )}
+
+      <ListenButton text={bannerListenText} locale="en" />
 
       <a
         href={getTodayUSCCBUrl()}

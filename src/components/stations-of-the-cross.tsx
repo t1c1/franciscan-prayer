@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Cross, RotateCcw, Check } from "lucide-react
 import { STATIONS, STATIONS_PRAYERS, STATIONS_I18N } from "@/lib/stations";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { ListenButton } from "@/components/listen-button";
 
 type StationsView = "intro" | "praying" | "complete";
 
@@ -100,6 +101,7 @@ export function StationsOfTheCross() {
   const [current, setCurrent] = useState(0);
   const u = UI[locale] || UI.en;
   const i18nStations = locale !== "en" && STATIONS_I18N[locale] ? STATIONS_I18N[locale] : null;
+  const introListenText = [u.intro, STATIONS_PRAYERS.opening].filter(Boolean).join("\n\n");
 
   if (view === "intro") {
     return (
@@ -107,6 +109,7 @@ export function StationsOfTheCross() {
         <p className="text-sm text-foreground/80 leading-relaxed">
           {u.intro}
         </p>
+        <ListenButton text={introListenText} locale={locale} />
 
         <div className="bg-franciscan-light rounded-lg p-4 text-center">
           <p className="text-sm text-foreground/80 italic whitespace-pre-line">
@@ -151,6 +154,11 @@ export function StationsOfTheCross() {
           <p className="text-sm text-foreground/80 mt-3 leading-relaxed">
             {STATIONS_PRAYERS.closing}
           </p>
+          <ListenButton
+            text={STATIONS_PRAYERS.closing}
+            locale={locale}
+            className="mt-3"
+          />
         </div>
         <button
           onClick={() => { setView("intro"); setCurrent(0); }}
@@ -164,6 +172,15 @@ export function StationsOfTheCross() {
 
   const station = STATIONS[current];
   const i18nStation = i18nStations ? i18nStations[current] : null;
+  const stationListenText = [
+    i18nStation ? i18nStation.title : station.title,
+    i18nStation ? i18nStation.scripture : station.scripture,
+    i18nStation ? i18nStation.meditation : station.meditation,
+    STATIONS_PRAYERS.stationResponse,
+    u.prayInstruction,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
 
   return (
     <div className="space-y-4">
@@ -191,6 +208,8 @@ export function StationsOfTheCross() {
           </h3>
           <p className="text-xs text-muted-foreground italic mt-1">{station.titleLatin}</p>
         </div>
+
+        <ListenButton text={stationListenText} locale={locale} />
 
         <div className="bg-franciscan-light rounded-lg p-3 text-center">
           <p className="text-xs text-foreground/70 italic">{STATIONS_PRAYERS.opening}</p>
