@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { BookOpen, ExternalLink } from "lucide-react";
 import { fetchTodayLiturgical, type LitCalDay } from "@/lib/litcal";
-import { getTodayUSCCBUrl } from "@/lib/readings";
+import { getTodayUSCCBUrl, fetchTodayReadingAudio } from "@/lib/readings";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { ListenButton } from "@/components/listen-button";
@@ -29,9 +29,11 @@ const COLOR_DOT: Record<string, string> = {
 export function LiturgicalBanner() {
   const { locale, t } = useI18n();
   const [day, setDay] = useState<LitCalDay | null>(null);
+  const [podcastUrl, setPodcastUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetchTodayLiturgical().then(setDay);
+    fetchTodayReadingAudio().then(setPodcastUrl);
   }, []);
 
   if (!day) return null;
@@ -73,7 +75,7 @@ export function LiturgicalBanner() {
         </div>
       )}
 
-      <ListenButton text={bannerListenText} locale={locale} />
+      <ListenButton text={bannerListenText} locale={locale} audioSrc={podcastUrl || undefined} />
 
       <a
         href={getTodayUSCCBUrl()}

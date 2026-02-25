@@ -1,3 +1,48 @@
+const USCCB_RSS = "https://feeds.soundcloud.com/users/soundcloud:users:838970026/sounds.rss";
+const PODCAST_CACHE_KEY = "fp_usccb_podcast";
+
+export async function fetchTodayReadingAudio(): Promise<string | null> {
+  // Check cache
+  if (typeof window !== "undefined") {
+    try {
+      const cached = localStorage.getItem(PODCAST_CACHE_KEY);
+      if (cached) {
+        const { url, dateStr } = JSON.parse(cached);
+        if (dateStr === new Date().toISOString().split("T")[0]) return url;
+      }
+    } catch { /* ignore */ }
+  }
+
+  try {
+    const res = await fetch(USCCB_RSS, { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) return null;
+    const xml = await res.text();
+
+    // Build today's title string to match against RSS
+    const now = new Date();
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const titleDate = `${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+
+    // Find enclosure URL for today's episode
+    const items = xml.split("<item>");
+    for (const item of items) {
+      if (item.includes(titleDate)) {
+        const match = item.match(/enclosure[^>]*url="([^"]+)"/);
+        if (match) {
+          const url = match[1];
+          if (typeof window !== "undefined") {
+            localStorage.setItem(PODCAST_CACHE_KEY, JSON.stringify({ url, dateStr: now.toISOString().split("T")[0] }));
+          }
+          return url;
+        }
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 export function getTodayUSCCBUrl(): string {
   const now = new Date();
   const month = String(now.getMonth() + 1).padStart(2, "0");

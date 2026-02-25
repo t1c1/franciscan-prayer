@@ -11,10 +11,10 @@ import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 const PRESETS: { label: string; hz: number }[] = [
-  { label: "C4", hz: 262 },
+  { label: "C4", hz: 261.626 },
   { label: "A4", hz: 440 },
   { label: "C5 ☦", hz: 528 },
-  { label: "E5", hz: 659 },
+  { label: "E5", hz: 659.255 },
   { label: "A5", hz: 880 },
 ];
 
@@ -54,7 +54,7 @@ export function BellSettingsCard() {
       <div className="mt-4 space-y-1">
         <div className="flex items-center justify-between">
           <label className="text-xs font-medium text-foreground">{t("settings.bell_frequency")}</label>
-          <span className="text-xs text-muted-foreground tabular-nums">{settings.frequency} Hz</span>
+          <span className="text-xs text-muted-foreground tabular-nums">{Number.isInteger(settings.frequency) ? settings.frequency : settings.frequency.toFixed(1)} Hz</span>
         </div>
         <input
           type="range"
@@ -72,7 +72,7 @@ export function BellSettingsCard() {
               onClick={() => update({ frequency: p.hz })}
               className={cn(
                 "text-[10px] px-1.5 py-0.5 rounded-full transition-colors",
-                settings.frequency === p.hz
+                Math.abs(settings.frequency - p.hz) < 1
                   ? "bg-franciscan-light text-franciscan font-medium"
                   : "bg-muted text-muted-foreground"
               )}
