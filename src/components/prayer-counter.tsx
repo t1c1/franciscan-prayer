@@ -300,6 +300,8 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     const next = !soundEnabled;
     setSoundEnabled(next);
     localStorage.setItem("fp_sound_enabled", String(next));
+    // Also stop guided audio playback when muting
+    if (!next) stopGuidedPlayback();
   };
 
   const handleReset = useCallback(() => {

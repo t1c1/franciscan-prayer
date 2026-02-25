@@ -26,12 +26,18 @@ const COLOR_DOT: Record<string, string> = {
 };
 
 export function LiturgicalBanner() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [day, setDay] = useState<LitCalDay | null>(null);
 
   useEffect(() => {
-    fetchTodayLiturgical().then(setDay);
-  }, []);
+    let cancelled = false;
+    fetchTodayLiturgical(locale).then((value) => {
+      if (!cancelled) setDay(value);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [locale]);
 
   if (!day) return null;
 

@@ -2,6 +2,15 @@
 // https://litcal.johnromanodorazio.com
 
 const LITCAL_BASE = "https://litcal.johnromanodorazio.com/api/v5/calendar/nation/US";
+const API_LOCALE_BY_APP_LOCALE = {
+  en: "en_US",
+  es: "es_ES",
+  it: "it_IT",
+  fr: "fr_FR",
+  zh: "zh_CN",
+} as const;
+
+type LitCalLocale = keyof typeof API_LOCALE_BY_APP_LOCALE;
 
 export interface LitCalEvent {
   event_key: string;
@@ -37,6 +46,10 @@ export interface LitCalDay {
 const CACHE_KEY = "fp_litcal_cache";
 const CACHE_TTL = 12 * 60 * 60 * 1000; // 12 hours
 
+function cacheKeyForLocale(locale: LitCalLocale): string {
+  return `${CACHE_KEY}:${locale}`;
+}
+
 function mapColor(colors: string[]): string {
   if (!colors || colors.length === 0) return "green";
   const c = colors[0].toLowerCase();
@@ -61,11 +74,13 @@ function parseEventDate(date: string | number): string {
   return date.split("T")[0];
 }
 
-export async function fetchTodayLiturgical(): Promise<LitCalDay | null> {
+export async function fetchTodayLiturgical(locale: LitCalLocale = "en"): Promise<LitCalDay | null> {
+  const cacheKey = cacheKeyForLocale(locale);
+
   // Check cache first
   if (typeof window !== "undefined") {
     try {
-      const cached = localStorage.getItem(CACHE_KEY);
+      const cached = localStorage.getItem(cacheKey);
       if (cached) {
         const { data, timestamp, dateStr } = JSON.parse(cached);
         const today = new Date().toISOString().split("T")[0];
@@ -80,9 +95,15 @@ export async function fetchTodayLiturgical(): Promise<LitCalDay | null> {
 
   try {
     const year = new Date().getFullYear();
-    const res = await fetch(`${LITCAL_BASE}/${year}?locale=en_US`, {
+    let res = await fetch(`${LITCAL_BASE}/${year}?locale=${API_LOCALE_BY_APP_LOCALE[locale]}`, {
       signal: AbortSignal.timeout(8000),
     });
+    if (!res.ok && locale !== "en") {
+      // Fallback to English data if locale-specific endpoint fails.
+      res = await fetch(`${LITCAL_BASE}/${year}?locale=${API_LOCALE_BY_APP_LOCALE.en}`, {
+        signal: AbortSignal.timeout(8000),
+      });
+    }
     if (!res.ok) return null;
 
     const json = await res.json();
@@ -124,7 +145,7 @@ export async function fetchTodayLiturgical(): Promise<LitCalDay | null> {
     // Cache
     if (typeof window !== "undefined") {
       localStorage.setItem(
-        CACHE_KEY,
+        cacheKey,
         JSON.stringify({ data: result, timestamp: Date.now(), dateStr: today })
       );
     }
