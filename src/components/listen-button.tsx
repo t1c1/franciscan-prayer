@@ -20,7 +20,7 @@ const sharedPlayback: SharedPlayback = {
 };
 
 const ownerListeners = new Set<(ownerId: string | null) => void>();
-const audioCache = new Map<string, string>();
+
 
 function notifyOwnerChange(ownerId: string | null) {
   ownerListeners.forEach((listener) => listener(ownerId));
@@ -136,52 +136,33 @@ export function ListenButton({ text, locale = "en", audioSrc, className }: Liste
         }
       }
 
-      // Try ElevenLabs TTS API first
-      const cacheKey = `${locale}::${normalizedText}`;
-      let audioUrl = audioCache.get(cacheKey);
-
-      if (!audioUrl) {
-        try {
-          const response = await fetch("/api/tts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: normalizedText, locale }),
-          });
-          if (!response.ok) throw new Error(`TTS ${response.status}`);
-          const blob = await response.blob();
-          audioUrl = URL.createObjectURL(blob);
-          audioCache.set(cacheKey, audioUrl);
-        } catch {
-          // API unavailable — fall back to browser speech synthesis
-          if ("speechSynthesis" in window) {
-            stopSharedPlayback();
-            const utterance = new SpeechSynthesisUtterance(normalizedText);
-            utterance.lang = SPEECH_LANGS[locale] || "en-US";
-            utterance.rate = 0.9;
-            activeSpeech = utterance;
-            sharedPlayback.ownerId = ownerId.current;
-            notifyOwnerChange(ownerId.current);
-            utterance.onend = () => {
-              activeSpeech = null;
-              sharedPlayback.ownerId = null;
-              setStatus("idle");
-              notifyOwnerChange(null);
-            };
-            utterance.onerror = () => {
-              activeSpeech = null;
-              sharedPlayback.ownerId = null;
-              setStatus("error");
-              notifyOwnerChange(null);
-            };
-            window.speechSynthesis.speak(utterance);
-            setStatus("playing");
-            return;
-          }
-          throw new Error("No TTS available");
-        }
+      // Fall back to browser speech synthesis
+      if ("speechSynthesis" in window) {
+        stopSharedPlayback();
+        const utterance = new SpeechSynthesisUtterance(normalizedText);
+        utterance.lang = SPEECH_LANGS[locale] || "en-US";
+        utterance.rate = 0.9;
+        activeSpeech = utterance;
+        sharedPlayback.ownerId = ownerId.current;
+        notifyOwnerChange(ownerId.current);
+        utterance.onend = () => {
+          activeSpeech = null;
+          sharedPlayback.ownerId = null;
+          setStatus("idle");
+          notifyOwnerChange(null);
+        };
+        utterance.onerror = () => {
+          activeSpeech = null;
+          sharedPlayback.ownerId = null;
+          setStatus("error");
+          notifyOwnerChange(null);
+        };
+        window.speechSynthesis.speak(utterance);
+        setStatus("playing");
+        return;
       }
 
-      await playUrl(audioUrl);
+      throw new Error("No audio available");
     } catch (error) {
       console.error("Listen playback failed", error);
       setStatus("error");
