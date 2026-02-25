@@ -106,7 +106,7 @@ export default function Home() {
   const currentHourOfDay = new Date().getHours();
   const hourTimeMap: Record<string, number> = {
     matins: 3, lauds: 6, prime: 7, terce: 9,
-    sext: 12, none: 15, vespers: 18, compline: 21,
+    sext: 12, none: 15, vespers: 18, compline: 21, dead: 22,
   };
   const nextHour = HOURS.find(
     (h) => !completedHours.includes(h.id) && hourTimeMap[h.id] >= currentHourOfDay
@@ -156,13 +156,17 @@ export default function Home() {
           hour={hour}
           onComplete={() => {
             refreshCompletions();
-            setActiveHourId(null);
-            const completed = getCompletedHours();
-            if (completed.length >= HOURS.length) {
-              playMonasteryBell();
-              trackAllHoursCompleted(getStreak());
+            if (activeHourId === "compline" && !getCompletedHours().includes("dead")) {
+              setActiveHourId("dead");
+            } else {
+              setActiveHourId(null);
+              const completed = getCompletedHours();
+              if (completed.length >= HOURS.length) {
+                playMonasteryBell();
+                trackAllHoursCompleted(getStreak());
+              }
+              if (user) syncToCloud();
             }
-            if (user) syncToCloud();
           }}
           onBack={() => setActiveHourId(null)}
         />
