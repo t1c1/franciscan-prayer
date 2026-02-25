@@ -26,14 +26,28 @@ function notifyOwnerChange(ownerId: string | null) {
   ownerListeners.forEach((listener) => listener(ownerId));
 }
 
+let activeSpeech: SpeechSynthesisUtterance | null = null;
+
 function stopSharedPlayback() {
-  if (!sharedPlayback.audio) return;
+  if (activeSpeech) {
+    window.speechSynthesis.cancel();
+    activeSpeech = null;
+  }
+  if (!sharedPlayback.audio) {
+    sharedPlayback.ownerId = null;
+    notifyOwnerChange(null);
+    return;
+  }
   sharedPlayback.audio.pause();
   sharedPlayback.audio.currentTime = 0;
   sharedPlayback.audio = null;
   sharedPlayback.ownerId = null;
   notifyOwnerChange(null);
 }
+
+const SPEECH_LANGS: Record<string, string> = {
+  en: "en-US", es: "es-ES", it: "it-IT", fr: "fr-FR", zh: "zh-CN", latin: "la",
+};
 
 interface ListenButtonProps {
   text: string;
@@ -122,25 +136,49 @@ export function ListenButton({ text, locale = "en", audioSrc, className }: Liste
         }
       }
 
+      // Try ElevenLabs TTS API first
       const cacheKey = `${locale}::${normalizedText}`;
       let audioUrl = audioCache.get(cacheKey);
 
       if (!audioUrl) {
-        const response = await fetch("/api/tts", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ text: normalizedText, locale }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`TTS failed with status ${response.status}`);
+        try {
+          const response = await fetch("/api/tts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: normalizedText, locale }),
+          });
+          if (!response.ok) throw new Error(`TTS ${response.status}`);
+          const blob = await response.blob();
+          audioUrl = URL.createObjectURL(blob);
+          audioCache.set(cacheKey, audioUrl);
+        } catch {
+          // API unavailable — fall back to browser speech synthesis
+          if ("speechSynthesis" in window) {
+            stopSharedPlayback();
+            const utterance = new SpeechSynthesisUtterance(normalizedText);
+            utterance.lang = SPEECH_LANGS[locale] || "en-US";
+            utterance.rate = 0.9;
+            activeSpeech = utterance;
+            sharedPlayback.ownerId = ownerId.current;
+            notifyOwnerChange(ownerId.current);
+            utterance.onend = () => {
+              activeSpeech = null;
+              sharedPlayback.ownerId = null;
+              setStatus("idle");
+              notifyOwnerChange(null);
+            };
+            utterance.onerror = () => {
+              activeSpeech = null;
+              sharedPlayback.ownerId = null;
+              setStatus("error");
+              notifyOwnerChange(null);
+            };
+            window.speechSynthesis.speak(utterance);
+            setStatus("playing");
+            return;
+          }
+          throw new Error("No TTS available");
         }
-
-        const blob = await response.blob();
-        audioUrl = URL.createObjectURL(blob);
-        audioCache.set(cacheKey, audioUrl);
       }
 
       await playUrl(audioUrl);
