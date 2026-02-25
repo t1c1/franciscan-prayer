@@ -7,7 +7,6 @@ import { playTap, playBell, playCompletionChime, loadBellSettings } from "@/lib/
 import { useI18n } from "@/lib/i18n";
 import { HOURS_I18N, PRAYERS, type Hour } from "@/lib/prayers";
 import { trackHourCompleted } from "@/lib/analytics";
-import { ListenButton } from "@/components/listen-button";
 
 interface PrayerCounterProps {
   hour: Hour;
@@ -19,6 +18,13 @@ function getStorageKey(hourId: string): string {
   const today = getLocalDateString();
   return `fp_count_${hourId}_${today}`;
 }
+
+const VOICE_RATE_STORAGE_KEY = "fp_voice_rate";
+const VOICE_RATE_RANGE = {
+  min: 0.7,
+  max: 1.4,
+  step: 0.1,
+} as const;
 
 export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) {
   const { locale, t } = useI18n();
@@ -34,6 +40,31 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   const [timeLeft, setTimeLeft] = useState(0);
   const pacingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Guided audio state
+  const [guidedPlaying, setGuidedPlaying] = useState(false);
+  const [guidedSegment, setGuidedSegment] = useState(0);
+  const [guidedTotalSegments, setGuidedTotalSegments] = useState(0);
+  const [voiceRate, setVoiceRate] = useState(1);
+  const guidedAudioRef = useRef<HTMLAudioElement | null>(null);
+  const guidedQueueRef = useRef<string[]>([]);
+  const guidedIndexRef = useRef(0);
+
+  const stopGuidedPlayback = useCallback(() => {
+    const audio = guidedAudioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.onended = null;
+      audio.onerror = null;
+    }
+    guidedAudioRef.current = null;
+    guidedQueueRef.current = [];
+    guidedIndexRef.current = 0;
+    setGuidedPlaying(false);
+    setGuidedSegment(0);
+    setGuidedTotalSegments(0);
+  }, []);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const saved = localStorage.getItem(getStorageKey(hour.id));
@@ -45,14 +76,106 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     // Restore sound preference
     const soundPref = localStorage.getItem("fp_sound_enabled");
     if (soundPref === "false") setSoundEnabled(false);
+
+    // Restore voice speed preference
+    const savedVoiceRate = parseFloat(localStorage.getItem(VOICE_RATE_STORAGE_KEY) || "");
+    if (!Number.isNaN(savedVoiceRate)) {
+      const clamped = Math.max(VOICE_RATE_RANGE.min, Math.min(VOICE_RATE_RANGE.max, savedVoiceRate));
+      setVoiceRate(clamped);
+    }
   }, [hour.id, hour.paterCount]);
 
-  // Cleanup timer on unmount
+  // Cleanup timer/audio on unmount
   useEffect(() => {
     return () => {
       if (pacingRef.current) clearInterval(pacingRef.current);
+      stopGuidedPlayback();
     };
-  }, []);
+  }, [stopGuidedPlayback]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(VOICE_RATE_STORAGE_KEY, voiceRate.toFixed(1));
+    }
+    if (guidedAudioRef.current) {
+      guidedAudioRef.current.playbackRate = voiceRate;
+    }
+  }, [voiceRate]);
+
+  useEffect(() => {
+    // Stop any active sequence when switching hour/locale.
+    stopGuidedPlayback();
+  }, [hour.id, locale, stopGuidedPlayback]);
+
+  const startGuidedPlayback = useCallback(async () => {
+    const responsePrayerId = hour.id === "dead" ? "requiem-aeternam" : "gloria-patri";
+    const queue: string[] = [];
+
+    for (let i = 0; i < hour.paterCount; i++) {
+      queue.push(`/audio/prayers/${locale}/pater-noster.mp3`);
+      queue.push(`/audio/prayers/${locale}/${responsePrayerId}.mp3`);
+    }
+
+    if (queue.length === 0) return;
+
+    stopGuidedPlayback();
+    guidedQueueRef.current = queue;
+    guidedIndexRef.current = 0;
+    setGuidedPlaying(true);
+    setGuidedTotalSegments(queue.length);
+
+    const audio = new Audio();
+    audio.preload = "auto";
+    audio.playbackRate = voiceRate;
+    guidedAudioRef.current = audio;
+
+    const playAt = async (index: number) => {
+      if (guidedAudioRef.current !== audio) return;
+      const src = guidedQueueRef.current[index];
+      if (!src) {
+        stopGuidedPlayback();
+        return;
+      }
+
+      audio.src = src;
+      setGuidedSegment(index + 1);
+
+      try {
+        await audio.play();
+      } catch (error) {
+        console.error("Guided audio playback failed", error);
+        const next = index + 1;
+        if (next >= guidedQueueRef.current.length) {
+          stopGuidedPlayback();
+        } else {
+          guidedIndexRef.current = next;
+          void playAt(next);
+        }
+      }
+    };
+
+    audio.onended = () => {
+      const next = guidedIndexRef.current + 1;
+      if (next >= guidedQueueRef.current.length) {
+        stopGuidedPlayback();
+      } else {
+        guidedIndexRef.current = next;
+        void playAt(next);
+      }
+    };
+
+    audio.onerror = () => {
+      const next = guidedIndexRef.current + 1;
+      if (next >= guidedQueueRef.current.length) {
+        stopGuidedPlayback();
+      } else {
+        guidedIndexRef.current = next;
+        void playAt(next);
+      }
+    };
+
+    await playAt(0);
+  }, [hour.id, hour.paterCount, locale, stopGuidedPlayback, voiceRate]);
 
   const advanceCount = useCallback(() => {
     if (completed) return;
@@ -68,6 +191,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     if (next >= hour.paterCount) {
       setCompleted(true);
       if (soundEnabled) playCompletionChime();
+      stopGuidedPlayback();
       if (pacingRef.current) {
         clearInterval(pacingRef.current);
         pacingRef.current = null;
@@ -82,7 +206,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       trackHourCompleted(hour.id, hour.paterCount);
       setTimeout(onComplete, 800);
     }
-  }, [count, completed, hour, onComplete, soundEnabled]);
+  }, [count, completed, hour, onComplete, soundEnabled, stopGuidedPlayback]);
 
   const handleTap = useCallback(() => {
     if (pacingActive) return; // In pacing mode, taps are auto
@@ -175,10 +299,11 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     setPacingActive(false);
     setPacingPaused(false);
     setTimeLeft(0);
+    stopGuidedPlayback();
     if (pacingRef.current) clearInterval(pacingRef.current);
     pacingRef.current = null;
     localStorage.removeItem(getStorageKey(hour.id));
-  }, [hour.id]);
+  }, [hour.id, stopGuidedPlayback]);
 
   const progress = Math.min((count / hour.paterCount) * 100, 100);
   const paterNoster = PRAYERS.find(p => p.id === "pater-noster")!;
@@ -186,7 +311,11 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   const requiem = PRAYERS.find(p => p.id === "requiem-aeternam")!;
   const hourI18n = HOURS_I18N[locale]?.[hour.id] || HOURS_I18N.en[hour.id];
   const hourName = hourI18n?.name || hour.name;
-  const hourDesc = hourI18n?.description || hour.description;
+  const dashReplacement = locale === "zh" ? "，" : ", ";
+  const hourDesc = (hourI18n?.description || hour.description)
+    .replace(/\s*[—–]\s*/g, dashReplacement)
+    .replace(/\s{2,}/g, " ")
+    .trim();
   const hourTime = hourI18n?.typicalTime || hour.typicalTime;
 
   return (
@@ -220,11 +349,55 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       <p className="text-sm text-muted-foreground text-center max-w-xs">
         {hourDesc}
       </p>
-      <ListenButton
-        text={`${hourName}. ${hourDesc}`}
-        locale={locale}
-        audioSrc={`/audio/hours/${locale}/${hour.id}.mp3`}
-      />
+
+      <div className="w-full max-w-xs bg-card rounded-lg border border-border p-3 space-y-3">
+        <button
+          type="button"
+          onClick={() => {
+            if (guidedPlaying) {
+              stopGuidedPlayback();
+            } else {
+              void startGuidedPlayback();
+            }
+          }}
+          className={cn(
+            "w-full inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-colors",
+            guidedPlaying
+              ? "bg-franciscan text-franciscan-foreground"
+              : "bg-muted text-muted-foreground hover:text-foreground hover:bg-accent"
+          )}
+        >
+          {guidedPlaying ? t("counter.guided_stop") : t("counter.guided_play")}
+          {guidedPlaying && guidedTotalSegments > 0 && (
+            <span className="tabular-nums opacity-90">
+              {guidedSegment}/{guidedTotalSegments}
+            </span>
+          )}
+        </button>
+
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs text-muted-foreground">{t("counter.voice_speed")}</span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setVoiceRate((current) => Math.max(VOICE_RATE_RANGE.min, Number((current - VOICE_RATE_RANGE.step).toFixed(1))))}
+              className="text-xs rounded-full bg-muted text-muted-foreground px-2 py-1 hover:text-foreground"
+            >
+              {t("counter.slower")}
+            </button>
+            <span className="text-xs font-medium text-franciscan tabular-nums min-w-[40px] text-center">
+              {voiceRate.toFixed(1)}x
+            </span>
+            <button
+              type="button"
+              onClick={() => setVoiceRate((current) => Math.min(VOICE_RATE_RANGE.max, Number((current + VOICE_RATE_RANGE.step).toFixed(1))))}
+              className="text-xs rounded-full bg-muted text-muted-foreground px-2 py-1 hover:text-foreground"
+            >
+              {t("counter.faster")}
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Our Father prayer text - collapsible */}
       <details className="w-full max-w-xs">
