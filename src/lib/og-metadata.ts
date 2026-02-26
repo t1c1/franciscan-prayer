@@ -8,7 +8,8 @@ export function createPageMetadata(overrides: {
   description?: string;
   path?: string;
 }): Metadata {
-  const title = overrides.title
+  const title = overrides.title || "Franciscan Prayer";
+  const ogTitle = overrides.title
     ? `${overrides.title} | Franciscan Prayer`
     : "Franciscan Prayer — The Hours. The Rule. The Gospel.";
   const description =
@@ -21,7 +22,7 @@ export function createPageMetadata(overrides: {
     description,
     metadataBase: new URL(BASE_URL),
     openGraph: {
-      title,
+      title: ogTitle,
       description,
       url,
       siteName: "Franciscan Prayer",
@@ -39,7 +40,7 @@ export function createPageMetadata(overrides: {
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: ogTitle,
       description,
       images: [OG_IMAGE],
       creator: "@franciscanprayer",
