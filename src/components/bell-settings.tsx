@@ -36,11 +36,11 @@ export function BellSettingsCard() {
   const preview = () => playBell(settings);
 
   return (
-    <div className="bg-card rounded-xl border border-border p-4">
+    <div className="bg-card rounded-xl border border-border p-3">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-foreground">{t("settings.bell")}</p>
-          <p className="text-xs text-muted-foreground mt-1">{t("settings.bell_desc")}</p>
+          <p className="text-xs font-medium text-foreground">{t("settings.bell")}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">{t("settings.bell_desc")}</p>
         </div>
         <button
           onClick={preview}
@@ -51,7 +51,7 @@ export function BellSettingsCard() {
       </div>
 
       {/* Frequency */}
-      <div className="mt-4 space-y-1">
+      <div className="mt-3 space-y-1">
         <div className="flex items-center justify-between">
           <label className="text-xs font-medium text-foreground">{t("settings.bell_frequency")}</label>
           <span className="text-xs text-muted-foreground tabular-nums">{Number.isInteger(settings.frequency) ? settings.frequency : settings.frequency.toFixed(1)} Hz</span>
@@ -84,7 +84,7 @@ export function BellSettingsCard() {
       </div>
 
       {/* Duration */}
-      <div className="mt-4 space-y-1">
+      <div className="mt-3 space-y-1">
         <div className="flex items-center justify-between">
           <label className="text-xs font-medium text-foreground">{t("settings.bell_duration")}</label>
           <span className="text-xs text-muted-foreground tabular-nums">{settings.duration}s</span>
@@ -101,7 +101,7 @@ export function BellSettingsCard() {
       </div>
 
       {/* Interval */}
-      <div className="mt-4 space-y-1">
+      <div className="mt-3 space-y-1">
         <div className="flex items-center justify-between">
           <label className="text-xs font-medium text-foreground">{t("settings.bell_interval")}</label>
           <span className="text-xs text-muted-foreground tabular-nums">{settings.interval}s</span>

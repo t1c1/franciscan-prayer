@@ -21,7 +21,7 @@ export function AuthButton() {
           className="flex items-center gap-1 text-xs text-franciscan bg-franciscan-light px-2 py-1 rounded-full hover:opacity-80 transition-opacity"
         >
           <Cloud className="w-3 h-3" />
-          <span className="max-w-[80px] truncate">
+          <span className="max-w-[60px] truncate">
             {user.email?.split("@")[0]}
           </span>
         </button>
@@ -105,7 +105,7 @@ function AuthModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-      <div className="bg-card border border-border rounded-xl shadow-xl w-full max-w-sm p-6 relative">
+      <div className="bg-card border border-border rounded-xl shadow-xl w-full max-w-sm p-4 relative">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"
@@ -113,13 +113,13 @@ function AuthModal({ onClose }: { onClose: () => void }) {
           <X className="w-4 h-4" />
         </button>
 
-        <div className="text-center mb-6">
-          <User className="w-8 h-8 text-franciscan mx-auto mb-2" />
-          <h2 className="text-lg font-semibold text-foreground">
+        <div className="text-center mb-4">
+          <User className="w-7 h-7 text-franciscan mx-auto mb-1.5" />
+          <h2 className="text-base font-semibold text-foreground">
             {mode === "signin" ? "Welcome Back" : "Create Account"}
           </h2>
-          <p className="text-xs text-muted-foreground mt-1">
-            Sign in to sync your prayer progress across devices
+          <p className="text-[10px] text-muted-foreground mt-0.5">
+            Sync your prayer progress across devices
           </p>
         </div>
 

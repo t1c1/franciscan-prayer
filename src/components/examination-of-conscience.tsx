@@ -21,15 +21,15 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
 
   if (step === -1) {
     return (
-      <div className="bg-card rounded-xl border border-border p-6 space-y-4 text-center">
-        <Heart className="w-10 h-10 text-franciscan mx-auto" />
-        <h3 className="text-lg font-semibold text-foreground">
+      <div className="bg-card rounded-xl border border-border p-4 space-y-3 text-center">
+        <Heart className="w-8 h-8 text-franciscan mx-auto" />
+        <h3 className="text-base font-semibold text-foreground">
           {t("exam.title")}
         </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           {t("exam.intro")}
         </p>
-        <p className="text-xs text-muted-foreground italic">
+        <p className="text-[10px] text-muted-foreground italic">
           &ldquo;{t("exam.quote")}&rdquo;
           — {t("exam.quote_author")}
         </p>
@@ -41,13 +41,13 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
         />
         <button
           onClick={() => setStep(0)}
-          className="w-full bg-franciscan text-franciscan-foreground rounded-lg py-3 text-sm font-medium hover:opacity-90 transition-opacity"
+          className="w-full bg-franciscan text-franciscan-foreground rounded-lg py-2.5 text-xs font-medium hover:opacity-90 transition-opacity"
         >
           {t("exam.begin")}
         </button>
         <button
           onClick={onClose}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="text-[10px] text-muted-foreground hover:text-foreground transition-colors"
         >
           {t("exam.skip")}
         </button>
@@ -57,15 +57,15 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
 
   if (step >= totalSteps) {
     return (
-      <div className="bg-card rounded-xl border border-border p-6 space-y-4 text-center">
-        <Check className="w-10 h-10 text-franciscan mx-auto" />
-        <h3 className="text-lg font-semibold text-foreground">
+      <div className="bg-card rounded-xl border border-border p-4 space-y-3 text-center">
+        <Check className="w-8 h-8 text-franciscan mx-auto" />
+        <h3 className="text-base font-semibold text-foreground">
           {t("exam.complete_title")}
         </h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-xs text-muted-foreground leading-relaxed">
           {t("exam.complete_text")}
         </p>
-        <p className="text-sm text-foreground/80 italic mt-2">
+        <p className="text-xs text-foreground/80 italic mt-1">
           {t("exam.complete_prayer")}
         </p>
         <ListenButton
@@ -76,7 +76,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
         />
         <button
           onClick={onClose}
-          className="w-full bg-franciscan text-franciscan-foreground rounded-lg py-3 text-sm font-medium hover:opacity-90 transition-opacity"
+          className="w-full bg-franciscan text-franciscan-foreground rounded-lg py-2.5 text-xs font-medium hover:opacity-90 transition-opacity"
         >
           {t("exam.amen")}
         </button>
@@ -88,7 +88,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
   const questionAudioSrc = getExaminationQuestionAudioSrc(locale, question.question);
 
   return (
-    <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+    <div className="bg-card rounded-xl border border-border p-4 space-y-3">
       {/* Progress */}
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted-foreground">
@@ -106,7 +106,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Question */}
-      <p className="text-foreground leading-relaxed text-center py-4 min-h-[80px] flex items-center justify-center">
+      <p className="text-sm text-foreground leading-relaxed text-center py-3 min-h-[60px] flex items-center justify-center">
         {question.question}
       </p>
 
@@ -119,11 +119,11 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Reflection toggle */}
-      <div className="flex justify-center gap-3">
+      <div className="flex justify-center gap-2">
         <button
           onClick={() => setReflections({ ...reflections, [step]: true })}
           className={cn(
-            "px-4 py-2 rounded-lg text-sm transition-colors",
+            "px-3 py-1.5 rounded-lg text-xs transition-colors",
             reflections[step] === true
               ? "bg-franciscan text-franciscan-foreground"
               : "bg-muted text-muted-foreground hover:text-foreground"
@@ -134,7 +134,7 @@ export function ExaminationOfConscience({ onClose }: { onClose: () => void }) {
         <button
           onClick={() => setReflections({ ...reflections, [step]: false })}
           className={cn(
-            "px-4 py-2 rounded-lg text-sm transition-colors",
+            "px-3 py-1.5 rounded-lg text-xs transition-colors",
             reflections[step] === false
               ? "bg-franciscan text-franciscan-foreground"
               : "bg-muted text-muted-foreground hover:text-foreground"
