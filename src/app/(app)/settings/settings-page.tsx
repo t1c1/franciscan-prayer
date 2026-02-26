@@ -17,7 +17,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-3">
       <BackButton label={t("home.back")} />
-      <h2 className="text-lg font-semibold text-foreground">{t("settings.title")}</h2>
+      <h2 className="text-base font-semibold text-foreground">{t("settings.title")}</h2>
 
       <div className="bg-card rounded-xl border border-border p-4">
         <p className="text-sm font-medium text-foreground">{t("settings.account")}</p>

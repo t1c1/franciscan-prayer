@@ -123,9 +123,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {children}
 
-        <footer className="text-center pt-8 pb-4">
-          <p className="text-xs text-muted-foreground italic">{t("footer.pax")}</p>
-          <p className="text-xs text-muted-foreground mt-1">{t("footer.amdg")}</p>
+        <footer className="text-center pt-6 pb-4">
+          <p className="text-[10px] text-muted-foreground italic">{t("footer.pax")}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">{t("footer.amdg")}</p>
         </footer>
       </div>
     </main>

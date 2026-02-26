@@ -44,12 +44,12 @@ export function LiturgicalBanner() {
   const psalmPrefix = t("banner.psalm");
 
   return (
-    <div className={cn("rounded-xl border p-4 space-y-2", COLOR_STYLES[day.color] || COLOR_STYLES.green)}>
+    <div className={cn("rounded-xl border p-3 space-y-1.5", COLOR_STYLES[day.color] || COLOR_STYLES.green)}>
       <div className="flex items-start gap-2">
-        <div className={cn("w-3 h-3 rounded-full mt-1 shrink-0", COLOR_DOT[day.color] || COLOR_DOT.green)} />
+        <div className={cn("w-2.5 h-2.5 rounded-full mt-1 shrink-0", COLOR_DOT[day.color] || COLOR_DOT.green)} />
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-foreground leading-tight">{day.name}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="font-semibold text-xs text-foreground leading-tight">{day.name}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">
             {day.season && <>{day.season} &middot; </>}
             {day.grade}
             {day.isHolyDay && <span className="ml-1 font-medium text-red-600 dark:text-red-400">&middot; {t("banner.holy_day")}</span>}
@@ -58,9 +58,9 @@ export function LiturgicalBanner() {
       </div>
 
       {day.readings && (
-        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+        <div className="flex flex-wrap gap-x-2.5 gap-y-0.5 text-[10px] text-muted-foreground">
           {day.readings.first_reading && (
-            <span><BookOpen className="w-3 h-3 inline mr-0.5" />{day.readings.first_reading}</span>
+            <span><BookOpen className="w-2.5 h-2.5 inline mr-0.5" />{day.readings.first_reading}</span>
           )}
           {day.readings.psalm && <span>{psalmPrefix}{day.readings.psalm}</span>}
           {day.readings.second_reading && <span>{day.readings.second_reading}</span>}
@@ -73,9 +73,9 @@ export function LiturgicalBanner() {
         target="_blank"
         rel="noopener noreferrer"
         onClick={(e) => { e.preventDefault(); window.open(getTodayUSCCBUrl(), "_blank", "noopener,noreferrer"); }}
-        className="inline-flex items-center gap-1 text-xs text-franciscan hover:underline"
+        className="inline-flex items-center gap-1 text-[10px] text-franciscan hover:underline"
       >
-        <ExternalLink className="w-3 h-3" /> {t("banner.read_usccb")}
+        <ExternalLink className="w-2.5 h-2.5" /> {t("banner.read_usccb")}
       </a>
     </div>
   );

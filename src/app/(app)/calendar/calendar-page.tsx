@@ -9,8 +9,8 @@ export default function CalendarPage() {
   return (
     <div className="space-y-3">
       <BackButton label={t("home.back")} />
-      <h2 className="text-lg font-semibold text-foreground">{t("calendar.title")}</h2>
-      <p className="text-sm text-muted-foreground">{t("calendar.desc")}</p>
+      <h2 className="text-base font-semibold text-foreground">{t("calendar.title")}</h2>
+      <p className="text-xs text-muted-foreground">{t("calendar.desc")}</p>
       <FranciscanCalendarView />
     </div>
   );

@@ -9,8 +9,8 @@ export default function CommunityPage() {
   return (
     <div className="space-y-3">
       <BackButton label={t("home.back")} />
-      <h2 className="text-lg font-semibold text-foreground">{t("community.title")}</h2>
-      <p className="text-sm text-muted-foreground">{t("community.desc")}</p>
+      <h2 className="text-base font-semibold text-foreground">{t("community.title")}</h2>
+      <p className="text-xs text-muted-foreground">{t("community.desc")}</p>
       <CommunityFinder />
     </div>
   );

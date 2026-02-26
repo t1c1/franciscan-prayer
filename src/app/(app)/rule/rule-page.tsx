@@ -9,7 +9,7 @@ export default function RulePage() {
   return (
     <div className="space-y-3">
       <BackButton label={t("home.back")} />
-      <h2 className="text-lg font-semibold text-foreground">{t("rule.title")}</h2>
+      <h2 className="text-base font-semibold text-foreground">{t("rule.title")}</h2>
       <DailyRule />
     </div>
   );

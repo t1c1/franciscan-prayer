@@ -40,10 +40,10 @@ export default function HomePage() {
         const fKey = `${String(todayFeast.month).padStart(2, "0")}-${String(todayFeast.day).padStart(2, "0")}`;
         const fi = (locale !== "en" && CALENDAR_I18N?.[locale]?.[fKey]) || { name: todayFeast.name, description: todayFeast.description };
         return (
-          <Link href="/calendar" className="block w-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-left hover:opacity-90 transition-opacity">
-            <p className="text-xs text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">{t("home.feast_today")}</p>
-            <p className="text-sm font-semibold text-foreground mt-1">{fi.name}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{fi.description}</p>
+          <Link href="/calendar" className="block w-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-3 text-left hover:opacity-90 transition-opacity">
+            <p className="text-[10px] text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">{t("home.feast_today")}</p>
+            <p className="text-xs font-semibold text-foreground mt-0.5">{fi.name}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{fi.description}</p>
           </Link>
         );
       })()}
