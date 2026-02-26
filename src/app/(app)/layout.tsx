@@ -51,16 +51,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="max-w-lg mx-auto px-4 py-4">
+        <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-left">
-              <h1 className="text-xl font-bold text-foreground tracking-tight">
+            <Link href="/" className="text-left min-w-0">
+              <h1 className="text-lg font-bold text-foreground tracking-tight">
                 {t("app.title")}
               </h1>
-              <p className="text-xs text-muted-foreground">{t("app.subtitle")}</p>
+              <p className="text-[10px] text-muted-foreground italic">{t("app.subtitle")}</p>
             </Link>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-muted-foreground font-medium italic">J.M.J.</span>
+            <div className="flex items-center gap-1">
               <AuthButton />
               <Link
                 href="/settings"
@@ -70,12 +69,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <Settings className="w-4 h-4" />
               </Link>
               {streak > 0 && (
-                <span className="flex items-center gap-1 text-xs font-medium text-franciscan bg-franciscan-light px-2 py-1 rounded-full">
+                <span className="flex items-center gap-0.5 text-[10px] font-medium text-franciscan bg-franciscan-light px-1.5 py-0.5 rounded-full">
                   <Flame className="w-3 h-3" /> {streak}{locale === "zh" ? "天" : "d"}
                 </span>
               )}
               <span className={cn(
-                "text-xs px-2 py-1 rounded-full font-medium",
+                "text-[10px] px-1.5 py-0.5 rounded-full font-medium",
                 liturgy.color === "green" && "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
                 liturgy.color === "purple" && "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
                 liturgy.color === "white" && "bg-amber-50 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
@@ -87,24 +86,24 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
         {/* Daily progress */}
-        <div className="bg-card rounded-xl border border-border p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-foreground">{t("progress.title")}</span>
-            <span className="text-xs text-muted-foreground tabular-nums">
+        <div className="bg-card rounded-xl border border-border p-3">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-xs font-medium text-foreground">{t("progress.title")}</span>
+            <span className="text-[10px] text-muted-foreground tabular-nums">
               {completedPaters} / {TOTAL_DAILY_PATERS} {t("progress.paters")}
             </span>
           </div>
-          <div className="w-full h-3 bg-muted rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
             <div className="h-full bg-franciscan rounded-full transition-all duration-500" style={{ width: `${Math.min((completedPaters / TOTAL_DAILY_PATERS) * 100, 100)}%` }} />
           </div>
-          <div className="flex justify-between mt-2">
-            <span className="text-xs text-muted-foreground">
+          <div className="flex justify-between mt-1.5">
+            <span className="text-[10px] text-muted-foreground">
               {completedHours.length} {t("progress.hours_of")} {HOURS.length} {t("progress.hours_label")}
             </span>
             {completedPaters >= TOTAL_DAILY_PATERS && (
-              <span className="flex items-center gap-1 text-xs font-medium text-franciscan">
+              <span className="flex items-center gap-1 text-[10px] font-medium text-franciscan">
                 {t("progress.complete")}
                 <button
                   onClick={() => { trackShareCard(); shareCard({

@@ -47,30 +47,30 @@ export default function HomePage() {
           </Link>
         );
       })()}
-      <div className="bg-card rounded-xl border border-border p-4">
-        <p className="text-sm text-foreground/80 italic leading-relaxed">&ldquo;{dailyQuote.text}&rdquo;</p>
-        <p className="text-xs text-muted-foreground mt-2">— {dailyQuote.author}{dailyQuote.source && <span className="italic">, {dailyQuote.source}</span>}</p>
+      <div className="bg-card rounded-xl border border-border p-3">
+        <p className="text-xs text-foreground/80 italic leading-relaxed">&ldquo;{dailyQuote.text}&rdquo;</p>
+        <p className="text-[10px] text-muted-foreground mt-1.5">— {dailyQuote.author}{dailyQuote.source && <span className="italic">, {dailyQuote.source}</span>}</p>
       </div>
       {nextHour && (
         <Link
           href={nextHour.id === "compline" && !completedHours.includes("compline") ? "/hours/compline" : `/hours/${nextHour.id}`}
           onClick={() => { if (nextHour.id === "compline" && !completedHours.includes("compline")) { trackExaminationStarted(); } else { trackHourStarted(nextHour.id); } }}
-          className="block w-full bg-franciscan text-franciscan-foreground rounded-xl p-5 text-left hover:opacity-90 transition-opacity active:scale-[0.98]"
+          className="block w-full bg-franciscan text-franciscan-foreground rounded-xl p-4 text-left hover:opacity-90 transition-opacity active:scale-[0.98]"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs opacity-80 uppercase tracking-wide">{t("home.pray_now")}</p>
-              <p className="text-lg font-bold mt-1">
+              <p className="text-[10px] opacity-80 uppercase tracking-wide">{t("home.pray_now")}</p>
+              <p className="text-base font-bold mt-0.5">
                 {getHourName(nextHour.id)}
-                <span className="font-normal text-sm opacity-80 ml-2">{nextHour.paterCount} {t("home.paters")}</span>
+                <span className="font-normal text-xs opacity-80 ml-2">{nextHour.paterCount} {t("home.paters")}</span>
               </p>
-              <p className="text-xs opacity-70 mt-1">{getHourTime(nextHour.id)}</p>
+              <p className="text-[10px] opacity-70 mt-0.5">{getHourTime(nextHour.id)}</p>
             </div>
-            <ChevronRight className="w-6 h-6 opacity-60" />
+            <ChevronRight className="w-5 h-5 opacity-60" />
           </div>
         </Link>
       )}
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 gap-2">
         <NavTile icon={<Clock className="w-5 h-5 text-franciscan" />} title={t("nav.hours")} subtitle={t("nav.hours_sub")} href="/hours" />
         <NavTile icon={<Flower2 className="w-5 h-5 text-franciscan" />} title={t("nav.crown")} subtitle={t("nav.crown_sub")} href="/crown" />
         <NavTile icon={<BookOpen className="w-5 h-5 text-franciscan" />} title={t("nav.office")} subtitle={t("nav.office_sub")} href="/office" />
@@ -78,13 +78,13 @@ export default function HomePage() {
         <NavTile icon={<HandHeart className="w-5 h-5 text-franciscan" />} title={t("nav.prayers")} subtitle={t("nav.prayers_sub")} href="/prayers" />
         <NavTile icon={<Scroll className="w-5 h-5 text-franciscan" />} title={t("nav.rule")} subtitle={t("nav.rule_sub")} href="/rule" />
         <NavTile icon={<Calendar className="w-5 h-5 text-franciscan" />} title={t("nav.calendar")} subtitle={`42 ${t("nav.calendar_sub")}`} href="/calendar" />
-        <a href={getTodayUSCCBUrl()} target="_blank" rel="noopener noreferrer" className="bg-card rounded-xl border border-border p-4 text-left hover:border-franciscan/40 transition-colors flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-franciscan-light flex items-center justify-center"><ExternalLink className="w-5 h-5 text-franciscan" /></div>
-          <div className="flex-1">
-            <p className="font-semibold text-foreground">{t("nav.readings")}</p>
-            <p className="text-xs text-muted-foreground">{t("nav.readings_sub")}</p>
+        <a href={getTodayUSCCBUrl()} target="_blank" rel="noopener noreferrer" className="bg-card rounded-xl border border-border p-3 text-left hover:border-franciscan/40 transition-colors flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-franciscan-light flex items-center justify-center shrink-0"><ExternalLink className="w-5 h-5 text-franciscan" /></div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-foreground">{t("nav.readings")}</p>
+            <p className="text-[11px] text-muted-foreground">{t("nav.readings_sub")}</p>
           </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
         </a>
         <NavTile icon={<Users className="w-5 h-5 text-franciscan" />} title={t("nav.community")} subtitle={t("nav.community_sub")} href="/community" />
         <NavTile icon={<Heart className="w-5 h-5 text-franciscan" />} title={t("nav.intentions")} subtitle={t("nav.intentions_sub")} href="/intentions" />

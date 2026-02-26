@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 
 const APP_NAME = "Franciscan Prayer";
 const APP_DESCRIPTION =
-  "The Hours. The Rule. The Gospel. Pray as a Franciscan every day with the Original Pater Count, Franciscan Crown Rosary, Stations of the Cross, and Daily Mass Readings in 5 languages.";
+  "A simple companion for daily Franciscan prayer. The Liturgy of the Hours, the Franciscan Crown, Stations of the Cross, and the Rule of St. Francis.";
 const APP_URL = "https://franciscanprayer.com";
 const GA_ID = "G-BQ8VHB1BTB";
 const OG_IMAGE = `${APP_URL}/og-image.png`;

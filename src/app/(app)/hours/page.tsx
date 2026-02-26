@@ -3,7 +3,7 @@ import HoursPage from "./hours-page";
 
 export const metadata = createPageMetadata({
   title: "Pray the Hours",
-  description: "Pray the nine canonical hours of the Franciscan Liturgy of the Hours — 83 Pater Nosters daily, from Matins to Compline.",
+  description: "The nine canonical hours from Matins to Compline, following the ancient Franciscan practice of praying the Our Father throughout the day.",
   path: "/hours",
 });
 

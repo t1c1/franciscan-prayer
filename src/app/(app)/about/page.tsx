@@ -3,7 +3,7 @@ import AboutPageContent from "./about-page-content";
 
 export const metadata = createPageMetadata({
   title: "About",
-  description: "About Franciscan Prayer — a free app for praying the Franciscan Liturgy of the Hours and living the Rule of St. Francis.",
+  description: "How the early Franciscans prayed the Hours, and how this humble tool helps you follow their example.",
   path: "/about",
 });
 

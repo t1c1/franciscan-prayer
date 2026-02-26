@@ -14,7 +14,7 @@ export function createPageMetadata(overrides: {
     : "Franciscan Prayer — The Hours. The Rule. The Gospel.";
   const description =
     overrides.description ||
-    "Pray as a Franciscan every day. The Liturgy of the Hours, the Original Pater Count, Franciscan Crown Rosary, Stations of the Cross, and Daily Mass Readings.";
+    "A simple companion for daily Franciscan prayer. The Liturgy of the Hours, the Franciscan Crown, Stations of the Cross, and the Rule of St. Francis.";
   const url = overrides.path ? `${BASE_URL}${overrides.path}` : BASE_URL;
 
   return {

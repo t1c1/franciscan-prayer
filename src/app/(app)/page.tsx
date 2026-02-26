@@ -3,7 +3,7 @@ import HomePage from "./home-page";
 
 export const metadata = createPageMetadata({
   title: "The Hours. The Rule. The Gospel.",
-  description: "Pray as a Franciscan every day with the Original Pater Count, Franciscan Crown Rosary, Stations of the Cross, and Daily Mass Readings in 5 languages.",
+  description: "A simple companion for daily Franciscan prayer. The Liturgy of the Hours, the Franciscan Crown, Stations of the Cross, and the Rule of St. Francis.",
   path: "/",
 });
 

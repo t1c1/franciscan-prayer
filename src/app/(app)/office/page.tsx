@@ -3,7 +3,7 @@ import OfficePage from "./office-page";
 
 export const metadata = createPageMetadata({
   title: "Divine Office",
-  description: "Links to the Liturgy of the Hours — pray the Divine Office online with the universal Church.",
+  description: "Pray the full Liturgy of the Hours with the universal Church. Links to the complete texts of the Divine Office.",
   path: "/office",
 });
 

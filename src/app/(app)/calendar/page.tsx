@@ -3,7 +3,7 @@ import CalendarPage from "./calendar-page";
 
 export const metadata = createPageMetadata({
   title: "Franciscan Calendar",
-  description: "Browse the Franciscan liturgical calendar — 42 feasts, memorials, and solemnities of the Franciscan family.",
+  description: "The feasts, solemnities, and memorials of the Franciscan family. Saints and blesseds who followed in the footsteps of Il Poverello.",
   path: "/calendar",
 });
 

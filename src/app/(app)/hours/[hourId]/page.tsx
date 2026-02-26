@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ hourId: s
     return createPageMetadata({ title: "Hour Not Found", path: "/hours" });
   }
   return createPageMetadata({
-    title: `${hour.name} — Pray the Hours`,
-    description: `${hour.description} — ${hour.paterCount} Pater Nosters.`,
+    title: `${hour.name} (${hour.latinName})`,
+    description: `${hour.description}. ${hour.paterCount} Pater Nosters.`,
     path: `/hours/${hour.id}`,
   });
 }

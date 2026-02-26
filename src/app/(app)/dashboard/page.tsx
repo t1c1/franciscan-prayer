@@ -2,8 +2,8 @@ import { createPageMetadata } from "@/lib/og-metadata";
 import DashboardPage from "./dashboard-page";
 
 export const metadata = createPageMetadata({
-  title: "Sync Dashboard",
-  description: "View your prayer statistics, sync progress across devices, and track your Franciscan prayer journey.",
+  title: "Prayer Dashboard",
+  description: "Your prayer history and progress. Sync across devices to keep your daily practice wherever you are.",
   path: "/dashboard",
 });
 

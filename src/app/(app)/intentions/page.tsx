@@ -3,7 +3,7 @@ import IntentionsPage from "./intentions-page";
 
 export const metadata = createPageMetadata({
   title: "Prayer Intentions",
-  description: "Keep a journal of your prayer intentions — record, track, and reflect on your prayer life.",
+  description: "Bring your intentions before the Lord. A quiet place to record the people and needs you hold in prayer.",
   path: "/intentions",
 });
 

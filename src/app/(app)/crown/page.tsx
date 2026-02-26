@@ -3,7 +3,7 @@ import CrownPage from "./crown-page";
 
 export const metadata = createPageMetadata({
   title: "Franciscan Crown Rosary",
-  description: "Pray the Franciscan Crown Rosary — seven decades meditating on the Seven Joys of the Blessed Virgin Mary.",
+  description: "Seven decades meditating on the Seven Joys of the Blessed Virgin Mary, a devotion given to a young Franciscan friar.",
   path: "/crown",
 });
 

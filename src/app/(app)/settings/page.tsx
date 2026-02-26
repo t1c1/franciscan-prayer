@@ -3,7 +3,7 @@ import SettingsPage from "./settings-page";
 
 export const metadata = createPageMetadata({
   title: "Settings",
-  description: "Customize your Franciscan Prayer experience — language, theme, notifications, and account settings.",
+  description: "Language, appearance, notifications, and account preferences.",
   path: "/settings",
 });
 

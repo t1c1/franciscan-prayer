@@ -2,8 +2,8 @@ import { createPageMetadata } from "@/lib/og-metadata";
 import CommunityPage from "./community-page";
 
 export const metadata = createPageMetadata({
-  title: "Find a Community",
-  description: "Find a Franciscan community near you — locate Third Order, OFS, and Franciscan parishes worldwide.",
+  title: "Franciscan Family",
+  description: "The three Orders founded by St. Francis — Friars Minor, Poor Clares, and the Secular Franciscan Order. Find a community near you.",
   path: "/community",
 });
 

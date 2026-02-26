@@ -3,7 +3,7 @@ import PrayersPage from "./prayers-page";
 
 export const metadata = createPageMetadata({
   title: "Prayer Texts",
-  description: "Read traditional Catholic prayers in Latin, English, Spanish, Italian, French, and Chinese.",
+  description: "Traditional Catholic and Franciscan prayers in Latin and the vernacular. The Our Father, Hail Mary, Canticle of the Sun, and more.",
   path: "/prayers",
 });
 
