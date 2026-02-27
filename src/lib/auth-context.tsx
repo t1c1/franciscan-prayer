@@ -12,6 +12,7 @@ import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import { trackSignIn, trackSignUp } from "./analytics";
 import { getLocalDateString } from "./utils";
+import { emitPrayerProgressChanged } from "./use-prayer-progress";
 
 interface AuthState {
   user: User | null;
@@ -96,6 +97,7 @@ async function pullCompletions(userId: string) {
     .eq("user_id", userId);
 
   if (!data || data.length === 0) return;
+  let changed = false;
 
   // Group by date
   const byDate: Record<string, { hourId: string; count: number }[]> = {};
@@ -110,15 +112,23 @@ async function pullCompletions(userId: string) {
 
     // Merge: add any hours from cloud not already in local
     const merged = [...new Set([...existing, ...hours.map((h) => h.hourId)])];
-    localStorage.setItem(key, JSON.stringify(merged));
+    if (merged.length !== existing.length) {
+      localStorage.setItem(key, JSON.stringify(merged));
+      changed = true;
+    }
 
     // Restore counts if missing locally
     for (const h of hours) {
       const countKey = `fp_count_${h.hourId}_${dateStr}`;
       if (!localStorage.getItem(countKey) && h.count > 0) {
         localStorage.setItem(countKey, String(h.count));
+        changed = true;
       }
     }
+  }
+
+  if (changed) {
+    emitPrayerProgressChanged();
   }
 }
 
@@ -174,9 +184,27 @@ async function pullPreferences(userId: string) {
   }
 }
 
+// --- Ensure profile exists (safety net for new OAuth users) ---
+
+async function ensureProfile(userId: string, email?: string) {
+  const { error } = await supabase.from("profiles").upsert(
+    {
+      id: userId,
+      email,
+      sign_up_at: new Date().toISOString(),
+      last_active_at: new Date().toISOString(),
+    },
+    { onConflict: "id", ignoreDuplicates: false }
+  );
+  if (error) console.error("[FP] ensureProfile failed:", error);
+}
+
 // --- Full sync ---
 
 async function fullSync(userId: string, email?: string) {
+  // Guarantee profile row exists before any RLS-gated queries
+  await ensureProfile(userId, email);
+
   await Promise.all([
     pullCompletions(userId),
     pullIntentions(userId),
@@ -187,10 +215,6 @@ async function fullSync(userId: string, email?: string) {
     pushCompletions(userId),
     pushIntentions(userId),
     pushPreferences(userId),
-    supabase.from("profiles").upsert(
-      { id: userId, email, last_active_at: new Date().toISOString() },
-      { onConflict: "id" }
-    ),
   ]);
 }
 
@@ -219,7 +243,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN") console.log("[FP] Auth: SIGNED_IN");
+      if (event === "SIGNED_OUT") console.log("[FP] Auth: SIGNED_OUT");
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -268,13 +294,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const syncToCloud = useCallback(async () => {
     if (!user) return;
-    await fullSync(user.id, user.email || undefined);
+    const email = user.email || user.user_metadata?.email || undefined;
+    await fullSync(user.id, email);
   }, [user]);
 
   // Auto-sync on sign in
   useEffect(() => {
     if (user) {
-      fullSync(user.id, user.email || undefined);
+      const email = user.email || user.user_metadata?.email || undefined;
+      void fullSync(user.id, email).catch((err) => {
+        console.error("[FP] Sync failed:", err);
+      });
     }
   }, [user]);
 
