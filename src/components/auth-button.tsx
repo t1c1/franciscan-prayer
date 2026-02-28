@@ -1,10 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { LogIn, LogOut, User, Cloud, X, BarChart3 } from "lucide-react";
+import { LogIn, LogOut, User, X, BarChart3 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+
+function CloudCrossIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      {/* Cloud shape */}
+      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+      {/* Cross rising from cloud */}
+      <line x1="14" y1="11" x2="14" y2="3" />
+      <line x1="11.5" y1="5.5" x2="16.5" y2="5.5" />
+    </svg>
+  );
+}
 
 export function AuthButton() {
   const { user, loading, isAdmin, signOut } = useAuth();
@@ -20,7 +32,7 @@ export function AuthButton() {
           onClick={() => setShowMenu(!showMenu)}
           className="flex items-center gap-1 text-xs text-franciscan bg-franciscan-light px-2 py-1 rounded-full hover:opacity-80 transition-opacity"
         >
-          <Cloud className="w-3 h-3" />
+          <CloudCrossIcon className="w-3 h-3" />
           <span className="max-w-[60px] truncate">
             {user.email?.split("@")[0]}
           </span>
