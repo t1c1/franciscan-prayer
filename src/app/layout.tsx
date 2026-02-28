@@ -78,6 +78,42 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": APP_NAME,
+      "description": APP_DESCRIPTION,
+      "url": APP_URL,
+      "applicationCategory": "ReligiousApp",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+      },
+      "screenshot": OG_IMAGE,
+    },
+    {
+      "@type": "Organization",
+      "name": APP_NAME,
+      "url": APP_URL,
+      "logo": `${APP_URL}/apple-touch-icon.png`,
+    },
+    {
+      "@type": "WebSite",
+      "name": APP_NAME,
+      "url": APP_URL,
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": `${APP_URL}/?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -88,6 +124,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {shouldLoadAnalytics && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />

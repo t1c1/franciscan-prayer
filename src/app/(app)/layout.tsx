@@ -170,9 +170,47 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {children}
 
-        <footer className="text-center pt-6 pb-4">
-          <p className="text-[10px] text-muted-foreground italic">{t("footer.pax")}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">{t("footer.amdg")}</p>
+        <footer className="pt-8 pb-4 border-t border-border mt-6">
+          <nav className="grid grid-cols-2 gap-x-6 gap-y-1 mb-4" aria-label="Footer navigation">
+            <div>
+              <h3 className="text-[11px] font-semibold text-foreground mb-1">{t("nav.hours")}</h3>
+              <ul className="space-y-0.5">
+                <li><Link href="/hours" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.hours")}</Link></li>
+                <li><Link href="/office" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.office")}</Link></li>
+                <li><Link href="/crown" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.crown")}</Link></li>
+                <li><Link href="/stations" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.stations")}</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-[11px] font-semibold text-foreground mb-1">Franciscan Life</h3>
+              <ul className="space-y-0.5">
+                <li><Link href="/prayers" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.prayers")}</Link></li>
+                <li><Link href="/rule" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.rule")}</Link></li>
+                <li><Link href="/calendar" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.calendar")}</Link></li>
+                <li><Link href="/community" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.community")}</Link></li>
+              </ul>
+            </div>
+          </nav>
+
+          <p className="text-[10px] text-muted-foreground leading-relaxed mb-3">
+            Franciscan Prayer is a free companion for the daily prayer life of Secular Franciscans,
+            Third Order members, and all who follow the spirituality of St. Francis of Assisi.
+            Featuring the Pater Noster Hours, the Franciscan Crown Rosary, Stations of the Cross,
+            and the Rule of 1223.
+          </p>
+
+          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-3">
+            <a href="https://bible.usccb.org/daily-bible-reading" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">USCCB Daily Readings ↗</a>
+            <a href="https://www.franciscanmedia.org/" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">Franciscan Media ↗</a>
+            <Link href="/about" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.about")}</Link>
+            <Link href="/settings" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.settings")}</Link>
+          </div>
+
+          <div className="text-center">
+            <p className="text-[10px] text-muted-foreground italic">{t("footer.pax")}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{t("footer.amdg")}</p>
+            <p className="text-[10px] text-muted-foreground mt-1">&copy; {new Date().getFullYear()} Franciscan Prayer</p>
+          </div>
         </footer>
       </div>
     </main>
