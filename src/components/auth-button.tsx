@@ -30,10 +30,10 @@ export function AuthButton() {
       <div className="relative">
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="flex items-center gap-1 text-xs text-franciscan bg-franciscan-light px-2 py-1 rounded-full hover:opacity-80 transition-opacity"
+          className="flex items-center gap-1 text-xs text-franciscan bg-franciscan-light px-2 py-1 rounded-full hover:opacity-80 transition-opacity max-w-[108px]"
         >
           <CloudCrossIcon className="w-3 h-3" />
-          <span className="max-w-[60px] truncate">
+          <span className="max-w-[72px] truncate max-[390px]:hidden">
             {user.email?.split("@")[0]}
           </span>
         </button>
@@ -81,7 +81,7 @@ export function AuthButton() {
         onClick={() => setShowModal(true)}
         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded-full border border-border hover:border-franciscan/40 transition-colors"
       >
-        <LogIn className="w-3 h-3" /> Sign In
+        <LogIn className="w-3 h-3" /> <span className="max-[390px]:hidden">Sign In</span>
       </button>
       {showModal && <AuthModal onClose={() => setShowModal(false)} />}
     </>

@@ -75,18 +75,18 @@ export function DailyRule() {
   const i18nChapters = locale !== "en" && RULE_I18N[locale] ? RULE_I18N[locale] : null;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-5">
+      <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <p className="text-sm text-muted-foreground">
             {showAll ? u.regulaBullata : u.todayReading}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setShowLatin(!showLatin)}
             className={cn(
-              "px-3 py-1 rounded-full text-xs font-medium transition-colors",
+              "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
               showLatin
                 ? "bg-franciscan text-franciscan-foreground"
                 : "bg-muted text-muted-foreground hover:bg-accent"
@@ -96,7 +96,7 @@ export function DailyRule() {
           </button>
           <button
             onClick={() => setShowAll(!showAll)}
-            className="px-3 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground hover:bg-accent transition-colors"
+            className="px-3 py-1.5 rounded-full text-xs font-medium bg-muted text-muted-foreground hover:bg-accent transition-colors"
           >
             {showAll ? u.todayOnly : u.fullRule}
           </button>
@@ -120,12 +120,12 @@ export function DailyRule() {
         return (
           <div
             key={chapter.chapter}
-            className="bg-card rounded-lg border border-border p-4"
+            className="bg-card rounded-xl border border-border p-4 sm:p-5"
           >
             <p className="text-xs text-franciscan font-medium uppercase tracking-wide mb-1">
               {chapterLabel(locale, chapter.chapter)}
             </p>
-            <h3 className="font-semibold text-foreground">
+            <h3 className="text-base font-semibold text-foreground">
               {displayTitle}
             </h3>
             <ListenButton
@@ -134,7 +134,7 @@ export function DailyRule() {
               audioSrc={`/audio/rule/${spokenLocale}/chapter-${chapter.chapter}.mp3`}
               className="mt-3"
             />
-            <p className="mt-3 text-sm text-foreground/80 leading-relaxed">
+            <p className="mt-3 text-[15px] text-foreground/85 leading-7">
               {displayText}
             </p>
           </div>

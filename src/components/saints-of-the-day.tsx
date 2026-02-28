@@ -24,7 +24,7 @@ export function SaintsOfTheDay() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground">{t("saints.title")}</p>
-          <p className="text-[11px] text-muted-foreground">{t("saints.subtitle_public")}</p>
+          <p className="text-xs text-muted-foreground leading-snug">{t("saints.subtitle_public")}</p>
         </div>
         <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0 group-hover:text-franciscan transition-colors" />
       </a>
@@ -40,7 +40,7 @@ export function SaintsOfTheDay() {
         </div>
         <div className="min-w-0">
           <p className="text-sm font-semibold text-foreground">{t("saints.title")}</p>
-          <p className="text-[11px] text-muted-foreground">{t("saints.subtitle_logged_in")}</p>
+          <p className="text-xs text-muted-foreground leading-snug">{t("saints.subtitle_logged_in")}</p>
         </div>
       </div>
       <a

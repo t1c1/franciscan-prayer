@@ -51,7 +51,7 @@ export function PrayerTextViewer() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Language selector */}
       <div className="flex flex-wrap gap-2 justify-center">
         {(Object.keys(LANGUAGE_LABELS) as Language[]).map((l) => (
@@ -59,7 +59,7 @@ export function PrayerTextViewer() {
             key={l}
             onClick={() => setLang(l)}
             className={cn(
-              "px-3 py-1 rounded-full text-xs font-medium transition-colors",
+              "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
               lang === l
                 ? "bg-franciscan text-franciscan-foreground"
                 : "bg-muted text-muted-foreground hover:bg-accent"
@@ -85,16 +85,16 @@ export function PrayerTextViewer() {
         return (
           <div
             key={prayer.id}
-            className="bg-card rounded-lg border border-border hover:border-franciscan/40 transition-colors"
+            className="bg-card rounded-xl border border-border hover:border-franciscan/40 transition-colors"
           >
-            <div className="p-4">
+            <div className="p-4 sm:p-5">
               <div className="flex items-start justify-between gap-2">
                 <button
                   type="button"
                   onClick={toggleExpanded}
                   className="text-left flex-1"
                 >
-                  <h3 className="font-semibold text-foreground">{prayer.titles[lang] || prayer.title}</h3>
+                  <h3 className="text-base font-semibold text-foreground">{prayer.titles[lang] || prayer.title}</h3>
                 </button>
                 <button
                   type="button"
@@ -115,7 +115,7 @@ export function PrayerTextViewer() {
                     locale={lang}
                     audioSrc={`/audio/prayers/${lang}/${prayer.id}.mp3`}
                   />
-                  <p className="text-sm text-foreground/80 whitespace-pre-line leading-relaxed">
+                  <p className="text-[15px] text-foreground/85 whitespace-pre-line leading-7">
                     {text}
                   </p>
                 </div>
@@ -123,7 +123,7 @@ export function PrayerTextViewer() {
                 <button
                   type="button"
                   onClick={toggleExpanded}
-                  className="mt-1 w-full text-left text-sm text-muted-foreground truncate"
+                  className="mt-1.5 w-full text-left text-sm text-muted-foreground line-clamp-2 leading-relaxed"
                 >
                   {text.split("\n")[0]}...
                 </button>

@@ -21,21 +21,21 @@ export function ReflectionCard() {
     <Link
       href="/reflections"
       className={cn(
-        "block w-full rounded-xl border p-3 text-left hover:opacity-90 transition-opacity",
+        "block w-full rounded-xl border p-3.5 text-left hover:opacity-90 transition-opacity",
         COLOR_STYLES[reflection.seasonColor] || COLOR_STYLES.green,
       )}
     >
-      <p className="text-[10px] uppercase tracking-wide font-medium text-muted-foreground">
+      <p className="text-[11px] uppercase tracking-wide font-medium text-muted-foreground">
         {ui["card.label"]}
       </p>
-      <p className="text-xs font-semibold text-foreground mt-0.5">{headline}</p>
-      <p className="text-xs text-foreground/80 italic mt-1.5 line-clamp-2 leading-relaxed">
+      <p className="text-sm font-semibold text-foreground mt-0.5">{headline}</p>
+      <p className="text-sm text-foreground/80 italic mt-1.5 line-clamp-3 leading-relaxed">
         &ldquo;{reflection.quote.text}&rdquo;
       </p>
-      <p className="text-[10px] text-muted-foreground mt-1">
+      <p className="text-xs text-muted-foreground mt-1">
         — {reflection.quote.author}
       </p>
-      <p className="text-[10px] text-franciscan font-medium mt-1.5">
+      <p className="text-xs text-franciscan font-medium mt-1.5">
         {ui["card.read_more"]}
       </p>
     </Link>

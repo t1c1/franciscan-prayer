@@ -29,35 +29,35 @@ export default function ReflectionsPage() {
   const colors = COLOR_STYLES[reflection.seasonColor] || COLOR_STYLES.green;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4 sm:space-y-5">
       <Link href="/" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">
         {ui["page.back"]}
       </Link>
 
       {/* Season header */}
-      <div className={cn("rounded-xl border p-4", colors.card)}>
-        <p className={cn("text-[10px] uppercase tracking-wide font-medium", colors.text)}>
+      <div className={cn("rounded-xl border p-4 sm:p-5", colors.card)}>
+        <p className={cn("text-[11px] uppercase tracking-wide font-medium", colors.text)}>
           {ui["page.season"]}
         </p>
-        <h1 className="text-lg font-bold text-foreground mt-0.5">{headline}</h1>
-        <p className="text-xs text-muted-foreground mt-1">
+        <h1 className="text-xl font-bold text-foreground mt-0.5">{headline}</h1>
+        <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
           {reflection.season} &middot; {reflection.seasonTheme}
         </p>
       </div>
 
       {/* Feast card (conditional) */}
       {reflection.feast && (
-        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-3">
+        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-3.5 sm:p-4">
           <div className="flex items-start gap-2">
             <CalendarHeart className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
             <div>
-              <p className="text-[10px] text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">
+              <p className="text-[11px] text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">
                 {ui["page.feast"]}
               </p>
-              <p className="text-xs font-semibold text-foreground mt-0.5">
+              <p className="text-sm font-semibold text-foreground mt-0.5">
                 {reflection.feast.name}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">
+              <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
                 {reflection.feast.description}
               </p>
             </div>
@@ -66,51 +66,51 @@ export default function ReflectionsPage() {
       )}
 
       {/* Rule of 1223 */}
-      <div className="bg-card rounded-xl border border-border p-4">
+      <div className="bg-card rounded-xl border border-border p-4 sm:p-5">
         <div className="flex items-center gap-2 mb-2">
           <BookOpen className="w-4 h-4 text-franciscan shrink-0" />
           <div>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">
+            <p className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">
               {ui["page.from_rule"]}
             </p>
-            <p className="text-xs font-semibold text-foreground">
+            <p className="text-sm font-semibold text-foreground">
               {ui["page.chapter"]} {reflection.ruleChapter}: {reflection.ruleTitle}
             </p>
           </div>
         </div>
-        <p className="text-xs text-foreground/80 leading-relaxed">
+        <p className="text-[15px] text-foreground/85 leading-7">
           {reflection.ruleFullText}
         </p>
       </div>
 
       {/* Reflection prompt */}
-      <div className={cn("rounded-xl border p-4", colors.card)}>
+      <div className={cn("rounded-xl border p-4 sm:p-5", colors.card)}>
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className={cn("w-4 h-4 shrink-0", colors.text)} />
-          <p className={cn("text-[10px] uppercase tracking-wide font-medium", colors.text)}>
+          <p className={cn("text-[11px] uppercase tracking-wide font-medium", colors.text)}>
             {ui["page.reflect"]}
           </p>
         </div>
-        <p className="text-sm text-foreground italic leading-relaxed">
+        <p className="text-base text-foreground italic leading-relaxed">
           {reflection.reflectionPrompt}
         </p>
-        <p className="text-[10px] text-muted-foreground mt-2">
+        <p className="text-xs text-muted-foreground mt-2">
           {reflection.reflectionCategory}
         </p>
       </div>
 
       {/* Franciscan quote */}
-      <div className="bg-card rounded-xl border border-border p-4">
+      <div className="bg-card rounded-xl border border-border p-4 sm:p-5">
         <div className="flex items-center gap-2 mb-2">
           <Quote className="w-4 h-4 text-franciscan shrink-0" />
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wide font-medium">
+          <p className="text-[11px] text-muted-foreground uppercase tracking-wide font-medium">
             {ui["page.wisdom"]}
           </p>
         </div>
-        <p className="text-xs text-foreground/80 italic leading-relaxed">
+        <p className="text-sm text-foreground/85 italic leading-relaxed">
           &ldquo;{reflection.quote.text}&rdquo;
         </p>
-        <p className="text-[10px] text-muted-foreground mt-1.5">
+        <p className="text-xs text-muted-foreground mt-1.5">
           — {reflection.quote.author}
           {reflection.quote.source && <span className="italic">, {reflection.quote.source}</span>}
         </p>

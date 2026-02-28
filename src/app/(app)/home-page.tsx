@@ -28,7 +28,7 @@ export default function HomePage() {
   const getHourTime = (id: string) => hourI18n[id]?.typicalTime || "";
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4 sm:space-y-5">
       <LiturgicalBanner />
       <SaintsOfTheDay />
       {todayFeast && (() => {
@@ -62,7 +62,7 @@ export default function HomePage() {
           </div>
         </Link>
       )}
-      <div className="grid grid-cols-1 gap-2">
+      <div className="grid grid-cols-1 gap-2.5">
         <NavTile icon={<Clock className="w-5 h-5 text-franciscan" />} title={t("nav.hours")} subtitle={t("nav.hours_sub")} href="/hours" />
         <NavTile icon={<Flower2 className="w-5 h-5 text-franciscan" />} title={t("nav.crown")} subtitle={t("nav.crown_sub")} href="/crown" />
         <NavTile icon={<BookOpen className="w-5 h-5 text-franciscan" />} title={t("nav.office")} subtitle={t("nav.office_sub")} href="/office" />
@@ -74,7 +74,7 @@ export default function HomePage() {
           <div className="w-9 h-9 rounded-lg bg-franciscan-light flex items-center justify-center shrink-0"><ExternalLink className="w-5 h-5 text-franciscan" /></div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-foreground">{t("nav.readings")}</p>
-            <p className="text-[11px] text-muted-foreground">{t("nav.readings_sub")}</p>
+            <p className="text-xs text-muted-foreground leading-snug">{t("nav.readings_sub")}</p>
           </div>
           <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
         </a>
