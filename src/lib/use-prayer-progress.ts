@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { HOURS, REQUIRED_HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
+import { REQUIRED_HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
 import { getLocalDateString } from "@/lib/utils";
 
 const PRAYER_PROGRESS_EVENT = "fp-progress-changed";
-const REQUIRED_HOUR_IDS = new Set(REQUIRED_HOURS.map((hour) => hour.id));
 
 type PrayerProgressSnapshot = {
   completedHours: string[];

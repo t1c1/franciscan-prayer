@@ -4,7 +4,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
   en: {
     // Header
     "app.title": "Franciscan Prayer",
-    "app.subtitle": "The Hours · The Rule · The Gospel",
+    "app.subtitle": "Pax et Bonum · Let Us Begin Again",
     "app.sound_on": "Sound On",
     "app.sound_off": "Sound Off",
     "audio.listen": "Listen",
@@ -250,7 +250,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
   es: {
     "app.title": "Oración Franciscana",
-    "app.subtitle": "Las Horas · La Regla · El Evangelio",
+    "app.subtitle": "Pax et Bonum · Comencemos de nuevo",
     "app.sound_on": "Sonido",
     "app.sound_off": "Sin Sonido",
     "audio.listen": "Escuchar",
@@ -467,7 +467,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
   it: {
     "app.title": "Preghiera Francescana",
-    "app.subtitle": "Le Ore · La Regola · Il Vangelo",
+    "app.subtitle": "Pax et Bonum · Ricominciamo",
     "app.sound_on": "Suono",
     "app.sound_off": "Muto",
     "audio.listen": "Ascolta",
@@ -684,7 +684,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
   fr: {
     "app.title": "Prière Franciscaine",
-    "app.subtitle": "Les Heures · La Règle · L'Évangile",
+    "app.subtitle": "Pax et Bonum · Recommençons",
     "app.sound_on": "Son",
     "app.sound_off": "Muet",
     "audio.listen": "Écouter",
@@ -901,7 +901,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
   zh: {
     "app.title": "方济各祈祷",
-    "app.subtitle": "日课 · 会规 · 福音",
+    "app.subtitle": "Pax et Bonum · 让我们重新开始",
     "app.sound_on": "开启声音",
     "app.sound_off": "静音",
     "audio.listen": "收听",
