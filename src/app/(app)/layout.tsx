@@ -8,6 +8,7 @@ import { usePrayerProgress, TOTAL_DAILY_PATERS } from "@/lib/use-prayer-progress
 import { REQUIRED_HOURS } from "@/lib/prayers";
 import { getLiturgicalInfo } from "@/lib/readings";
 import { AuthButton } from "@/components/auth-button";
+import { useAuth } from "@/lib/auth-context";
 import { Onboarding, useOnboarding } from "@/components/onboarding";
 import { IntroOnboarding, useIntroOnboarding } from "@/components/intro-onboarding";
 import { useI18n } from "@/lib/i18n";
@@ -26,6 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const completedRequiredHours = completedHours.filter((id) => REQUIRED_HOUR_IDS.has(id));
   const liturgy = getLiturgicalInfo();
   const { locale, t } = useI18n();
+  const { user } = useAuth();
   const [authError, setAuthError] = useState<string | null>(null);
 
   // Parse OAuth error from URL hash (Supabase redirects with #error=...&error_description=...)
@@ -158,6 +160,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </span>
             )}
           </div>
+          {!user && completedPaters > 0 && (
+            <p className="text-[10px] text-muted-foreground/60 mt-1.5 text-center">
+              This progress is saved on this device only.{" "}
+              <span className="text-franciscan/60">Sign in to sync.</span>
+            </p>
+          )}
         </div>
 
         {children}

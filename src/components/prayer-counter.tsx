@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Check, RotateCcw, Timer, Pause, Play } from "lucide-react";
+import { Check, RotateCcw, Timer, Pause, Play, Cloud } from "lucide-react";
 import { cn, getLocalDateString } from "@/lib/utils";
 import { playTap, playBell, playCompletionChime, loadBellSettings } from "@/lib/audio";
 import { useI18n } from "@/lib/i18n";
@@ -9,6 +9,7 @@ import { HOURS_I18N, PRAYERS, type Hour } from "@/lib/prayers";
 import { trackHourCompleted } from "@/lib/analytics";
 import { emitPrayerProgressChanged } from "@/lib/use-prayer-progress";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { useAuth } from "@/lib/auth-context";
 
 interface PrayerCounterProps {
   hour: Hour;
@@ -28,8 +29,17 @@ const VOICE_RATE_RANGE = {
   step: 0.1,
 } as const;
 
+// Rotating subtle nudge messages for anonymous users
+const SYNC_NUDGES = [
+  "Sign in to save your progress across devices",
+  "Your prayer streak is stored on this device only",
+  "Create a free account to keep your history safe",
+  "Sync your prayers — pick up where you left off anywhere",
+];
+
 export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) {
   const { locale, t } = useI18n();
+  const { user } = useAuth();
   const [count, setCount] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -515,6 +525,14 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
             ? t("counter.pacing")
             : t("counter.tap")}
       </p>
+
+      {/* Subtle sign-up nudge for anonymous users */}
+      {!user && completed && (
+        <p className="text-[10px] text-muted-foreground/70 flex items-center gap-1">
+          <Cloud className="w-3 h-3" />
+          {SYNC_NUDGES[Math.floor(Date.now() / 86400000) % SYNC_NUDGES.length]}
+        </p>
+      )}
 
       {/* Pacing controls */}
       {!completed && (
