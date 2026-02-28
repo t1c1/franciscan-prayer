@@ -32,6 +32,18 @@ function getStreak(): number {
   return streak;
 }
 
+function getTodayPaters(): number {
+  if (typeof window === "undefined") return 0;
+  const today = getLocalDateString();
+  let total = 0;
+  for (const hour of REQUIRED_HOURS) {
+    const countKey = `fp_count_${hour.id}_${today}`;
+    const count = parseInt(localStorage.getItem(countKey) || "0", 10);
+    total += count;
+  }
+  return total;
+}
+
 function getSnapshot(): PrayerProgressSnapshot {
   return {
     completedHours: getCompletedHours(),
@@ -47,42 +59,55 @@ export function emitPrayerProgressChanged(): void {
 export function usePrayerProgress() {
   const [completedHours, setCompletedHours] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
+  const [completedPaters, setCompletedPaters] = useState(0);
 
   const refresh = useCallback(() => {
     const snapshot = getSnapshot();
     setCompletedHours(snapshot.completedHours);
     setStreak(snapshot.streak);
+    setCompletedPaters(getTodayPaters());
   }, []);
 
   useEffect(() => {
     refresh();
+    
+    // Listen for storage changes (cross-tab sync)
     const onStorage = (event: StorageEvent) => {
       if (!event.key || event.key.startsWith("fp_completions_") || event.key.startsWith("fp_count_")) {
         refresh();
       }
     };
+    
+    // Listen for custom progress events (same-tab updates)
+    const onProgress = () => {
+      refresh();
+    };
+    
+    // Refresh when page becomes visible
     const onVisibility = () => {
       if (document.visibilityState === "visible") {
         refresh();
       }
     };
 
+    // Also poll localStorage directly for same-tab changes
+    // (since StorageEvent only fires for cross-tab changes)
+    // This is a safety net - events should handle most updates
+    const pollInterval = setInterval(() => {
+      refresh();
+    }, 1000);
+
     window.addEventListener("storage", onStorage);
-    window.addEventListener(PRAYER_PROGRESS_EVENT, refresh);
+    window.addEventListener(PRAYER_PROGRESS_EVENT, onProgress);
     document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
       window.removeEventListener("storage", onStorage);
-      window.removeEventListener(PRAYER_PROGRESS_EVENT, refresh);
+      window.removeEventListener(PRAYER_PROGRESS_EVENT, onProgress);
       document.removeEventListener("visibilitychange", onVisibility);
+      clearInterval(pollInterval);
     };
   }, [refresh]);
-
-  const completedPaters = completedHours.reduce((sum, id) => {
-    if (!REQUIRED_HOUR_IDS.has(id)) return sum;
-    const hour = HOURS.find((h) => h.id === id);
-    return sum + (hour?.paterCount || 0);
-  }, 0);
 
   return { completedHours, streak, completedPaters, refresh, getCompletedHours, getStreak };
 }

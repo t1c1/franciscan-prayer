@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import { HOURS_I18N, PRAYERS, type Hour } from "@/lib/prayers";
 import { trackHourCompleted } from "@/lib/analytics";
 import { emitPrayerProgressChanged } from "@/lib/use-prayer-progress";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 interface PrayerCounterProps {
   hour: Hour;
@@ -154,6 +155,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       }
 
       audio.src = src;
+      audio.playbackRate = voiceRate;
       setGuidedSegment(index + 1);
 
       try {
@@ -204,6 +206,9 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     countRef.current = next;
     setCount(next);
     localStorage.setItem(getStorageKey(hour.id), String(next));
+    
+    // Emit progress change on every count update
+    emitPrayerProgressChanged();
 
     if (soundEnabled) playTap();
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -319,6 +324,15 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     if (pacingRef.current) clearInterval(pacingRef.current);
     pacingRef.current = null;
     localStorage.removeItem(getStorageKey(hour.id));
+    
+    // Remove from completions if it was completed
+    const completionsKey = `fp_completions_${getLocalDateString()}`;
+    const completions = JSON.parse(localStorage.getItem(completionsKey) || "[]");
+    const updatedCompletions = completions.filter((id: string) => id !== hour.id);
+    if (updatedCompletions.length !== completions.length) {
+      localStorage.setItem(completionsKey, JSON.stringify(updatedCompletions));
+    }
+    
     emitPrayerProgressChanged();
   }, [hour.id, stopGuidedPlayback]);
 
@@ -344,17 +358,20 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
         >
           &larr; {t("home.back")}
         </button>
-        <button
-          onClick={toggleSound}
-          className={cn(
-            "text-xs px-2 py-1 rounded-full transition-colors",
-            soundEnabled
-              ? "bg-franciscan-light text-franciscan"
-              : "bg-muted text-muted-foreground"
-          )}
-        >
-          {soundEnabled ? t("app.sound_on") : t("app.sound_off")}
-        </button>
+        <div className="flex items-center gap-1">
+          <LanguageSwitcher />
+          <button
+            onClick={toggleSound}
+            className={cn(
+              "text-xs px-2 py-1 rounded-full transition-colors",
+              soundEnabled
+                ? "bg-franciscan-light text-franciscan"
+                : "bg-muted text-muted-foreground"
+            )}
+          >
+            {soundEnabled ? t("app.sound_on") : t("app.sound_off")}
+          </button>
+        </div>
       </div>
 
       <div className="text-center">
