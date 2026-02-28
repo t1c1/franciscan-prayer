@@ -206,8 +206,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             and the Rule of 1223.
           </p>
 
+          <a
+            href="https://ubimissa.com/mass"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 p-3 mb-3 rounded-xl border border-border bg-card hover:border-franciscan/30 hover:bg-franciscan-light/30 transition-all no-underline"
+          >
+            <span className="text-lg leading-none shrink-0">✝</span>
+            <span className="flex flex-col gap-0.5 text-left">
+              <strong className="text-xs font-semibold text-foreground">Ubi Missa</strong>
+              <span className="text-[10px] text-muted-foreground">Find Mass, Confession &amp; Adoration near you</span>
+            </span>
+          </a>
+
           <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-3">
-            <a href="https://ubimissa.com/mass" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">Find Mass Near You ↗</a>
             <a href="https://bible.usccb.org/daily-bible-reading" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">USCCB Daily Readings ↗</a>
             <a href="https://www.franciscanmedia.org/" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">Franciscan Media ↗</a>
             <Link href="/about" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.about")}</Link>
@@ -217,7 +229,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="text-center">
             <p className="text-xs text-muted-foreground italic">{t("footer.pax")}</p>
             <p className="text-xs text-muted-foreground mt-0.5">{t("footer.amdg")}</p>
-            <p className="text-xs text-muted-foreground mt-1">&copy; {new Date().getFullYear()} Franciscan Prayer</p>
+            <p className="text-xs text-muted-foreground mt-1">&copy; {new Date().getFullYear()} Franciscan Prayer · An <a href="https://ubimissa.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-franciscan transition-colors">Ubi Missa</a> companion</p>
           </div>
         </footer>
       </div>
