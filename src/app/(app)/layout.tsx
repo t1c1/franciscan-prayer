@@ -86,22 +86,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </h1>
               <p className="text-[11px] text-muted-foreground italic truncate leading-tight">{t("app.subtitle")}</p>
             </Link>
-            <div className="flex items-center gap-1 shrink-0">
+            <div className="flex items-center gap-1 max-[360px]:gap-0.5 shrink-0">
               <AuthButton />
               <Link
                 href="/settings"
-                className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                className="p-1.5 max-[360px]:p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 aria-label={t("settings.title")}
               >
-                <Settings className="w-4 h-4" />
+                <Settings className="w-4 h-4 max-[360px]:w-3.5 max-[360px]:h-3.5" />
               </Link>
               {streak > 0 && (
-                <span className="flex items-center gap-0.5 text-[11px] font-medium text-franciscan bg-franciscan-light px-1.5 py-0.5 rounded-full">
+                <span className="flex items-center gap-0.5 text-[11px] font-medium text-franciscan bg-franciscan-light px-1.5 py-0.5 rounded-full max-[420px]:text-[10px] max-[420px]:px-1 max-[360px]:hidden">
                   <Flame className="w-3 h-3" /> {streak}{locale === "zh" ? "天" : "d"}
                 </span>
               )}
               <span className={cn(
-                "text-[11px] px-1.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1 max-w-[104px]",
+                "text-[11px] px-1.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1 max-w-[104px] max-[420px]:px-1 max-[360px]:hidden",
                 liturgy.color === "green" && "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
                 liturgy.color === "purple" && "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
                 liturgy.color === "white" && "bg-amber-50 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
@@ -142,8 +142,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-franciscan rounded-full transition-all duration-500" style={{ width: `${Math.min((completedPaters / TOTAL_DAILY_PATERS) * 100, 100)}%` }} />
             </div>
-            <div className="flex justify-between mt-1.5">
-              <span className="text-[11px] text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-between gap-1.5 mt-1.5">
+              <span className="text-[11px] text-muted-foreground leading-tight">
                 {completedRequiredHours.length} {t("progress.hours_of")} {REQUIRED_HOURS.length} {t("progress.hours_label")}
               </span>
               {completedPaters >= TOTAL_DAILY_PATERS && (
@@ -177,7 +177,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
 
         <footer className="pt-8 pb-4 border-t border-border mt-6">
-          <nav className="grid grid-cols-2 gap-x-6 gap-y-1 mb-4" aria-label="Footer navigation">
+          <nav className="grid grid-cols-2 max-[360px]:grid-cols-1 gap-x-6 gap-y-1 mb-4" aria-label="Footer navigation">
             <div>
               <h3 className="text-xs font-semibold text-foreground mb-1">{t("nav.hours")}</h3>
               <ul className="space-y-0.5">

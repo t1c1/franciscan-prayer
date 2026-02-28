@@ -115,7 +115,7 @@ export function PrayerTextViewer() {
                     locale={lang}
                     audioSrc={`/audio/prayers/${lang}/${prayer.id}.mp3`}
                   />
-                  <p className="text-[15px] text-foreground/85 whitespace-pre-line leading-7">
+                  <p className="text-[15px] text-foreground/85 whitespace-pre-line break-words leading-7">
                     {text}
                   </p>
                 </div>
