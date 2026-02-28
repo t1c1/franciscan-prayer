@@ -61,6 +61,10 @@ function runChecks(): CheckResult[] {
   });
 
   const requiredRedirects = [
+    "https://ignatiusguide.com",
+    "https://ignatiusguide.com/**",
+    "https://www.ignatiusguide.com",
+    "https://www.ignatiusguide.com/**",
     "https://franciscan-prayer.pages.dev",
     "https://franciscan-prayer.pages.dev/**",
     "http://localhost:3000",

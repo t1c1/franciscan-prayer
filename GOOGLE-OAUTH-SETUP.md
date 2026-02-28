@@ -20,6 +20,8 @@
    - Application type: **Web application**
    - Name: `Franciscan Prayer`
    - **Authorized JavaScript origins** — add these:
+     - `https://ignatiusguide.com`
+     - `https://www.ignatiusguide.com`
      - `https://franciscan-prayer.pages.dev`
      - `http://localhost:3000`
    - **Authorized redirect URIs** — add this exact URI:
@@ -43,6 +45,10 @@
 
 17. Still in Supabase Dashboard: **Authentication → URL Configuration**
 18. Make sure these are in **Redirect URLs**:
+    - `https://ignatiusguide.com`
+    - `https://ignatiusguide.com/**`
+    - `https://www.ignatiusguide.com`
+    - `https://www.ignatiusguide.com/**`
     - `https://franciscan-prayer.pages.dev`
     - `https://franciscan-prayer.pages.dev/**`
     - `http://localhost:3000`
@@ -50,4 +56,4 @@
 
 ## Done
 
-No code changes needed. The app already calls `supabase.auth.signInWithOAuth({ provider: "google" })`. Once the credentials are in the Supabase dashboard, the Google sign-in button works immediately.
+The app already calls `supabase.auth.signInWithOAuth({ provider: "google" })` and uses the current origin for `redirectTo`. Once these dashboard URL allowlist entries are present, Google sign-in works from both domains.
