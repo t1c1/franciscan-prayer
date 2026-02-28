@@ -17,6 +17,7 @@ import { Share2 } from "lucide-react";
 import { shareCard } from "@/lib/share-card";
 import { trackShareCard, trackViewChanged } from "@/lib/analytics";
 import { PlatformBar } from "@/components/platform-bar";
+import { getReflectionUI } from "@/lib/daily-reflection";
 
 const REQUIRED_HOUR_IDS = new Set(REQUIRED_HOURS.map((hour) => hour.id));
 
@@ -128,47 +129,49 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </button>
           </div>
         )}
-        {/* Daily progress */}
-        <div className="bg-card rounded-xl border border-border p-3">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-medium text-foreground">{t("progress.title")}</span>
-            <span className="text-[10px] text-muted-foreground tabular-nums">
-              {completedPaters} / {TOTAL_DAILY_PATERS} {t("progress.paters")}
-            </span>
-          </div>
-          <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-            <div className="h-full bg-franciscan rounded-full transition-all duration-500" style={{ width: `${Math.min((completedPaters / TOTAL_DAILY_PATERS) * 100, 100)}%` }} />
-          </div>
-          <div className="flex justify-between mt-1.5">
-            <span className="text-[10px] text-muted-foreground">
-              {completedRequiredHours.length} {t("progress.hours_of")} {REQUIRED_HOURS.length} {t("progress.hours_label")}
-            </span>
-            {completedPaters >= TOTAL_DAILY_PATERS && (
-              <span className="flex items-center gap-1 text-[10px] font-medium text-franciscan">
-                {t("progress.complete")}
-                <button
-                  type="button"
-                  aria-label={t("share.title")}
-                  onClick={() => { trackShareCard(); shareCard({
-                    title: t("share.title"),
-                    subtitle: new Date().toLocaleDateString(locale === "zh" ? "zh-CN" : locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }),
-                    stat: `${streak} ${t("share.streak")}`,
-                    footer: t("share.footer"),
-                  }); }}
-                  className="ml-1 p-1 rounded-full hover:bg-franciscan-light transition-colors"
-                >
-                  <Share2 className="w-3 h-3" />
-                </button>
+        {/* Daily progress - only show when there's progress */}
+        {(completedPaters > 0 || completedRequiredHours.length > 0) && (
+          <div className="bg-card rounded-xl border border-border p-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs font-medium text-foreground">{t("progress.title")}</span>
+              <span className="text-[10px] text-muted-foreground tabular-nums">
+                {completedPaters} / {TOTAL_DAILY_PATERS} {t("progress.paters")}
               </span>
+            </div>
+            <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-full bg-franciscan rounded-full transition-all duration-500" style={{ width: `${Math.min((completedPaters / TOTAL_DAILY_PATERS) * 100, 100)}%` }} />
+            </div>
+            <div className="flex justify-between mt-1.5">
+              <span className="text-[10px] text-muted-foreground">
+                {completedRequiredHours.length} {t("progress.hours_of")} {REQUIRED_HOURS.length} {t("progress.hours_label")}
+              </span>
+              {completedPaters >= TOTAL_DAILY_PATERS && (
+                <span className="flex items-center gap-1 text-[10px] font-medium text-franciscan">
+                  {t("progress.complete")}
+                  <button
+                    type="button"
+                    aria-label={t("share.title")}
+                    onClick={() => { trackShareCard(); shareCard({
+                      title: t("share.title"),
+                      subtitle: new Date().toLocaleDateString(locale === "zh" ? "zh-CN" : locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }),
+                      stat: `${streak} ${t("share.streak")}`,
+                      footer: t("share.footer"),
+                    }); }}
+                    className="ml-1 p-1 rounded-full hover:bg-franciscan-light transition-colors"
+                  >
+                    <Share2 className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+            {!user && completedPaters > 0 && (
+              <p className="text-[10px] text-muted-foreground/60 mt-1.5 text-center">
+                This progress is saved on this device only.{" "}
+                <span className="text-franciscan/60">Sign in to sync.</span>
+              </p>
             )}
           </div>
-          {!user && completedPaters > 0 && (
-            <p className="text-[10px] text-muted-foreground/60 mt-1.5 text-center">
-              This progress is saved on this device only.{" "}
-              <span className="text-franciscan/60">Sign in to sync.</span>
-            </p>
-          )}
-        </div>
+        )}
 
         {children}
 
@@ -189,7 +192,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <li><Link href="/prayers" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.prayers")}</Link></li>
                 <li><Link href="/rule" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.rule")}</Link></li>
                 <li><Link href="/calendar" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.calendar")}</Link></li>
-                <li><Link href="/reflections" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">Reflections</Link></li>
+                <li><Link href="/reflections" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{getReflectionUI(locale)["nav.label"]}</Link></li>
                 <li><Link href="/community" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.community")}</Link></li>
               </ul>
             </div>

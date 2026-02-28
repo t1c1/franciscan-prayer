@@ -4,7 +4,7 @@ export interface FranciscanQuote {
   source?: string;
 }
 
-const QUOTES: FranciscanQuote[] = [
+export const QUOTES: FranciscanQuote[] = [
   // St. Francis of Assisi
   { text: "Lord, make me an instrument of your peace. Where there is hatred, let me sow love.", author: "St. Francis of Assisi", source: "Prayer of St. Francis" },
   { text: "Start by doing what is necessary; then do what is possible; and suddenly you are doing the impossible.", author: "St. Francis of Assisi" },
