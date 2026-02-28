@@ -42,7 +42,7 @@ create policy "Users can insert own profile"
 create or replace function handle_new_user()
 returns trigger as $$
 begin
-  insert into profiles (id, email, sign_up_at, last_active_at)
+  insert into public.profiles (id, email, sign_up_at, last_active_at)
   values (
     new.id,
     coalesce(new.email, new.raw_user_meta_data->>'email'),
@@ -50,7 +50,7 @@ begin
     now()
   )
   on conflict (id) do update set
-    email = coalesce(excluded.email, profiles.email),
+    email = coalesce(excluded.email, public.profiles.email),
     last_active_at = now();
   return new;
 exception

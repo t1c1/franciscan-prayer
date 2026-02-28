@@ -1,9 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Settings, Flame } from "lucide-react";
+import { Settings, Flame, X } from "lucide-react";
 import { usePrayerProgress, TOTAL_DAILY_PATERS } from "@/lib/use-prayer-progress";
 import { REQUIRED_HOURS } from "@/lib/prayers";
 import { getLiturgicalInfo } from "@/lib/readings";
@@ -26,6 +26,24 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const completedRequiredHours = completedHours.filter((id) => REQUIRED_HOUR_IDS.has(id));
   const liturgy = getLiturgicalInfo();
   const { locale, t } = useI18n();
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  // Parse OAuth error from URL hash (Supabase redirects with #error=...&error_description=...)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash;
+    if (!hash || !hash.includes("error")) return;
+
+    const params = new URLSearchParams(hash.slice(1));
+    const error = params.get("error");
+    const description = params.get("error_description");
+
+    if (error) {
+      setAuthError(description?.replace(/\+/g, " ") || error);
+      // Clear hash from URL without triggering navigation
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
 
   useEffect(() => {
     const view = pathname === "/" ? "home" : pathname.replace(/^\//, "").replace(/\//g, "_");
@@ -91,6 +109,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </header>
 
       <div className="safe-bottom max-w-lg mx-auto px-4 py-4 pb-6 space-y-4">
+        {authError && (
+          <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-xl p-3 flex items-start gap-2">
+            <p className="text-sm text-red-800 dark:text-red-200 flex-1">
+              Sign in failed: {authError}
+            </p>
+            <button
+              type="button"
+              onClick={() => setAuthError(null)}
+              className="p-0.5 text-red-500 hover:text-red-700 dark:hover:text-red-300 shrink-0"
+              aria-label="Dismiss"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
         {/* Daily progress */}
         <div className="bg-card rounded-xl border border-border p-3">
           <div className="flex items-center justify-between mb-1.5">
