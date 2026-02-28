@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BookOpen, Sparkles, Quote, CalendarHeart } from "lucide-react";
 import { getDailyReflection, getReflectionHeadline, getReflectionUI } from "@/lib/daily-reflection";
 import { useI18n } from "@/lib/i18n";
+import { useLiturgicalInfo } from "@/lib/use-liturgical-info";
 import { cn } from "@/lib/utils";
 
 const COLOR_STYLES: Record<string, { card: string; text: string }> = {
@@ -23,8 +24,9 @@ const COLOR_STYLES: Record<string, { card: string; text: string }> = {
 
 export default function ReflectionsPage() {
   const { locale } = useI18n();
-  const reflection = getDailyReflection(locale);
-  const headline = getReflectionHeadline(locale);
+  const liturgicalInfo = useLiturgicalInfo();
+  const reflection = getDailyReflection(locale, liturgicalInfo);
+  const headline = getReflectionHeadline(locale, liturgicalInfo);
   const ui = getReflectionUI(locale);
   const colors = COLOR_STYLES[reflection.seasonColor] || COLOR_STYLES.green;
 

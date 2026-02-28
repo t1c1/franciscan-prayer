@@ -56,6 +56,10 @@ export function getTodayUSCCBUrl(): string {
   return `https://bible.usccb.org/bible/readings/${month}${day}${year}.cfm`;
 }
 
+/**
+ * @deprecated Use `useLiturgicalInfo()` hook instead, which uses the LitCal API.
+ * This fallback function is kept for backwards compatibility only.
+ */
 export function getLiturgicalInfo(): { season: string; color: string } {
   const now = new Date();
   const month = now.getMonth();

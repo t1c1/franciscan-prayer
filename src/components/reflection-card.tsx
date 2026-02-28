@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { getDailyReflection, getReflectionHeadline, getReflectionUI } from "@/lib/daily-reflection";
 import { useI18n } from "@/lib/i18n";
+import { useLiturgicalInfo } from "@/lib/use-liturgical-info";
 import { cn } from "@/lib/utils";
 
 const COLOR_STYLES: Record<string, string> = {
@@ -13,8 +14,9 @@ const COLOR_STYLES: Record<string, string> = {
 
 export function ReflectionCard() {
   const { locale } = useI18n();
-  const reflection = getDailyReflection(locale);
-  const headline = getReflectionHeadline(locale);
+  const liturgicalInfo = useLiturgicalInfo();
+  const reflection = getDailyReflection(locale, liturgicalInfo);
+  const headline = getReflectionHeadline(locale, liturgicalInfo);
   const ui = getReflectionUI(locale);
 
   return (

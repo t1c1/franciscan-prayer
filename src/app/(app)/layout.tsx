@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Settings, Flame, X } from "lucide-react";
 import { usePrayerProgress, TOTAL_DAILY_PATERS } from "@/lib/use-prayer-progress";
 import { REQUIRED_HOURS } from "@/lib/prayers";
-import { getLiturgicalInfo } from "@/lib/readings";
+import { useLiturgicalInfo } from "@/lib/use-liturgical-info";
 import { AuthButton } from "@/components/auth-button";
 import { useAuth } from "@/lib/auth-context";
 import { Onboarding, useOnboarding } from "@/components/onboarding";
@@ -27,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { state: introState, dismiss: dismissIntro } = useIntroOnboarding();
   const { completedHours, streak, completedPaters, refresh } = usePrayerProgress();
   const completedRequiredHours = completedHours.filter((id) => REQUIRED_HOUR_IDS.has(id));
-  const liturgy = getLiturgicalInfo();
+  const liturgy = useLiturgicalInfo();
   const { locale, t } = useI18n();
   const { user } = useAuth();
   const [authError, setAuthError] = useState<string | null>(null);

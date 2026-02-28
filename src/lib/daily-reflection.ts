@@ -1,8 +1,8 @@
-import { getLiturgicalInfo } from "@/lib/readings";
 import { getTodayFeast, CALENDAR_I18N } from "@/lib/franciscan-calendar";
 import { getDailyChapter, RULE_CHAPTERS, RULE_I18N } from "@/lib/rule";
 import { EXAMINATION_QUESTIONS, EXAMINATION_I18N, EXAMINATION_CATEGORIES } from "@/lib/examination";
 import { QUOTES, QUOTES_I18N } from "@/lib/franciscan-quotes";
+import type { LiturgicalInfo } from "./use-liturgical-info";
 
 export interface DailyReflection {
   season: string;
@@ -33,9 +33,9 @@ function getDayOfYear(): number {
   );
 }
 
-export function getDailyReflection(locale: string): DailyReflection {
+export function getDailyReflection(locale: string, liturgicalInfo: LiturgicalInfo): DailyReflection {
   const dayOfYear = getDayOfYear();
-  const { season, color: seasonColor } = getLiturgicalInfo();
+  const { season, color: seasonColor } = liturgicalInfo;
 
   // Season theme
   const themes = SEASON_THEME_MAP[season] || SEASON_THEME_MAP["Ordinary Time"];
@@ -167,8 +167,8 @@ const REFLECTION_HEADLINES: Record<string, Record<string, string>> = {
   },
 };
 
-export function getReflectionHeadline(locale: string): string {
-  const { season } = getLiturgicalInfo();
+export function getReflectionHeadline(locale: string, liturgicalInfo: LiturgicalInfo): string {
+  const { season } = liturgicalInfo;
   return REFLECTION_HEADLINES[locale]?.[season] || REFLECTION_HEADLINES.en[season] || "Daily Reflection";
 }
 
