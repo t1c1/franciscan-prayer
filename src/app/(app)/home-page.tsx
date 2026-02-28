@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { HOURS_I18N } from "@/lib/prayers";
 import { getTodayUSCCBUrl } from "@/lib/readings";
-import { getDailyQuote, QUOTES_I18N } from "@/lib/franciscan-quotes";
 import { usePrayerProgress, getNextHour } from "@/lib/use-prayer-progress";
 import { LiturgicalBanner } from "@/components/liturgical-banner";
 import { SaintsOfTheDay } from "@/components/saints-of-the-day";
@@ -22,11 +21,6 @@ export default function HomePage() {
   const { completedHours } = usePrayerProgress();
   const { locale, t } = useI18n();
   const todayFeast = getTodayFeast();
-
-  const enQuote = getDailyQuote();
-  const localizedQuotes = locale !== "en" && QUOTES_I18N[locale];
-  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
-  const dailyQuote = localizedQuotes ? localizedQuotes[dayOfYear % localizedQuotes.length] : enQuote;
 
   const hourI18n = HOURS_I18N[locale] || HOURS_I18N.en;
   const nextHour = getNextHour(completedHours);
@@ -48,10 +42,6 @@ export default function HomePage() {
           </Link>
         );
       })()}
-      <div className="bg-card rounded-xl border border-border p-3">
-        <p className="text-xs text-foreground/80 italic leading-relaxed">&ldquo;{dailyQuote.text}&rdquo;</p>
-        <p className="text-[10px] text-muted-foreground mt-1.5">— {dailyQuote.author}{dailyQuote.source && <span className="italic">, {dailyQuote.source}</span>}</p>
-      </div>
       <ReflectionCard />
       {nextHour && (
         <Link

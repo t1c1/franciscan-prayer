@@ -29,8 +29,11 @@ export function ReflectionCard() {
         {ui["card.label"]}
       </p>
       <p className="text-xs font-semibold text-foreground mt-0.5">{headline}</p>
-      <p className="text-[10px] text-foreground/80 italic mt-1 line-clamp-2 leading-relaxed">
-        {reflection.reflectionPrompt}
+      <p className="text-xs text-foreground/80 italic mt-1.5 line-clamp-2 leading-relaxed">
+        &ldquo;{reflection.quote.text}&rdquo;
+      </p>
+      <p className="text-[10px] text-muted-foreground mt-1">
+        — {reflection.quote.author}
       </p>
       <p className="text-[10px] text-franciscan font-medium mt-1.5">
         {ui["card.read_more"]}
