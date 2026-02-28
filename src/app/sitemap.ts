@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/office`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/prayers`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
     { url: `${BASE_URL}/stations`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE_URL}/reflections`, lastModified: new Date(), changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/rule`, lastModified: new Date(), changeFrequency: "daily", priority: 0.7 },
     { url: `${BASE_URL}/calendar`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE_URL}/community`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.6 },

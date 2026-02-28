@@ -12,6 +12,7 @@ import { getDailyQuote, QUOTES_I18N } from "@/lib/franciscan-quotes";
 import { usePrayerProgress, getNextHour } from "@/lib/use-prayer-progress";
 import { LiturgicalBanner } from "@/components/liturgical-banner";
 import { SaintsOfTheDay } from "@/components/saints-of-the-day";
+import { ReflectionCard } from "@/components/reflection-card";
 import { NavTile } from "@/components/nav-tile";
 import { getTodayFeast, CALENDAR_I18N } from "@/lib/franciscan-calendar";
 import { useI18n } from "@/lib/i18n";
@@ -51,6 +52,7 @@ export default function HomePage() {
         <p className="text-xs text-foreground/80 italic leading-relaxed">&ldquo;{dailyQuote.text}&rdquo;</p>
         <p className="text-[10px] text-muted-foreground mt-1.5">— {dailyQuote.author}{dailyQuote.source && <span className="italic">, {dailyQuote.source}</span>}</p>
       </div>
+      <ReflectionCard />
       {nextHour && (
         <Link
           href={nextHour.id === "compline" && !completedHours.includes("compline") ? "/hours/compline" : `/hours/${nextHour.id}`}

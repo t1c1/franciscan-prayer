@@ -187,6 +187,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <li><Link href="/prayers" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.prayers")}</Link></li>
                 <li><Link href="/rule" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.rule")}</Link></li>
                 <li><Link href="/calendar" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.calendar")}</Link></li>
+                <li><Link href="/reflections" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">Reflections</Link></li>
                 <li><Link href="/community" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.community")}</Link></li>
               </ul>
             </div>
