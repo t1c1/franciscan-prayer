@@ -26,7 +26,7 @@ export const ABOUT_I18N: Record<Exclude<Locale, "en">, AboutStrings> = {
     intro1:
       "Oración Franciscana te ayuda a rezar como franciscano cada día, ya seas fraile, hermana, franciscano seglar o cualquier persona atraída por la espiritualidad de San Francisco de Asís.",
     intro2:
-      "Esta aplicación ofrece dos formas de rezar la Liturgia de las Horas: el Recuento Original del Padrenuestro (83 Padrenuestros por día) para quienes no pueden recitar el Oficio completo, y enlaces a la Liturgia de las Horas completa en DivineOffice.org.",
+      "Esta aplicación ofrece dos formas de rezar la Liturgia de las Horas: el Recuento Original del Padrenuestro (76 Padrenuestros por día) para quienes no pueden recitar el Oficio completo, y enlaces a la Liturgia de las Horas completa en DivineOffice.org.",
     paterTitle: "El Recuento Original del Padrenuestro",
     paterDesc:
       "El Capítulo III de la Regla de San Francisco (1223) prescribe que los hermanos laicos que no saben leer el Salterio deben rezar Padrenuestros en cada hora canónica. La distribución exacta es:",
@@ -54,7 +54,7 @@ export const ABOUT_I18N: Record<Exclude<Locale, "en">, AboutStrings> = {
     intro1:
       "Preghiera Francescana ti aiuta a pregare come un francescano ogni giorno, che tu sia un frate, una suora, un francescano secolare o chiunque attratto dalla spiritualità di San Francesco d'Assisi.",
     intro2:
-      "Questa app offre due modi per pregare la Liturgia delle Ore: il Conteggio Originale dei Pater (83 Pater Noster al giorno) per chi non può recitare l'Ufficio completo, e collegamenti alla Liturgia delle Ore completa su DivineOffice.org.",
+      "Questa app offre due modi per pregare la Liturgia delle Ore: il Conteggio Originale dei Pater (76 Pater Noster al giorno) per chi non può recitare l'Ufficio completo, e collegamenti alla Liturgia delle Ore completa su DivineOffice.org.",
     paterTitle: "Il Conteggio Originale dei Pater",
     paterDesc:
       "Il Capitolo III della Regola di San Francesco (1223) prescrive che i fratelli laici che non sanno leggere il Salterio preghino Pater Noster a ogni ora canonica. La distribuzione esatta è:",
@@ -82,7 +82,7 @@ export const ABOUT_I18N: Record<Exclude<Locale, "en">, AboutStrings> = {
     intro1:
       "Prière Franciscaine vous aide à prier en franciscain chaque jour, que vous soyez frère, sœur, franciscain séculier ou toute personne attirée par la spiritualité de saint François d'Assise.",
     intro2:
-      "Cette application propose deux façons de prier la Liturgie des Heures : le Décompte Original du Pater (83 Notre Père par jour) pour ceux qui ne peuvent réciter l'Office complet, et des liens vers la Liturgie des Heures complète sur DivineOffice.org.",
+      "Cette application propose deux façons de prier la Liturgie des Heures : le Décompte Original du Pater (76 Notre Père par jour) pour ceux qui ne peuvent réciter l'Office complet, et des liens vers la Liturgie des Heures complète sur DivineOffice.org.",
     paterTitle: "Le Décompte Original du Pater",
     paterDesc:
       "Le Chapitre III de la Règle de saint François (1223) prescrit que les frères laïcs qui ne savent pas lire le Psautier doivent prier des Notre Père à chaque heure canonique. La répartition exacte est :",
@@ -110,7 +110,7 @@ export const ABOUT_I18N: Record<Exclude<Locale, "en">, AboutStrings> = {
     intro1:
       "方济各祈祷帮助你每天以方济各的方式祈祷，无论你是修士、修女、在俗方济各会员，还是任何被亚西西圣方济各灵修所吸引的人。",
     intro2:
-      "本应用提供两种日课祈祷方式：原始天主经计数（每天83遍天主经），适用于无法诵念完整日课的人；以及DivineOffice.org上完整日课经的链接。",
+      "本应用提供两种日课祈祷方式：原始天主经计数（每天76遍天主经），适用于无法诵念完整日课的人；以及DivineOffice.org上完整日课经的链接。",
     paterTitle: "原始天主经计数",
     paterDesc:
       "圣方济各会规（1223年）第三章规定，不识字的平信徒兄弟应在每个时辰祈祷天主经。具体分配如下：",

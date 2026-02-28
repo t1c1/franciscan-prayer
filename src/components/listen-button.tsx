@@ -5,6 +5,7 @@ import { Loader2, Play, Square } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { spellOutSmallNumbers } from "@/lib/number-words";
 import { cn } from "@/lib/utils";
+import { normalizeTextForSpeech } from "@/lib/speech-text";
 
 type ListenLocale = "latin" | "en" | "es" | "it" | "fr" | "zh";
 
@@ -62,12 +63,9 @@ export function ListenButton({ text, locale = "en", audioSrc, className }: Liste
   const ownerId = useRef(`listen_${Math.random().toString(36).slice(2)}`);
   const [status, setStatus] = useState<PlaybackStatus>("idle");
 
-  const normalizedText = useMemo(
-    () => text.replace(/\s+/g, " ").trim(),
-    [text]
-  );
+  const normalizedText = useMemo(() => normalizeTextForSpeech(text, locale), [text, locale]);
   const spokenFallbackText = useMemo(
-    () => spellOutSmallNumbers(normalizedText, locale),
+    () => normalizeTextForSpeech(spellOutSmallNumbers(normalizedText, locale), locale),
     [locale, normalizedText]
   );
 

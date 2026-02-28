@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { Settings, Flame } from "lucide-react";
 import { usePrayerProgress, TOTAL_DAILY_PATERS } from "@/lib/use-prayer-progress";
-import { HOURS } from "@/lib/prayers";
+import { REQUIRED_HOURS } from "@/lib/prayers";
 import { getLiturgicalInfo } from "@/lib/readings";
 import { AuthButton } from "@/components/auth-button";
 import { Onboarding, useOnboarding } from "@/components/onboarding";
@@ -16,22 +16,26 @@ import { Share2 } from "lucide-react";
 import { shareCard } from "@/lib/share-card";
 import { trackShareCard, trackViewChanged } from "@/lib/analytics";
 
+const REQUIRED_HOUR_IDS = new Set(REQUIRED_HOURS.map((hour) => hour.id));
+
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { showOnboarding, dismiss: dismissOnboarding, checked } = useOnboarding();
   const { state: introState, dismiss: dismissIntro } = useIntroOnboarding();
-  const { completedHours, streak, completedPaters } = usePrayerProgress();
+  const { completedHours, streak, completedPaters, refresh } = usePrayerProgress();
+  const completedRequiredHours = completedHours.filter((id) => REQUIRED_HOUR_IDS.has(id));
   const liturgy = getLiturgicalInfo();
   const { locale, t } = useI18n();
 
   useEffect(() => {
     const view = pathname === "/" ? "home" : pathname.replace(/^\//, "").replace(/\//g, "_");
     trackViewChanged(view);
-  }, [pathname]);
+    refresh();
+  }, [pathname, refresh]);
 
   if (!checked || introState === "loading") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-dvh bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-3">☦️</div>
           <h1 className="text-xl font-bold text-foreground">Franciscan Prayer</h1>
@@ -49,8 +53,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
+    <main className="min-h-dvh bg-background">
+      <header className="safe-top border-b border-border bg-card">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-left min-w-0">
@@ -86,7 +90,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
+      <div className="safe-bottom max-w-lg mx-auto px-4 py-4 pb-6 space-y-4">
         {/* Daily progress */}
         <div className="bg-card rounded-xl border border-border p-3">
           <div className="flex items-center justify-between mb-1.5">
@@ -100,12 +104,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex justify-between mt-1.5">
             <span className="text-[10px] text-muted-foreground">
-              {completedHours.length} {t("progress.hours_of")} {HOURS.length} {t("progress.hours_label")}
+              {completedRequiredHours.length} {t("progress.hours_of")} {REQUIRED_HOURS.length} {t("progress.hours_label")}
             </span>
             {completedPaters >= TOTAL_DAILY_PATERS && (
               <span className="flex items-center gap-1 text-[10px] font-medium text-franciscan">
                 {t("progress.complete")}
                 <button
+                  type="button"
+                  aria-label={t("share.title")}
                   onClick={() => { trackShareCard(); shareCard({
                     title: t("share.title"),
                     subtitle: new Date().toLocaleDateString(locale === "zh" ? "zh-CN" : locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }),

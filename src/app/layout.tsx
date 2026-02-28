@@ -21,7 +21,7 @@ const APP_NAME = "Franciscan Prayer";
 const APP_DESCRIPTION =
   "A simple companion for daily Franciscan prayer. The Liturgy of the Hours, the Franciscan Crown, Stations of the Cross, and the Rule of St. Francis.";
 const APP_URL = "https://franciscanprayer.com";
-const GA_ID = "G-BQ8VHB1BTB";
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-BQ8VHB1BTB";
 const OG_IMAGE = `${APP_URL}/og-image.png`;
 
 export const viewport: Viewport = {
@@ -29,7 +29,10 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: "cover",
-  themeColor: "#5C3A1E",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#5C3A1E" },
+    { media: "(prefers-color-scheme: dark)", color: "#2B1D12" },
+  ],
 };
 
 export const metadata: Metadata = {
@@ -80,13 +83,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const shouldLoadAnalytics = process.env.NODE_ENV === "production" && Boolean(GA_ID);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
-        </Script>
+        {shouldLoadAnalytics && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+            <Script id="gtag-init" strategy="afterInteractive">
+              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
+            </Script>
+          </>
+        )}
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

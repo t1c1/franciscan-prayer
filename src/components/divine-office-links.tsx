@@ -44,7 +44,7 @@ export function DivineOfficeLinks() {
               href={HOUR_LINKS[hour.id]}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => { e.preventDefault(); trackExternalLink(`divineoffice-${hour.id}`); window.open(HOUR_LINKS[hour.id], "_blank", "noopener,noreferrer"); }}
+              onClick={() => trackExternalLink(`divineoffice-${hour.id}`)}
               className="flex items-center justify-between bg-card rounded-lg border border-border p-3 hover:border-franciscan/40 transition-colors"
             >
               <div>

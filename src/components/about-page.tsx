@@ -11,7 +11,7 @@ const EN_ABOUT: AboutCopy = {
   intro1:
     "Franciscan Prayer helps you pray as a Franciscan every day, whether you are a friar, a sister, a secular Franciscan, or anyone drawn to the spirituality of St. Francis of Assisi.",
   intro2:
-    "This app offers two ways to pray the Liturgy of the Hours: the Original Pater Count (83 Our Fathers per day) for those who cannot recite the full Office, and links to the full Liturgy of the Hours on DivineOffice.org.",
+    "This app offers two ways to pray the Liturgy of the Hours: the Original Pater Count (76 Our Fathers per day) for those who cannot recite the full Office, and links to the full Liturgy of the Hours on DivineOffice.org.",
   paterTitle: "The Original Pater Count",
   paterDesc:
     "Chapter III of the Rule of St. Francis (1223) prescribes that lay brothers who cannot read the Psalter should instead pray Our Fathers at each canonical hour. The exact distribution is:",
@@ -36,18 +36,11 @@ const EN_ABOUT: AboutCopy = {
   builtWith: "Built with love for the greater glory of God",
 };
 
-function getDailyTotalLabel(locale: string): string {
-  if (locale === "es") return "Total Diario";
-  if (locale === "it") return "Totale Giornaliero";
-  if (locale === "fr") return "Total Quotidien";
-  if (locale === "zh") return "每日总计";
-  return "Daily Total";
-}
-
 export function AboutPage() {
-  const { locale } = useI18n();
+  const { locale, t } = useI18n();
   const i = locale !== "en" ? ABOUT_I18N[locale as keyof typeof ABOUT_I18N] : EN_ABOUT;
-  const dailyTotalLabel = getDailyTotalLabel(locale);
+  const dailyTotalLabel = t("about.daily_total");
+  const deadOptionalLabel = t("about.dead_optional");
 
   const handleReplayOnboarding = () => {
     localStorage.removeItem("fp_onboarding_done");
@@ -58,7 +51,7 @@ export function AboutPage() {
     i.intro1,
     i.intro2,
     `${i.paterTitle}. ${i.paterDesc}`,
-    `${dailyTotalLabel}: 83 Paters.`,
+    `${dailyTotalLabel}: 76 Paters.`,
     `${i.howTitle}. ${i.howFullDay}: ${i.howFullDayDesc}`,
     `${i.howBusy}: ${i.howBusyDesc}`,
     `${i.howMissed}: ${i.howMissedDesc}`,
@@ -106,12 +99,12 @@ export function AboutPage() {
           <span className="font-medium text-foreground tabular-nums">12 Paters</span>
           <span className="text-muted-foreground">Compline</span>
           <span className="font-medium text-foreground tabular-nums">7 Paters</span>
-          <span className="text-muted-foreground">For the Dead</span>
-          <span className="font-medium text-foreground tabular-nums">7 Paters</span>
+          <span className="text-muted-foreground">{deadOptionalLabel}</span>
+          <span className="font-medium text-foreground/70 tabular-nums">+7 Paters</span>
           <span className="text-muted-foreground font-semibold border-t border-border pt-1">
             {dailyTotalLabel}
           </span>
-          <span className="font-bold text-franciscan tabular-nums border-t border-border pt-1">83 Paters</span>
+          <span className="font-bold text-franciscan tabular-nums border-t border-border pt-1">76 Paters</span>
         </div>
       </div>
 
@@ -164,7 +157,7 @@ export function AboutPage() {
           className="w-full flex items-center justify-center gap-2 text-franciscan hover:opacity-80 transition-opacity text-sm font-medium"
         >
           <RotateCcw className="w-4 h-4" />
-          {locale === "zh" ? "重新播放介绍" : locale === "es" ? "Reproducir Introducción" : locale === "it" ? "Riproduci Introduzione" : locale === "fr" ? "Revoir l'Introduction" : "Replay Introduction"}
+          {t("about.replay_intro")}
         </button>
       </div>
 

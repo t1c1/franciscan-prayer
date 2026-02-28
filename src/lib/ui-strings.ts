@@ -57,6 +57,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "hours.desc": "\"Those who do not know letters shall say the Our Father.\" — Rule of St. Francis, Chapter III",
     "hours.during_night": "During the night or early morning",
     "hours.dawn": "Dawn / Early morning",
+    "hours.optional": "optional",
 
     // Prayer counter
     "counter.tap": "Tap to count each Pater Noster",
@@ -155,12 +156,14 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.local_only": "Local Only",
     "dashboard.sync_now": "Sync Now",
     "dashboard.syncing": "Syncing...",
+    "dashboard.sync_failed": "Sync failed. Please try again.",
     "dashboard.signed_in": "Signed in as",
     "dashboard.sign_in_prompt": "Sign in to sync your prayer data across devices",
     "dashboard.streak": "Current Streak",
     "dashboard.active_days": "Active Days (30d)",
     "dashboard.hours_prayed": "Hours Prayed (30d)",
     "dashboard.total_paters": "Total Paters (30d)",
+    "dashboard.achievements": "Achievements",
     "dashboard.perfect_days": "perfect days in the last 30 days",
     "dashboard.perfect_note": "All 76 Paters completed — Deo Gratias!",
     "dashboard.last_30": "Last 30 Days",
@@ -168,9 +171,13 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.more": "More",
     "dashboard.days": "days",
     "dashboard.of_30": "of 30",
+    "dashboard.to_go": "to go",
 
     // About
     "about.title": "About & How to Pray",
+    "about.daily_total": "Daily Total",
+    "about.dead_optional": "For the Dead (optional)",
+    "about.replay_intro": "Replay Introduction",
 
     // Settings
     "settings.title": "Settings",
@@ -196,6 +203,8 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     // Examination
     "exam.title": "Examination of Conscience",
     "exam.intro": "In the tradition of St. Francis, take a few moments to review your day with honesty and gentleness. God is merciful — this is not about guilt but about growing closer to Him.",
+    "exam.quote": "Let us begin, brothers, to serve the Lord God, for up to now we have done little or nothing.",
+    "exam.quote_author": "St. Francis of Assisi",
     "exam.begin": "Begin Examination",
     "exam.skip": "Skip for now",
     "exam.complete_title": "Examination Complete",
@@ -260,7 +269,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "home.back": "Inicio",
 
     "nav.hours": "Rezar las Horas",
-    "nav.hours_sub": "Recuento Original de Padrenuestros · 83 por día",
+    "nav.hours_sub": "Recuento Original de Padrenuestros · 76 por día",
     "nav.crown": "Corona Franciscana",
     "nav.crown_sub": "Siete Gozos de María · 72 Avemarías",
     "nav.office": "Liturgia de las Horas Completa",
@@ -288,6 +297,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "hours.title": "Las Horas — Regla Original del Pater",
     "hours.desc": "La práctica franciscana original: 76 Padrenuestros por día, distribuidos en las ocho horas canónicas. Del Capítulo III de la Regla.",
+    "hours.during_night": "Durante la noche o al amanecer",
+    "hours.dawn": "Amanecer / primera hora de la mañana",
+    "hours.optional": "opcional",
 
     "counter.tap": "Toca para contar cada Padrenuestro",
     "counter.pacing": "Ritmo meditativo — campana suena en cada intervalo",
@@ -368,12 +380,14 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.local_only": "Solo Local",
     "dashboard.sync_now": "Sincronizar",
     "dashboard.syncing": "Sincronizando...",
+    "dashboard.sync_failed": "Falló la sincronización. Inténtalo de nuevo.",
     "dashboard.signed_in": "Sesión como",
     "dashboard.sign_in_prompt": "Inicia sesión para sincronizar tus datos de oración entre dispositivos",
     "dashboard.streak": "Racha Actual",
     "dashboard.active_days": "Días Activos (30d)",
     "dashboard.hours_prayed": "Horas Rezadas (30d)",
     "dashboard.total_paters": "Total Padrenuestros (30d)",
+    "dashboard.achievements": "Logros",
     "dashboard.perfect_days": "días perfectos en los últimos 30 días",
     "dashboard.perfect_note": "¡76 Padrenuestros completados — Deo Gratias!",
     "dashboard.last_30": "Últimos 30 Días",
@@ -381,8 +395,12 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.more": "Más",
     "dashboard.days": "días",
     "dashboard.of_30": "de 30",
+    "dashboard.to_go": "más",
 
     "about.title": "Acerca de y Cómo Rezar",
+    "about.daily_total": "Total Diario",
+    "about.dead_optional": "Por los Difuntos (opcional)",
+    "about.replay_intro": "Reproducir Introducción",
 
     "settings.title": "Configuración",
     "settings.account": "Cuenta y sincronización",
@@ -406,6 +424,8 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "exam.title": "Examen de Conciencia",
     "exam.intro": "En la tradición de San Francisco, toma unos momentos para revisar tu día con honestidad y gentileza. Dios es misericordioso — no se trata de culpa sino de acercarse más a Él.",
+    "exam.quote": "Comencemos, hermanos, a servir al Señor Dios, porque hasta ahora hemos hecho poco o nada.",
+    "exam.quote_author": "San Francisco de Asís",
     "exam.begin": "Comenzar Examen",
     "exam.skip": "Omitir por ahora",
     "exam.complete_title": "Examen Completo",
@@ -466,7 +486,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "home.back": "Home",
 
     "nav.hours": "Prega le Ore",
-    "nav.hours_sub": "Conteggio Originale dei Pater · 83 al giorno",
+    "nav.hours_sub": "Conteggio Originale dei Pater · 76 al giorno",
     "nav.crown": "Corona Francescana",
     "nav.crown_sub": "Sette Gioie di Maria · 72 Ave Maria",
     "nav.office": "Liturgia delle Ore Completa",
@@ -494,6 +514,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "hours.title": "Le Ore — Regola Originale del Pater",
     "hours.desc": "La pratica francescana originale: 76 Pater Noster al giorno, distribuiti nelle otto ore canoniche. Dal Capitolo III della Regola.",
+    "hours.during_night": "Durante la notte o al mattino presto",
+    "hours.dawn": "All'alba / primo mattino",
+    "hours.optional": "opzionale",
 
     "counter.tap": "Tocca per contare ogni Pater Noster",
     "counter.pacing": "Ritmo meditativo — campana ad ogni intervallo",
@@ -574,12 +597,14 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.local_only": "Solo Locale",
     "dashboard.sync_now": "Sincronizza",
     "dashboard.syncing": "Sincronizzazione...",
+    "dashboard.sync_failed": "Sincronizzazione non riuscita. Riprova.",
     "dashboard.signed_in": "Accesso come",
     "dashboard.sign_in_prompt": "Accedi per sincronizzare i tuoi dati di preghiera tra dispositivi",
     "dashboard.streak": "Serie Attuale",
     "dashboard.active_days": "Giorni Attivi (30g)",
     "dashboard.hours_prayed": "Ore Pregate (30g)",
     "dashboard.total_paters": "Totale Pater (30g)",
+    "dashboard.achievements": "Traguardi",
     "dashboard.perfect_days": "giorni perfetti negli ultimi 30 giorni",
     "dashboard.perfect_note": "76 Pater completati — Deo Gratias!",
     "dashboard.last_30": "Ultimi 30 Giorni",
@@ -587,8 +612,12 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.more": "Più",
     "dashboard.days": "giorni",
     "dashboard.of_30": "di 30",
+    "dashboard.to_go": "ancora",
 
     "about.title": "Informazioni e Come Pregare",
+    "about.daily_total": "Totale Giornaliero",
+    "about.dead_optional": "Per i Defunti (opzionale)",
+    "about.replay_intro": "Riproduci Introduzione",
 
     "settings.title": "Impostazioni",
     "settings.account": "Account e sincronizzazione",
@@ -612,6 +641,8 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "exam.title": "Esame di Coscienza",
     "exam.intro": "Nella tradizione di San Francesco, prenditi qualche momento per rivedere la tua giornata con onestà e dolcezza. Dio è misericordioso — non si tratta di senso di colpa ma di avvicinarsi a Lui.",
+    "exam.quote": "Cominciamo, fratelli, a servire il Signore Dio, perché finora abbiamo fatto poco o nulla.",
+    "exam.quote_author": "San Francesco d'Assisi",
     "exam.begin": "Inizia l'Esame",
     "exam.skip": "Salta per ora",
     "exam.complete_title": "Esame Completo",
@@ -672,7 +703,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "home.back": "Accueil",
 
     "nav.hours": "Prier les Heures",
-    "nav.hours_sub": "Décompte Original des Pater · 83 par jour",
+    "nav.hours_sub": "Décompte Original des Pater · 76 par jour",
     "nav.crown": "Couronne Franciscaine",
     "nav.crown_sub": "Sept Joies de Marie · 72 Je vous salue",
     "nav.office": "Liturgie des Heures Complète",
@@ -700,6 +731,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "hours.title": "Les Heures — Règle Originale du Pater",
     "hours.desc": "La pratique franciscaine originale : 76 Notre Père par jour, répartis sur les huit heures canoniques. Du Chapitre III de la Règle.",
+    "hours.during_night": "Pendant la nuit ou tôt le matin",
+    "hours.dawn": "À l'aube / tôt le matin",
+    "hours.optional": "optionnel",
 
     "counter.tap": "Appuyez pour compter chaque Pater Noster",
     "counter.pacing": "Rythme méditatif — cloche à chaque intervalle",
@@ -780,12 +814,14 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.local_only": "Local Uniquement",
     "dashboard.sync_now": "Synchroniser",
     "dashboard.syncing": "Synchronisation...",
+    "dashboard.sync_failed": "Échec de la synchronisation. Réessayez.",
     "dashboard.signed_in": "Connecté en tant que",
     "dashboard.sign_in_prompt": "Connectez-vous pour synchroniser vos données de prière entre appareils",
     "dashboard.streak": "Série Actuelle",
     "dashboard.active_days": "Jours Actifs (30j)",
     "dashboard.hours_prayed": "Heures Priées (30j)",
     "dashboard.total_paters": "Total Pater (30j)",
+    "dashboard.achievements": "Réalisations",
     "dashboard.perfect_days": "jours parfaits dans les 30 derniers jours",
     "dashboard.perfect_note": "76 Pater complétés — Deo Gratias !",
     "dashboard.last_30": "30 Derniers Jours",
@@ -793,8 +829,12 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.more": "Plus",
     "dashboard.days": "jours",
     "dashboard.of_30": "de 30",
+    "dashboard.to_go": "de plus",
 
     "about.title": "À propos et Comment Prier",
+    "about.daily_total": "Total Quotidien",
+    "about.dead_optional": "Pour les Défunts (optionnel)",
+    "about.replay_intro": "Revoir l'Introduction",
 
     "settings.title": "Paramètres",
     "settings.account": "Compte et synchronisation",
@@ -818,6 +858,8 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "exam.title": "Examen de Conscience",
     "exam.intro": "Dans la tradition de Saint François, prenez quelques instants pour revoir votre journée avec honnêteté et douceur. Dieu est miséricordieux — il ne s'agit pas de culpabilité mais de se rapprocher de Lui.",
+    "exam.quote": "Commençons, frères, à servir le Seigneur Dieu, car jusqu'à présent nous avons fait peu ou rien.",
+    "exam.quote_author": "Saint François d'Assise",
     "exam.begin": "Commencer l'Examen",
     "exam.skip": "Passer pour l'instant",
     "exam.complete_title": "Examen Terminé",
@@ -878,7 +920,7 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "home.back": "首页",
 
     "nav.hours": "日课祈祷",
-    "nav.hours_sub": "原始天主经计数 · 每日83遍",
+    "nav.hours_sub": "原始天主经计数 · 每日76遍",
     "nav.crown": "方济各七苦玫瑰经",
     "nav.crown_sub": "圣母七乐 · 72遍圣母经",
     "nav.office": "完整日课经",
@@ -906,6 +948,9 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "hours.title": "日课 — 原始天主经规则",
     "hours.desc": "方济各原始做法：每日76遍天主经，分布在八个时辰中。出自会规第三章。",
+    "hours.during_night": "夜间或清晨",
+    "hours.dawn": "黎明 / 清晨",
+    "hours.optional": "可选",
 
     "counter.tap": "点击计数每遍天主经",
     "counter.pacing": "默想节奏 — 每次间隔响铃",
@@ -986,12 +1031,14 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.local_only": "仅本地",
     "dashboard.sync_now": "立即同步",
     "dashboard.syncing": "同步中...",
+    "dashboard.sync_failed": "同步失败，请重试。",
     "dashboard.signed_in": "已登录",
     "dashboard.sign_in_prompt": "登录以在多台设备间同步你的祈祷数据",
     "dashboard.streak": "当前连续",
     "dashboard.active_days": "活跃天数(30天)",
     "dashboard.hours_prayed": "已祈祷时辰(30天)",
     "dashboard.total_paters": "天主经总数(30天)",
+    "dashboard.achievements": "成就",
     "dashboard.perfect_days": "过去30天的完美天数",
     "dashboard.perfect_note": "76遍天主经全部完成 — 感谢天主！",
     "dashboard.last_30": "最近30天",
@@ -999,8 +1046,12 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
     "dashboard.more": "多",
     "dashboard.days": "天",
     "dashboard.of_30": "/ 30",
+    "dashboard.to_go": "后解锁",
 
     "about.title": "关于与祈祷指南",
+    "about.daily_total": "每日总计",
+    "about.dead_optional": "为亡者祈祷（可选）",
+    "about.replay_intro": "重新播放介绍",
 
     "settings.title": "设置",
     "settings.account": "账户与同步",
@@ -1024,6 +1075,8 @@ export const UI_STRINGS: Record<Locale, Record<string, string>> = {
 
     "exam.title": "省察",
     "exam.intro": "按照圣方济各的传统，花几分钟以诚实和温柔回顾你的一天。天主是仁慈的——这不是关于内疚，而是关于更接近祂。",
+    "exam.quote": "弟兄们，让我们现在开始事奉上主天主，因为直到现在我们做得很少，甚至几乎没有。",
+    "exam.quote_author": "亚西西的圣方济各",
     "exam.begin": "开始省察",
     "exam.skip": "暂时跳过",
     "exam.complete_title": "省察完成",

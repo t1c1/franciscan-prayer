@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { HOURS } from "@/lib/prayers";
+import { HOURS, REQUIRED_HOURS } from "@/lib/prayers";
 import { PrayerCounter } from "@/components/prayer-counter";
 import { ExaminationOfConscience } from "@/components/examination-of-conscience";
 import { usePrayerProgress, getCompletedHours } from "@/lib/use-prayer-progress";
 import { playMonasteryBell } from "@/lib/audio";
 import { useAuth } from "@/lib/auth-context";
 import { trackAllHoursCompleted } from "@/lib/analytics";
+
+const REQUIRED_HOUR_IDS = new Set(REQUIRED_HOURS.map((h) => h.id));
 
 interface HourPrayerPageProps {
   hourId: string;
@@ -17,11 +19,19 @@ interface HourPrayerPageProps {
 export default function HourPrayerPage({ hourId }: HourPrayerPageProps) {
   const router = useRouter();
   const hour = HOURS.find((h) => h.id === hourId);
-  const { refresh, completedHours, getStreak } = usePrayerProgress();
+  const { refresh, getStreak } = usePrayerProgress();
   const { syncToCloud, user } = useAuth();
-  const [showExamination, setShowExamination] = useState(
-    hourId === "compline" && !completedHours.includes("compline")
-  );
+  const [showExamination, setShowExamination] = useState(() => (
+    hourId === "compline" && !getCompletedHours().includes("compline")
+  ));
+
+  useEffect(() => {
+    if (hourId !== "compline") {
+      setShowExamination(false);
+      return;
+    }
+    setShowExamination(!getCompletedHours().includes("compline"));
+  }, [hourId]);
 
   if (!hour) {
     router.replace("/hours");
@@ -41,17 +51,14 @@ export default function HourPrayerPage({ hourId }: HourPrayerPageProps) {
       hour={hour}
       onComplete={() => {
         refresh();
-        if (hourId === "compline" && !getCompletedHours().includes("dead")) {
-          router.push("/hours/dead");
-        } else {
-          const completed = getCompletedHours();
-          if (completed.length >= HOURS.length) {
-            playMonasteryBell();
-            trackAllHoursCompleted(getStreak());
-          }
-          if (user) syncToCloud();
-          router.push("/hours");
+        const completed = getCompletedHours();
+        const completedRequiredCount = completed.filter((id) => REQUIRED_HOUR_IDS.has(id)).length;
+        if (hourId !== "dead" && completedRequiredCount >= REQUIRED_HOURS.length) {
+          playMonasteryBell();
+          trackAllHoursCompleted(getStreak());
         }
+        if (user) syncToCloud();
+        router.push("/hours");
       }}
       onBack={() => router.push("/hours")}
     />

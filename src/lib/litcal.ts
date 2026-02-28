@@ -1,5 +1,6 @@
 // John Romano D'Orazio Liturgical Calendar API
 // https://litcal.johnromanodorazio.com
+import { getLocalDateString } from "./utils";
 
 const LITCAL_BASE = "https://litcal.johnromanodorazio.com/api/v5/calendar/nation/US";
 const API_LOCALE_BY_APP_LOCALE = {
@@ -68,10 +69,13 @@ function formatSeason(raw: string): string {
 
 function parseEventDate(date: string | number): string {
   if (typeof date === "number") {
-    return new Date(date * 1000).toISOString().split("T")[0];
+    return getLocalDateString(new Date(date * 1000));
   }
-  // ISO string — extract date portion
-  return date.split("T")[0];
+  if (date.includes("T")) {
+    return getLocalDateString(new Date(date));
+  }
+  // Date-only string fallback.
+  return date;
 }
 
 export async function fetchTodayLiturgical(locale: LitCalLocale = "en"): Promise<LitCalDay | null> {
@@ -83,7 +87,7 @@ export async function fetchTodayLiturgical(locale: LitCalLocale = "en"): Promise
       const cached = localStorage.getItem(cacheKey);
       if (cached) {
         const { data, timestamp, dateStr } = JSON.parse(cached);
-        const today = new Date().toISOString().split("T")[0];
+        const today = getLocalDateString();
         if (dateStr === today && Date.now() - timestamp < CACHE_TTL) {
           return data;
         }
@@ -113,7 +117,7 @@ export async function fetchTodayLiturgical(locale: LitCalLocale = "en"): Promise
     const events: LitCalEvent[] = Array.isArray(raw) ? raw : Object.values(raw);
 
     // Find today's highest-grade event
-    const today = new Date().toISOString().split("T")[0];
+    const today = getLocalDateString();
     let bestEvent: LitCalEvent | null = null;
     let bestGrade = -1;
 

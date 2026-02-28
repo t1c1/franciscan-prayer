@@ -83,6 +83,25 @@
   --franciscan-light: oklch(0.25 0.04 55);
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+@supports (padding: max(0px)) {
+  .safe-top {
+    padding-top: max(0px, env(safe-area-inset-top));
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
 /* Tap target for prayer counter */
 .tap-target {
   -webkit-tap-highlight-color: transparent;

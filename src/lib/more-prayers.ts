@@ -71,7 +71,7 @@ export const MORE_PRAYERS: PrayerText[] = [
     id: "act-of-contrition",
     title: "Act of Contrition",
     titles: { en: "Act of Contrition", es: "Acto de Contrición", it: "Atto di Dolore", fr: "Acte de Contrition", zh: "痛悔经" },
-    latin: "",
+    latin: "Deus meus, ex toto corde paenitet me omnium meorum peccatorum, eaque detestor,\nquia peccando, non solum poenas a te iuste statutas promeritus sum,\nsed praesertim quia offendi te,\nsummum bonum ac dignum qui super omnia diligaris.\nIdeo firmiter propono, adiuvante gratia tua,\nde cetero me non peccaturum\npeccandique occasiones proximas fugiturum.\nAmen.",
     en: "O my God, I am heartily sorry\nfor having offended Thee,\nand I detest all my sins\nbecause of Thy just punishments,\nbut most of all because they offend Thee, my God,\nwho art all-good and deserving of all my love.\nI firmly resolve, with the help of Thy grace,\nto sin no more and to avoid the near occasions of sin.\nAmen.",
     es: "Dios mío, me arrepiento de todo corazón\nde todos mis pecados\ny los aborrezco,\nporque al pecar, no sólo merezco\nlas penas establecidas por ti justamente,\nsino principalmente porque te ofendí a ti,\nque eres el sumo bien y digno de ser amado sobre todas las cosas.\nPor eso propongo firmemente, con la ayuda de tu gracia,\nno pecar más en adelante\ny huir de las ocasiones de pecado.\nAmén.",
     it: "Mio Dio, mi pento e mi dolgo con tutto il cuore\ndei miei peccati,\nperché peccando ho meritato i tuoi castighi,\ne molto più perché ho offeso te,\ninfinitamente buono e degno di essere amato sopra ogni cosa.\nPropongo con il tuo santo aiuto\ndi non offenderti mai più\ne di fuggire le occasioni prossime di peccato.\nSignore, misericordia, perdonami.\nAmen.",

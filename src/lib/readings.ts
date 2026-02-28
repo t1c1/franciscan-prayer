@@ -1,3 +1,5 @@
+import { getLocalDateString } from "./utils";
+
 const USCCB_RSS = "https://feeds.soundcloud.com/users/soundcloud:users:838970026/sounds.rss";
 const PODCAST_CACHE_KEY = "fp_usccb_podcast";
 
@@ -8,7 +10,7 @@ export async function fetchTodayReadingAudio(): Promise<string | null> {
       const cached = localStorage.getItem(PODCAST_CACHE_KEY);
       if (cached) {
         const { url, dateStr } = JSON.parse(cached);
-        if (dateStr === new Date().toISOString().split("T")[0]) return url;
+        if (dateStr === getLocalDateString()) return url;
       }
     } catch { /* ignore */ }
   }
@@ -31,7 +33,10 @@ export async function fetchTodayReadingAudio(): Promise<string | null> {
         if (match) {
           const url = match[1];
           if (typeof window !== "undefined") {
-            localStorage.setItem(PODCAST_CACHE_KEY, JSON.stringify({ url, dateStr: now.toISOString().split("T")[0] }));
+            localStorage.setItem(
+              PODCAST_CACHE_KEY,
+              JSON.stringify({ url, dateStr: getLocalDateString(now) })
+            );
           }
           return url;
         }

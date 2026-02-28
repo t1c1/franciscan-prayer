@@ -17,7 +17,6 @@ export function SaintsOfTheDay() {
         href={SAINTFORAMINUTE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={(e) => { e.preventDefault(); window.open(SAINTFORAMINUTE_URL, "_blank", "noopener,noreferrer"); }}
         className="bg-card rounded-xl border border-border p-3 text-left hover:border-franciscan/40 transition-colors flex items-center gap-3 group"
       >
         <div className="w-9 h-9 rounded-lg bg-franciscan-light flex items-center justify-center shrink-0">
@@ -48,7 +47,6 @@ export function SaintsOfTheDay() {
         href={SAINTFORAMINUTE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={(e) => { e.preventDefault(); window.open(SAINTFORAMINUTE_URL, "_blank", "noopener,noreferrer"); }}
         className="w-full flex items-center justify-center gap-2 bg-franciscan text-franciscan-foreground rounded-lg px-3 py-2 text-xs font-medium hover:opacity-90 transition-opacity"
       >
         <ExternalLink className="w-3.5 h-3.5" />

@@ -12,6 +12,7 @@ export default function HoursPage() {
   const { completedHours } = usePrayerProgress();
   const { locale, t } = useI18n();
   const hourI18n = HOURS_I18N[locale] || HOURS_I18N.en;
+  const deadOptionalLabel = t("hours.optional");
   const getHourName = (id: string) => hourI18n[id]?.name || HOURS.find(h => h.id === id)?.name || id;
   const getHourTime = (id: string) => hourI18n[id]?.typicalTime || "";
 
@@ -36,6 +37,9 @@ export default function HoursPage() {
               <div className="flex-1 min-w-0">
                 <p className={cn("text-sm font-medium", done && "line-through")}>
                   {getHourName(hour.id)}
+                  {hour.id === "dead" && (
+                    <span className="ml-1 text-[10px] text-muted-foreground font-normal">({deadOptionalLabel})</span>
+                  )}
                   <span className="text-[10px] text-muted-foreground ml-1.5 font-normal italic">{hour.latinName}</span>
                 </p>
                 <p className="text-[10px] text-muted-foreground">{hour.paterCount} {t("progress.paters")} &middot; {getHourTime(hour.id)}</p>

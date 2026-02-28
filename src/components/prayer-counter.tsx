@@ -7,6 +7,7 @@ import { playTap, playBell, playCompletionChime, loadBellSettings } from "@/lib/
 import { useI18n } from "@/lib/i18n";
 import { HOURS_I18N, PRAYERS, type Hour } from "@/lib/prayers";
 import { trackHourCompleted } from "@/lib/analytics";
+import { emitPrayerProgressChanged } from "@/lib/use-prayer-progress";
 
 interface PrayerCounterProps {
   hour: Hour;
@@ -31,14 +32,16 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   const [count, setCount] = useState(0);
   const [completed, setCompleted] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const countRef = useRef(0);
+  const completedRef = useRef(false);
 
   // Pacing timer state — interval loaded from bell settings
-  const bellSettings = loadBellSettings();
   const [pacingActive, setPacingActive] = useState(false);
   const [pacingPaused, setPacingPaused] = useState(false);
-  const [paceSeconds, setPaceSeconds] = useState(bellSettings.interval);
+  const [paceSeconds, setPaceSeconds] = useState(() => loadBellSettings().interval);
   const [timeLeft, setTimeLeft] = useState(0);
   const pacingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const remainingRef = useRef(0);
 
   // Guided audio state
   const [guidedPlaying, setGuidedPlaying] = useState(false);
@@ -72,7 +75,11 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     if (saved) {
       const n = parseInt(saved, 10);
       setCount(n);
-      if (n >= hour.paterCount) setCompleted(true);
+      countRef.current = n;
+      if (n >= hour.paterCount) {
+        completedRef.current = true;
+        setCompleted(true);
+      }
     }
     // Restore sound preference
     const soundPref = localStorage.getItem("fp_sound_enabled");
@@ -85,6 +92,14 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       setVoiceRate(clamped);
     }
   }, [hour.id, hour.paterCount]);
+
+  useEffect(() => {
+    countRef.current = count;
+  }, [count]);
+
+  useEffect(() => {
+    completedRef.current = completed;
+  }, [completed]);
 
   // Cleanup timer/audio on unmount
   useEffect(() => {
@@ -184,8 +199,9 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   }, [hour.id, hour.paterCount, locale, stopGuidedPlayback, voiceRate]);
 
   const advanceCount = useCallback(() => {
-    if (completed) return;
-    const next = count + 1;
+    if (completedRef.current) return;
+    const next = countRef.current + 1;
+    countRef.current = next;
     setCount(next);
     localStorage.setItem(getStorageKey(hour.id), String(next));
 
@@ -195,6 +211,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     }
 
     if (next >= hour.paterCount) {
+      completedRef.current = true;
       setCompleted(true);
       if (soundEnabled) playCompletionChime();
       stopGuidedPlayback();
@@ -208,11 +225,12 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       if (!completions.includes(hour.id)) {
         completions.push(hour.id);
         localStorage.setItem(completionsKey, JSON.stringify(completions));
+        emitPrayerProgressChanged();
       }
       trackHourCompleted(hour.id, hour.paterCount);
       setTimeout(onComplete, 800);
     }
-  }, [count, completed, hour, onComplete, soundEnabled, stopGuidedPlayback]);
+  }, [hour.id, hour.paterCount, onComplete, soundEnabled, stopGuidedPlayback]);
 
   // Keep ref in sync so onended closure always calls latest advanceCount
   advanceCountRef.current = advanceCount;
@@ -223,61 +241,45 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   }, [pacingActive, advanceCount]);
 
   const startPacing = useCallback(() => {
-    if (completed) return;
+    if (completedRef.current) return;
     setPacingActive(true);
     setPacingPaused(false);
     setTimeLeft(paceSeconds);
+    remainingRef.current = paceSeconds;
+  }, [paceSeconds]);
 
-    if (pacingRef.current) clearInterval(pacingRef.current);
-    pacingRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          return paceSeconds; // Reset timer — advance happens in effect
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  }, [completed, paceSeconds]);
-
-  // Handle timer reaching zero — advance count and play bell
+  // Proper pacing: use a single interval that ticks every second.
   useEffect(() => {
     if (!pacingActive || pacingPaused || completed) return;
-    if (timeLeft === paceSeconds && count > 0) {
-      // Timer just reset — means we completed an interval
+
+    if (pacingRef.current) clearInterval(pacingRef.current);
+    if (remainingRef.current <= 0) {
+      remainingRef.current = paceSeconds;
     }
-  }, [timeLeft, pacingActive, pacingPaused, completed, paceSeconds, count]);
-
-  // Proper pacing: use a single interval that ticks every second
-  useEffect(() => {
-    if (!pacingActive || pacingPaused || completed) return;
-
-    if (pacingRef.current) clearInterval(pacingRef.current);
-    let remaining = timeLeft || paceSeconds;
 
     pacingRef.current = setInterval(() => {
-      remaining -= 1;
-      if (remaining <= 0) {
-        remaining = paceSeconds;
+      remainingRef.current -= 1;
+      if (remainingRef.current <= 0) {
+        remainingRef.current = paceSeconds;
         setTimeLeft(paceSeconds);
         // Play bell and advance
         if (soundEnabled) playBell();
         advanceCount();
       } else {
-        setTimeLeft(remaining);
+        setTimeLeft(remainingRef.current);
       }
     }, 1000);
 
     return () => {
       if (pacingRef.current) clearInterval(pacingRef.current);
     };
-    // We intentionally only re-run when these change
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pacingActive, pacingPaused, completed, paceSeconds, soundEnabled]);
+  }, [advanceCount, pacingActive, pacingPaused, completed, paceSeconds, soundEnabled]);
 
   const togglePacing = () => {
     if (pacingActive) {
       if (pacingRef.current) clearInterval(pacingRef.current);
       pacingRef.current = null;
+      remainingRef.current = 0;
       setPacingActive(false);
       setPacingPaused(false);
       setTimeLeft(0);
@@ -305,6 +307,9 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
   };
 
   const handleReset = useCallback(() => {
+    countRef.current = 0;
+    completedRef.current = false;
+    remainingRef.current = 0;
     setCount(0);
     setCompleted(false);
     setPacingActive(false);
@@ -314,6 +319,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
     if (pacingRef.current) clearInterval(pacingRef.current);
     pacingRef.current = null;
     localStorage.removeItem(getStorageKey(hour.id));
+    emitPrayerProgressChanged();
   }, [hour.id, stopGuidedPlayback]);
 
   const progress = Math.min((count / hour.paterCount) * 100, 100);
@@ -443,10 +449,11 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
 
       {/* The big tap target */}
       <button
+        type="button"
         onClick={handleTap}
         disabled={completed || pacingActive}
         className={cn(
-          "tap-target w-48 h-48 rounded-full flex flex-col items-center justify-center transition-all duration-200 shadow-lg relative",
+          "tap-target w-40 h-40 sm:w-48 sm:h-48 rounded-full flex flex-col items-center justify-center transition-all duration-200 shadow-lg relative",
           completed
             ? "bg-franciscan text-franciscan-foreground scale-95"
             : pacingActive
@@ -477,7 +484,7 @@ export function PrayerCounter({ hour, onComplete, onBack }: PrayerCounterProps) 
       </button>
 
       {/* Progress bar */}
-      <div className="w-48 h-2 bg-muted rounded-full overflow-hidden">
+      <div className="w-40 sm:w-48 h-2 bg-muted rounded-full overflow-hidden">
         <div
           className="h-full bg-franciscan rounded-full transition-all duration-300"
           style={{ width: `${progress}%` }}

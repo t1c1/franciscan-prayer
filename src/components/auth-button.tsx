@@ -104,8 +104,8 @@ function AuthModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-      <div className="bg-card border border-border rounded-xl shadow-xl w-full max-w-sm p-4 relative">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3 sm:p-4 bg-background/80 backdrop-blur-sm">
+      <div className="bg-card border border-border rounded-xl shadow-xl w-full max-w-sm max-h-[90dvh] overflow-y-auto p-4 relative">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"

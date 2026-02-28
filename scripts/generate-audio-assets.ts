@@ -10,6 +10,7 @@ import { ABOUT_I18N } from "../src/lib/about-i18n";
 import { FRANCISCAN_FEASTS, CALENDAR_I18N } from "../src/lib/franciscan-calendar";
 import { UI_STRINGS } from "../src/lib/ui-strings";
 import { spellOutSmallNumbers } from "../src/lib/number-words";
+import { normalizeTextForSpeech } from "../src/lib/speech-text";
 
 type Locale = "latin" | "en" | "es" | "it" | "fr" | "zh";
 type AppLocale = Exclude<Locale, "latin">;
@@ -44,16 +45,12 @@ const CONCURRENCY = Number.isFinite(requestedConcurrency) && requestedConcurrenc
   ? Math.floor(requestedConcurrency)
   : 4;
 
-function normalizeText(text: string): string {
-  return text.replace(/\s+/g, " ").trim();
-}
-
 function stripScriptureReference(text: string): string {
   return text.replace(/[\s\u3000]*[（(][^()（）]{2,120}[)）]\s*$/, "").trim();
 }
 
 function addAsset(map: Map<string, AssetItem>, filePath: string, text: string, locale: Locale) {
-  const normalized = normalizeText(spellOutSmallNumbers(text, locale));
+  const normalized = normalizeTextForSpeech(spellOutSmallNumbers(text, locale), locale);
   if (!normalized) return;
   map.set(filePath, { filePath, text: normalized, locale });
 }
@@ -87,14 +84,6 @@ function getAboutEnglish() {
     paxFooter: "Pax et Bonum",
     builtWith: "Built with love for the greater glory of God",
   };
-}
-
-function getDailyTotalLabel(locale: AppLocale): string {
-  if (locale === "es") return "Total Diario";
-  if (locale === "it") return "Totale Giornaliero";
-  if (locale === "fr") return "Total Quotidien";
-  if (locale === "zh") return "每日总计";
-  return "Daily Total";
 }
 
 function buildStationUi() {
@@ -296,7 +285,7 @@ function buildAssets(): AssetItem[] {
       about.intro1,
       about.intro2,
       `${about.paterTitle}. ${about.paterDesc}`,
-      `${getDailyTotalLabel(locale)}: 76 Paters.`,
+      `${UI_STRINGS[locale]["about.daily_total"]}: 76 Paters.`,
       `${about.howTitle}. ${about.howFullDay}: ${about.howFullDayDesc}`,
       `${about.howBusy}: ${about.howBusyDesc}`,
       `${about.howMissed}: ${about.howMissedDesc}`,

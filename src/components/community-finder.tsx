@@ -134,7 +134,7 @@ function CommunityCard({
               href={community.website}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(community.website, "_blank", "noopener,noreferrer"); }}
+              onClick={(e) => e.stopPropagation()}
               className="inline-flex items-center gap-1 text-xs text-franciscan hover:underline"
             >
               <ExternalLink className="w-3 h-3" />

@@ -1,8 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
+import { HOURS, REQUIRED_HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
 import { getLocalDateString } from "@/lib/utils";
+
+const PRAYER_PROGRESS_EVENT = "fp-progress-changed";
+const REQUIRED_HOUR_IDS = new Set(REQUIRED_HOURS.map((hour) => hour.id));
+
+type PrayerProgressSnapshot = {
+  completedHours: string[];
+  streak: number;
+};
 
 function getCompletedHours(): string[] {
   if (typeof window === "undefined") return [];
@@ -24,21 +32,54 @@ function getStreak(): number {
   return streak;
 }
 
+function getSnapshot(): PrayerProgressSnapshot {
+  return {
+    completedHours: getCompletedHours(),
+    streak: getStreak(),
+  };
+}
+
+export function emitPrayerProgressChanged(): void {
+  if (typeof window === "undefined") return;
+  window.dispatchEvent(new Event(PRAYER_PROGRESS_EVENT));
+}
+
 export function usePrayerProgress() {
   const [completedHours, setCompletedHours] = useState<string[]>([]);
   const [streak, setStreak] = useState(0);
 
-  useEffect(() => {
-    setCompletedHours(getCompletedHours());
-    setStreak(getStreak());
+  const refresh = useCallback(() => {
+    const snapshot = getSnapshot();
+    setCompletedHours(snapshot.completedHours);
+    setStreak(snapshot.streak);
   }, []);
 
-  const refresh = useCallback(() => {
-    setCompletedHours(getCompletedHours());
-    setStreak(getStreak());
-  }, []);
+  useEffect(() => {
+    refresh();
+    const onStorage = (event: StorageEvent) => {
+      if (!event.key || event.key.startsWith("fp_completions_") || event.key.startsWith("fp_count_")) {
+        refresh();
+      }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        refresh();
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener(PRAYER_PROGRESS_EVENT, refresh);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener(PRAYER_PROGRESS_EVENT, refresh);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [refresh]);
 
   const completedPaters = completedHours.reduce((sum, id) => {
+    if (!REQUIRED_HOUR_IDS.has(id)) return sum;
     const hour = HOURS.find((h) => h.id === id);
     return sum + (hour?.paterCount || 0);
   }, 0);
@@ -50,12 +91,12 @@ export function getNextHour(completedHours: string[]) {
   const currentHourOfDay = new Date().getHours();
   const hourTimeMap: Record<string, number> = {
     matins: 3, lauds: 6, prime: 7, terce: 9,
-    sext: 12, none: 15, vespers: 18, compline: 21, dead: 22,
+    sext: 12, none: 15, vespers: 18, compline: 21,
   };
   return (
-    HOURS.find(
+    REQUIRED_HOURS.find(
       (h) => !completedHours.includes(h.id) && hourTimeMap[h.id] >= currentHourOfDay
-    ) || HOURS.find((h) => !completedHours.includes(h.id))
+    ) || REQUIRED_HOURS.find((h) => !completedHours.includes(h.id))
   );
 }
 

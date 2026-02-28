@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Cloud, CloudOff, RefreshCw, Calendar, Flame, Clock } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/lib/i18n";
-import { HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
+import { HOURS, REQUIRED_HOURS, TOTAL_DAILY_PATERS } from "@/lib/prayers";
 import { getEarnedAchievements, getNextAchievement } from "@/lib/achievements";
 import { getLocalDateString } from "@/lib/utils";
 
@@ -13,6 +13,8 @@ interface DayStats {
   hoursCompleted: number;
   patersTotal: number;
 }
+
+const REQUIRED_HOUR_IDS = new Set(REQUIRED_HOURS.map((hour) => hour.id));
 
 function getLocalStats(days: number): DayStats[] {
   const stats: DayStats[] = [];
@@ -23,6 +25,7 @@ function getLocalStats(days: number): DayStats[] {
       localStorage.getItem(`fp_completions_${dateStr}`) || "[]"
     );
     const paters = completions.reduce((sum, id) => {
+      if (!REQUIRED_HOUR_IDS.has(id)) return sum;
       const hour = HOURS.find((h) => h.id === id);
       return sum + (hour?.paterCount || 0);
     }, 0);
@@ -50,6 +53,7 @@ export function SyncDashboard() {
   const { locale, t } = useI18n();
   const [stats, setStats] = useState<DayStats[]>([]);
   const [syncing, setSyncing] = useState(false);
+  const [syncError, setSyncError] = useState<string | null>(null);
 
   useEffect(() => {
     setStats(getLocalStats(30));
@@ -62,10 +66,16 @@ export function SyncDashboard() {
   const perfectDays = stats.filter((d) => d.patersTotal >= TOTAL_DAILY_PATERS).length;
 
   const handleSync = async () => {
+    setSyncError(null);
     setSyncing(true);
-    await syncToCloud();
-    setStats(getLocalStats(30)); // Refresh after pull-from-cloud restores data
-    setSyncing(false);
+    try {
+      await syncToCloud();
+      setStats(getLocalStats(30)); // Refresh after pull-from-cloud restores data
+    } catch {
+      setSyncError(t("dashboard.sync_failed"));
+    } finally {
+      setSyncing(false);
+    }
   };
 
   return (
@@ -103,6 +113,9 @@ export function SyncDashboard() {
           <p className="text-xs text-muted-foreground mt-1">
             {t("dashboard.sign_in_prompt")}
           </p>
+        )}
+        {syncError && (
+          <p className="text-xs text-destructive mt-1">{syncError}</p>
         )}
       </div>
 
@@ -150,7 +163,7 @@ export function SyncDashboard() {
         return (
           <div className="bg-card rounded-xl border border-border p-4 space-y-3">
             <h4 className="text-sm font-medium text-foreground">
-              {locale === "zh" ? "成就" : locale === "es" ? "Logros" : locale === "it" ? "Traguardi" : locale === "fr" ? "Réalisations" : "Achievements"}
+              {t("dashboard.achievements")}
             </h4>
             {earned.length > 0 && (
               <div className="flex flex-wrap gap-2">
@@ -169,7 +182,9 @@ export function SyncDashboard() {
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span className="text-base opacity-40">{next.icon}</span>
                 <span>
-                  {(next.labels[locale] || next.labels.en).name} — {next.type === "streak" ? `${next.threshold - streak} ${t("dashboard.days")}` : `${next.threshold - perfectDays}`} {locale === "zh" ? "天后解锁" : locale === "es" ? "más" : locale === "it" ? "ancora" : locale === "fr" ? "de plus" : "to go"}
+                  {(next.labels[locale] || next.labels.en).name} — {next.type === "streak"
+                    ? `${next.threshold - streak} ${t("dashboard.days")}`
+                    : `${next.threshold - perfectDays}`} {t("dashboard.to_go")}
                 </span>
               </div>
             )}

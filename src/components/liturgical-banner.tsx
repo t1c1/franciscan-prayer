@@ -72,7 +72,6 @@ export function LiturgicalBanner() {
         href={getTodayUSCCBUrl()}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={(e) => { e.preventDefault(); window.open(getTodayUSCCBUrl(), "_blank", "noopener,noreferrer"); }}
         className="inline-flex items-center gap-1 text-[10px] text-franciscan hover:underline"
       >
         <ExternalLink className="w-2.5 h-2.5" /> {t("banner.read_usccb")}
