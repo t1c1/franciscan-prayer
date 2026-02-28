@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { Share2 } from "lucide-react";
 import { shareCard } from "@/lib/share-card";
 import { trackShareCard, trackViewChanged } from "@/lib/analytics";
+import { PlatformBar } from "@/components/platform-bar";
 
 const REQUIRED_HOUR_IDS = new Set(REQUIRED_HOURS.map((hour) => hour.id));
 
@@ -73,7 +74,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main className="min-h-dvh bg-background">
+    <main className="min-h-dvh bg-background pt-6">
+      <PlatformBar />
       <header className="safe-top border-b border-border bg-card">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -201,6 +203,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </p>
 
           <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-3">
+            <a href="https://ubimissa.com/mass" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">Find Mass Near You ↗</a>
             <a href="https://bible.usccb.org/daily-bible-reading" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">USCCB Daily Readings ↗</a>
             <a href="https://www.franciscanmedia.org/" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">Franciscan Media ↗</a>
             <Link href="/about" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.about")}</Link>
