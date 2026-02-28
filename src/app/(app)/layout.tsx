@@ -75,7 +75,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main className="min-h-dvh bg-background pt-6">
+    <main className="min-h-dvh bg-background">
       <PlatformBar />
       <header className="safe-top border-b border-border bg-card">
         <div className="max-w-lg mx-auto px-4 py-3">
