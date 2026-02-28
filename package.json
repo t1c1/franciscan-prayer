@@ -6,7 +6,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "audio:generate": "bun scripts/generate-audio-assets.ts"
+    "audio:generate": "bun scripts/generate-audio-assets.ts",
+    "verify:i18n": "node --import tsx scripts/verify-i18n.ts",
+    "verify:auth-config": "node --import tsx scripts/verify-auth-config.ts",
+    "verify:prod": "node --import tsx scripts/verify-production.ts",
+    "check:all": "npm run lint && npm run verify:i18n && npm run verify:auth-config && npm run build",
+    "deploy:prod": "npm run build && npx wrangler pages deploy out --project-name franciscan-prayer",
+    "ship:prod": "npm run deploy:prod && npm run verify:prod -- --url=https://franciscan-prayer.pages.dev"
   },
   "dependencies": {
     "@radix-ui/react-progress": "^1.1.7",

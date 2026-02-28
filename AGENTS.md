@@ -12,6 +12,8 @@
 - `npm run build`: Create production build.
 - `npm run start`: Serve the production build locally.
 - `npm run lint`: Run ESLint (`next/core-web-vitals` + TypeScript rules).
+- `npm run check:all`: Required pre-merge quality gate (`lint` + i18n + auth config + build).
+- `npm run verify:prod -- --url=<url>`: Post-deploy smoke checks against a live URL.
 
 ## Coding Style & Naming Conventions
 - Language: TypeScript with `strict` mode enabled.
@@ -22,7 +24,7 @@
 
 ## Testing Guidelines
 - No dedicated automated test framework is configured yet.
-- Minimum gate for every change: `npm run lint` and manual smoke testing in `npm run dev`.
+- Minimum gate for every change: `npm run check:all` and manual smoke testing in `npm run dev`.
 - For UI changes, verify core flows (home, prayer counter, onboarding, auth/sync where applicable).
 - If you add tests, colocate them as `*.test.ts`/`*.test.tsx` near the feature.
 

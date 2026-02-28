@@ -10,7 +10,7 @@ import {
 } from "react";
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
-import { trackSignIn, trackSignUp } from "./analytics";
+import { trackAuthFailure, trackSignIn, trackSignUp, trackSyncCompleted, trackSyncFailed } from "./analytics";
 import { getLocalDateString } from "./utils";
 import { emitPrayerProgressChanged } from "./use-prayer-progress";
 
@@ -27,6 +27,26 @@ interface AuthState {
 }
 
 const AuthContext = createContext<AuthState | null>(null);
+
+function getErrorCode(error: unknown): string {
+  if (error && typeof error === "object") {
+    const code = (error as { code?: unknown }).code;
+    if (typeof code === "string" && code.length > 0) return code;
+
+    const status = (error as { status?: unknown }).status;
+    if (typeof status === "number") return `status_${status}`;
+
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === "string" && message.length > 0) {
+      const normalized = message
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+      return normalized.slice(0, 48) || "unknown";
+    }
+  }
+  return "unknown";
+}
 
 // --- Push: local → cloud ---
 
@@ -48,9 +68,10 @@ async function pushCompletions(userId: string) {
   }
 
   if (entries.length > 0) {
-    await supabase
+    const { error } = await supabase
       .from("prayer_completions")
       .upsert(entries, { onConflict: "user_id,date,hour_id" });
+    if (error) throw error;
   }
 }
 
@@ -68,7 +89,8 @@ async function pushIntentions(userId: string) {
     created_at: i.createdAt,
   }));
 
-  await supabase.from("intentions").upsert(rows, { onConflict: "user_id,id" });
+  const { error } = await supabase.from("intentions").upsert(rows, { onConflict: "user_id,id" });
+  if (error) throw error;
 }
 
 async function pushPreferences(userId: string) {
@@ -76,7 +98,7 @@ async function pushPreferences(userId: string) {
   const soundEnabled = localStorage.getItem("fp_sound_enabled") !== "false";
   const favorites: string[] = JSON.parse(localStorage.getItem("fp_favorite_prayers") || "[]");
 
-  await supabase.from("user_preferences").upsert(
+  const { error } = await supabase.from("user_preferences").upsert(
     {
       user_id: userId,
       locale,
@@ -86,16 +108,18 @@ async function pushPreferences(userId: string) {
     },
     { onConflict: "user_id" }
   );
+  if (error) throw error;
 }
 
 // --- Pull: cloud → local (only fills gaps, doesn't overwrite newer local data) ---
 
 async function pullCompletions(userId: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("prayer_completions")
     .select("date, hour_id, pater_count")
     .eq("user_id", userId);
 
+  if (error) throw error;
   if (!data || data.length === 0) return;
   let changed = false;
 
@@ -133,12 +157,13 @@ async function pullCompletions(userId: string) {
 }
 
 async function pullIntentions(userId: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("intentions")
     .select("id, text, hour_id, created_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
+  if (error) throw error;
   if (!data || data.length === 0) return;
 
   const existing = JSON.parse(localStorage.getItem("fp_intentions") || "[]") as { id: string; text: string; createdAt: string; hourId?: string }[];
@@ -163,12 +188,13 @@ async function pullIntentions(userId: string) {
 }
 
 async function pullPreferences(userId: string) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("user_preferences")
     .select("locale, sound_enabled, favorite_prayers, updated_at")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
 
+  if (error) throw error;
   if (!data) return;
 
   // Only restore if local has no saved preference (fresh device)
@@ -196,7 +222,7 @@ async function ensureProfile(userId: string, email?: string) {
     },
     { onConflict: "id", ignoreDuplicates: false }
   );
-  if (error) console.error("[FP] ensureProfile failed:", error);
+  if (error) throw error;
 }
 
 // --- Full sync ---
@@ -225,21 +251,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const checkAdmin = useCallback(async (userId: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
+    if (error) {
+      setIsAdmin(false);
+      trackAuthFailure("admin_role_lookup", getErrorCode(error));
+      return;
+    }
     setIsAdmin(data?.role === "admin");
   }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) checkAdmin(session.user.id);
-      setLoading(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) checkAdmin(session.user.id);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setSession(null);
+        setUser(null);
+        setIsAdmin(false);
+        setLoading(false);
+        trackAuthFailure("session_init", getErrorCode(error));
+        console.error("[FP] Session init failed:", error);
+      });
 
     const {
       data: { subscription },
@@ -263,7 +304,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithEmail = useCallback(
     async (email: string, password: string): Promise<string | null> => {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return error.message;
+      if (error) {
+        trackAuthFailure("sign_in_email", getErrorCode(error));
+        return error.message;
+      }
       trackSignIn("email");
       return null;
     },
@@ -273,7 +317,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUpWithEmail = useCallback(
     async (email: string, password: string): Promise<string | null> => {
       const { error } = await supabase.auth.signUp({ email, password });
-      if (error) return error.message;
+      if (error) {
+        trackAuthFailure("sign_up_email", getErrorCode(error));
+        return error.message;
+      }
       trackSignUp("email");
       return null;
     },
@@ -281,32 +328,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signInWithGoogle = useCallback(async () => {
-    trackSignIn("google");
-    await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: typeof window !== "undefined" ? window.location.origin : undefined,
       },
     });
+    if (error) {
+      trackAuthFailure("sign_in_google", getErrorCode(error));
+      console.error("[FP] Google OAuth start failed:", error);
+      return;
+    }
+    trackSignIn("google");
   }, []);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      trackAuthFailure("sign_out", getErrorCode(error));
+      console.error("[FP] Sign out failed:", error);
+    }
   }, []);
 
   const syncToCloud = useCallback(async () => {
     if (!user) return;
     const email = user.email || user.user_metadata?.email || undefined;
-    await fullSync(user.id, email);
+    try {
+      await fullSync(user.id, email);
+      trackSyncCompleted("manual");
+    } catch (error) {
+      trackSyncFailed("manual", getErrorCode(error));
+      throw error;
+    }
   }, [user]);
 
   // Auto-sync on sign in
   useEffect(() => {
     if (user) {
       const email = user.email || user.user_metadata?.email || undefined;
-      void fullSync(user.id, email).catch((err) => {
-        console.error("[FP] Sync failed:", err);
-      });
+      void fullSync(user.id, email)
+        .then(() => trackSyncCompleted("auto"))
+        .catch((error) => {
+          trackSyncFailed("auto", getErrorCode(error));
+          console.error("[FP] Sync failed:", error);
+        });
     }
   }, [user]);
 

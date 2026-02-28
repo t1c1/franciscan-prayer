@@ -94,6 +94,18 @@ export function trackSignUp(method: "google" | "email") {
   track("sign_up", { method });
 }
 
+export function trackAuthFailure(stage: string, code: string) {
+  track("auth_failure", { stage, code });
+}
+
+export function trackSyncFailed(source: "auto" | "manual", code: string) {
+  track("sync_failed", { source, code });
+}
+
+export function trackSyncCompleted(source: "auto" | "manual") {
+  track("sync_completed", { source });
+}
+
 // Sharing
 export function trackShareCard() {
   track("share_card");
