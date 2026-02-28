@@ -79,7 +79,7 @@ export function IntroOnboarding({ onComplete }: { onComplete: () => void }) {
   // Language picker on step 0
   if (step === 0) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+      <div className="min-h-dvh bg-background flex flex-col items-center justify-center px-6 py-8 safe-bottom">
         <Globe className="w-12 h-12 text-franciscan mb-4" />
         <h2 className="text-xl font-bold text-foreground mb-2">
           {t("onboarding.lang_title")}
@@ -112,7 +112,7 @@ export function IntroOnboarding({ onComplete }: { onComplete: () => void }) {
   const isLast = step >= STEPS.length;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6 text-center">
+    <div className="min-h-dvh bg-background flex flex-col items-center justify-center px-6 py-8 safe-bottom text-center">
       <div 
         key={`icon-${step}`}
         className="mb-6"

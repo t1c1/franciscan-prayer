@@ -90,7 +90,7 @@ export const RULE_CHAPTERS: RuleChapter[] = [
     title: "Of Those Going Among the Saracens",
     titleLatin: "De Euntibus Inter Saracenos",
     text: "Whoever among the friars shall wish by divine inspiration to go among the Saracens and other nonbelievers, let them ask permission from their provincial ministers. The ministers, however, should give permission only to those whom they judge fit to be sent. Furthermore, I command the ministers by obedience to petition the Lord Pope for one of the cardinals of the Holy Roman Church, who would be the governor, protector, and corrector of this fraternity, so that, always subject and submissive at the feet of the same Holy Church and steadfast in the Catholic faith, we may observe poverty and humility and the Holy Gospel of our Lord Jesus Christ, which we have firmly promised.",
-    textLatin: "Quicumque fratrum divina inspiratione voluerint ire inter Saracenos et alios infideles petant inde licentiam a suis ministris provincialibus.",
+    textLatin: "Quicumque fratrum divina inspiratione voluerint ire inter Saracenos et alios infideles petant inde licentiam a suis ministris provincialibus. Ministri autem non concedant eis licentiam nisi illis quos viderint idoneos ad mittendum. Et mando per obedientiam ministris quod petant a domino papa unum de cardinalibus sanctae Romanae Ecclesiae, qui sit gubernator, protector et corrector istius fraternitatis, ut semper subditi et subiecti pedibus eiusdem sanctae Ecclesiae, stabiles in fide catholica, observemus paupertatem et humilitatem et sanctum Evangelium Domini nostri Iesu Christi, quod firmiter promisimus.",
   },
 ];
 

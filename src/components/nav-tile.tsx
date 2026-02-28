@@ -14,7 +14,7 @@ export function NavTile({ icon, title, subtitle, href }: NavTileProps) {
       <div className="w-9 h-9 rounded-lg bg-franciscan-light flex items-center justify-center shrink-0">{icon}</div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground">{title}</p>
-        <p className="text-[11px] text-muted-foreground">{subtitle}</p>
+        <p className="text-xs text-muted-foreground leading-snug">{subtitle}</p>
       </div>
       <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
     </Link>

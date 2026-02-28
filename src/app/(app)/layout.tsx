@@ -75,18 +75,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main className="min-h-dvh bg-background">
+    <main className="min-h-dvh bg-background overflow-x-clip">
       <PlatformBar />
-      <header className="safe-top border-b border-border bg-card">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-left min-w-0">
-              <h1 className="text-lg font-bold text-foreground tracking-tight">
+      <header className="border-b border-border bg-card">
+        <div className="max-w-lg mx-auto px-4 sm:px-5 py-2.5 sm:py-3">
+          <div className="flex items-start justify-between gap-2">
+            <Link href="/" className="text-left min-w-0 flex-1 pr-1">
+              <h1 className="text-base sm:text-lg font-bold text-foreground tracking-tight truncate">
                 {t("app.title")}
               </h1>
-              <p className="text-[10px] text-muted-foreground italic">{t("app.subtitle")}</p>
+              <p className="text-[11px] text-muted-foreground italic truncate leading-tight">{t("app.subtitle")}</p>
             </Link>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 shrink-0">
               <AuthButton />
               <Link
                 href="/settings"
@@ -96,24 +96,25 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <Settings className="w-4 h-4" />
               </Link>
               {streak > 0 && (
-                <span className="flex items-center gap-0.5 text-[10px] font-medium text-franciscan bg-franciscan-light px-1.5 py-0.5 rounded-full">
+                <span className="flex items-center gap-0.5 text-[11px] font-medium text-franciscan bg-franciscan-light px-1.5 py-0.5 rounded-full">
                   <Flame className="w-3 h-3" /> {streak}{locale === "zh" ? "天" : "d"}
                 </span>
               )}
               <span className={cn(
-                "text-[10px] px-1.5 py-0.5 rounded-full font-medium",
+                "text-[11px] px-1.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1 max-w-[104px]",
                 liturgy.color === "green" && "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
                 liturgy.color === "purple" && "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
                 liturgy.color === "white" && "bg-amber-50 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
               )}>
-                {liturgy.season}
+                <span className="h-1.5 w-1.5 rounded-full bg-current/80 shrink-0" />
+                <span className="truncate max-[380px]:hidden">{liturgy.season}</span>
               </span>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="safe-bottom max-w-lg mx-auto px-4 py-4 pb-6 space-y-4">
+      <div className="safe-bottom max-w-lg mx-auto px-4 sm:px-5 py-4 pb-8 space-y-4 sm:space-y-5">
         {authError && (
           <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-xl p-3 flex items-start gap-2">
             <p className="text-sm text-red-800 dark:text-red-200 flex-1">
@@ -134,7 +135,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <div className="bg-card rounded-xl border border-border p-3">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs font-medium text-foreground">{t("progress.title")}</span>
-              <span className="text-[10px] text-muted-foreground tabular-nums">
+              <span className="text-[11px] text-muted-foreground tabular-nums">
                 {completedPaters} / {TOTAL_DAILY_PATERS} {t("progress.paters")}
               </span>
             </div>
@@ -142,11 +143,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <div className="h-full bg-franciscan rounded-full transition-all duration-500" style={{ width: `${Math.min((completedPaters / TOTAL_DAILY_PATERS) * 100, 100)}%` }} />
             </div>
             <div className="flex justify-between mt-1.5">
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-[11px] text-muted-foreground">
                 {completedRequiredHours.length} {t("progress.hours_of")} {REQUIRED_HOURS.length} {t("progress.hours_label")}
               </span>
               {completedPaters >= TOTAL_DAILY_PATERS && (
-                <span className="flex items-center gap-1 text-[10px] font-medium text-franciscan">
+                <span className="flex items-center gap-1 text-[11px] font-medium text-franciscan">
                   {t("progress.complete")}
                   <button
                     type="button"
@@ -165,7 +166,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               )}
             </div>
             {!user && completedPaters > 0 && (
-              <p className="text-[10px] text-muted-foreground/60 mt-1.5 text-center">
+              <p className="text-[11px] text-muted-foreground/60 mt-1.5 text-center">
                 This progress is saved on this device only.{" "}
                 <span className="text-franciscan/60">Sign in to sync.</span>
               </p>
@@ -178,27 +179,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <footer className="pt-8 pb-4 border-t border-border mt-6">
           <nav className="grid grid-cols-2 gap-x-6 gap-y-1 mb-4" aria-label="Footer navigation">
             <div>
-              <h3 className="text-[11px] font-semibold text-foreground mb-1">{t("nav.hours")}</h3>
+              <h3 className="text-xs font-semibold text-foreground mb-1">{t("nav.hours")}</h3>
               <ul className="space-y-0.5">
-                <li><Link href="/hours" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.hours")}</Link></li>
-                <li><Link href="/office" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.office")}</Link></li>
-                <li><Link href="/crown" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.crown")}</Link></li>
-                <li><Link href="/stations" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.stations")}</Link></li>
+                <li><Link href="/hours" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.hours")}</Link></li>
+                <li><Link href="/office" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.office")}</Link></li>
+                <li><Link href="/crown" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.crown")}</Link></li>
+                <li><Link href="/stations" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.stations")}</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-[11px] font-semibold text-foreground mb-1">Franciscan Life</h3>
+              <h3 className="text-xs font-semibold text-foreground mb-1">Franciscan Life</h3>
               <ul className="space-y-0.5">
-                <li><Link href="/prayers" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.prayers")}</Link></li>
-                <li><Link href="/rule" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.rule")}</Link></li>
-                <li><Link href="/calendar" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.calendar")}</Link></li>
-                <li><Link href="/reflections" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{getReflectionUI(locale)["nav.label"]}</Link></li>
-                <li><Link href="/community" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.community")}</Link></li>
+                <li><Link href="/prayers" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.prayers")}</Link></li>
+                <li><Link href="/rule" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.rule")}</Link></li>
+                <li><Link href="/calendar" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.calendar")}</Link></li>
+                <li><Link href="/reflections" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{getReflectionUI(locale)["nav.label"]}</Link></li>
+                <li><Link href="/community" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.community")}</Link></li>
               </ul>
             </div>
           </nav>
 
-          <p className="text-[10px] text-muted-foreground leading-relaxed mb-3">
+          <p className="text-xs text-muted-foreground leading-relaxed mb-3">
             Franciscan Prayer is a free companion for the daily prayer life of Secular Franciscans,
             Third Order members, and all who follow the spirituality of St. Francis of Assisi.
             Featuring the Pater Noster Hours, the Franciscan Crown Rosary, Stations of the Cross,
@@ -206,17 +207,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </p>
 
           <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-3">
-            <a href="https://ubimissa.com/mass" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">Find Mass Near You ↗</a>
-            <a href="https://bible.usccb.org/daily-bible-reading" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">USCCB Daily Readings ↗</a>
-            <a href="https://www.franciscanmedia.org/" target="_blank" rel="noopener noreferrer" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">Franciscan Media ↗</a>
-            <Link href="/about" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.about")}</Link>
-            <Link href="/settings" className="text-[10px] text-muted-foreground hover:text-franciscan transition-colors">{t("nav.settings")}</Link>
+            <a href="https://ubimissa.com/mass" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">Find Mass Near You ↗</a>
+            <a href="https://bible.usccb.org/daily-bible-reading" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">USCCB Daily Readings ↗</a>
+            <a href="https://www.franciscanmedia.org/" target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">Franciscan Media ↗</a>
+            <Link href="/about" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.about")}</Link>
+            <Link href="/settings" className="text-xs text-muted-foreground hover:text-franciscan transition-colors">{t("nav.settings")}</Link>
           </div>
 
           <div className="text-center">
-            <p className="text-[10px] text-muted-foreground italic">{t("footer.pax")}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{t("footer.amdg")}</p>
-            <p className="text-[10px] text-muted-foreground mt-1">&copy; {new Date().getFullYear()} Franciscan Prayer</p>
+            <p className="text-xs text-muted-foreground italic">{t("footer.pax")}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{t("footer.amdg")}</p>
+            <p className="text-xs text-muted-foreground mt-1">&copy; {new Date().getFullYear()} Franciscan Prayer</p>
           </div>
         </footer>
       </div>

@@ -64,7 +64,7 @@ export function Onboarding({ onComplete }: { onComplete: () => void }) {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
+    <div className="min-h-dvh bg-background flex flex-col items-center justify-center px-6 py-8 safe-bottom">
       <div className="w-full max-w-sm">
         {/* Branding */}
         <div className="text-center mb-8">

@@ -36,9 +36,9 @@ export default function HomePage() {
         const fi = (locale !== "en" && CALENDAR_I18N?.[locale]?.[fKey]) || { name: todayFeast.name, description: todayFeast.description };
         return (
           <Link href="/calendar" className="block w-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-3 text-left hover:opacity-90 transition-opacity">
-            <p className="text-[10px] text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">{t("home.feast_today")}</p>
+            <p className="text-[11px] text-amber-700 dark:text-amber-400 uppercase tracking-wide font-medium">{t("home.feast_today")}</p>
             <p className="text-xs font-semibold text-foreground mt-0.5">{fi.name}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{fi.description}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{fi.description}</p>
           </Link>
         );
       })()}
@@ -51,12 +51,12 @@ export default function HomePage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] opacity-80 uppercase tracking-wide">{t("home.pray_now")}</p>
+              <p className="text-[11px] opacity-80 uppercase tracking-wide">{t("home.pray_now")}</p>
               <p className="text-base font-bold mt-0.5">
                 {getHourName(nextHour.id)}
                 <span className="font-normal text-xs opacity-80 ml-2">{nextHour.paterCount} {t("home.paters")}</span>
               </p>
-              <p className="text-[10px] opacity-70 mt-0.5">{getHourTime(nextHour.id)}</p>
+              <p className="text-[11px] opacity-70 mt-0.5">{getHourTime(nextHour.id)}</p>
             </div>
             <ChevronRight className="w-5 h-5 opacity-60" />
           </div>

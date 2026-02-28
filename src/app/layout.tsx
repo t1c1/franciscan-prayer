@@ -126,7 +126,7 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className="antialiased">
+      <body className="font-sans antialiased bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

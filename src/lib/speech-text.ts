@@ -1,37 +1,25 @@
 export type SpeechLocale = "latin" | "en" | "es" | "it" | "fr" | "zh";
 
-const MARKERS: Record<SpeechLocale, { versicle: string; response: string }> = {
-  latin: { versicle: "Versiculus", response: "Responsum" },
-  en: { versicle: "Versicle", response: "Response" },
-  es: { versicle: "Versículo", response: "Respuesta" },
-  it: { versicle: "Versetto", response: "Risposta" },
-  fr: { versicle: "Verset", response: "Réponse" },
-  zh: { versicle: "领", response: "应" },
-};
-
-function expandCallResponseMarkers(text: string, locale: SpeechLocale): string {
-  const labels = MARKERS[locale];
+function stripCallResponseMarkers(text: string): string {
   let normalized = text;
 
-  if (locale === "zh") {
-    // Keep Chinese call/response labels stable for TTS.
-    normalized = normalized.replace(/(^|\n)\s*领[：:]\s*/g, "$1领：");
-    normalized = normalized.replace(/(^|\n)\s*应[：:]\s*/g, "$1应：");
-    return normalized;
-  }
-
-  normalized = normalized.replace(/(^|\n)\s*V\.\s*/g, `$1${labels.versicle}: `);
-  normalized = normalized.replace(/(^|\n)\s*R\.\s*/g, `$1${labels.response}: `);
-  normalized = normalized.replace(/(^|\n)\s*℣\s*/g, `$1${labels.versicle}: `);
-  normalized = normalized.replace(/(^|\n)\s*℟\s*/g, `$1${labels.response}: `);
+  // Remove liturgical call/response markers so TTS reads natural prayer lines.
+  normalized = normalized.replace(/(^|\n)\s*(V\.|R\.|℣|℟)\s*/g, "$1");
+  normalized = normalized.replace(/(^|\n)\s*(Versicle|Response|Versiculus|Responsum|Versículo|Respuesta|Versetto|Risposta|Verset|Réponse)\s*[:：]\s*/gi, "$1");
+  normalized = normalized.replace(/(^|\n)\s*(领|應|应)\s*[:：]\s*/g, "$1");
   return normalized;
 }
 
-export function normalizeTextForSpeech(text: string, locale: SpeechLocale): string {
-  return expandCallResponseMarkers(text, locale)
+export function normalizeTextForSpeech(text: string, _locale: SpeechLocale): string {
+  void _locale;
+  return stripCallResponseMarkers(text)
     .replace(/\r\n?/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{2,}/g, ". ")
+    .replace(/\n/g, ", ")
     .replace(/…+/g, ". ")
     .replace(/\.{3,}/g, ". ")
     .replace(/\s+/g, " ")
+    .replace(/\s+([,.;!?])/g, "$1")
     .trim();
 }
