@@ -43,8 +43,20 @@ create or replace function handle_new_user()
 returns trigger as $$
 begin
   insert into profiles (id, email, sign_up_at, last_active_at)
-  values (new.id, new.email, now(), now());
+  values (
+    new.id,
+    coalesce(new.email, new.raw_user_meta_data->>'email'),
+    now(),
+    now()
+  )
+  on conflict (id) do update set
+    email = coalesce(excluded.email, profiles.email),
+    last_active_at = now();
   return new;
+exception
+  when others then
+    raise log 'handle_new_user failed for %: %', new.id, sqlerrm;
+    return new;
 end;
 $$ language plpgsql security definer;
 
